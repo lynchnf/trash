@@ -1,2 +1,2 @@
-# trash
+# Trash
 Junk, trash, and garbage.
