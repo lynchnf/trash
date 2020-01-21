@@ -15,6 +15,6 @@ public class DashboardController {
         lines.add("This is a test.");
         lines.add("This is only a test.");
         model.addAttribute("lines", lines);
-        return "dashboard";
+        return "index";
     }
 }

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/header::header"></header>
+<main class="container-fluid">
+    <div th:replace="fragments/alerts::alerts"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm table-striped">
+                <tr>
+                    <th>Some Text</th>
+                </tr>
+                <tr th:each="line:${lines}">
+                    <td th:text="${line}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>
