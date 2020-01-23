@@ -2,6 +2,7 @@ package norman.trash.service;
 
 import norman.trash.LoggingException;
 import norman.trash.domain.Acct;
+import norman.trash.domain.AcctType;
 import norman.trash.repository.AcctRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,5 +37,17 @@ public class AcctService {
 
     public Page<Acct> findAll(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    public Page<Acct> findByNameContainingAndType(String name, AcctType type, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCaseAndType(name, type, pageable);
+    }
+
+    public Page<Acct> findByNameContaining(String name, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
+    public Page<Acct> findByType(AcctType type, Pageable pageable) {
+        return repository.findByType(type, pageable);
     }
 }
