@@ -1,5 +1,6 @@
 package norman.trash.controller;
 
+import norman.trash.NotFoundException;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.service.AcctService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 
@@ -59,5 +61,17 @@ public class AcctController {
         AcctListForm listForm = new AcctListForm(page, whereName, whereType);
         model.addAttribute("listForm", listForm);
         return "acctList";
+    }
+
+    @GetMapping("/acct")
+    public String loadView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Acct acct = service.findById(id);
+            model.addAttribute("acct", acct);
+            return "acctView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
     }
 }

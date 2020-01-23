@@ -4,93 +4,90 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
+    <h1>Account List</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <div class="row">
-        <div class="col-md-12">
-            <form id="listForm" action="#" method="get" th:action="@{/acctList}">
-                <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
-                <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
-                <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
-                <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
-                <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
-                <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
-                <input type="hidden" th:field="${listForm.whereName}"/>
-                <input type="hidden" th:field="${listForm.whereType}"/>
+    <form id="listForm" action="#" method="get" th:action="@{/acctList}">
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereName}"/>
+        <input type="hidden" th:field="${listForm.whereType}"/>
 
-                <span th:if="${listForm.hasPrevious()}">
+        <span th:if="${listForm.hasPrevious()}">
                     <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
                     &nbsp;
                     <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
                     &nbsp;
                 </span>
 
-                page <span th:text="${listForm.number} + 1"></span> of <span th:text="${listForm.totalPages}"></span>
+        page <span th:text="${listForm.number} + 1"></span> of <span th:text="${listForm.totalPages}"></span>
 
-                <span th:if="${listForm.hasNext()}">
+        <span th:if="${listForm.hasNext()}">
                     &nbsp;
                     <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
                     &nbsp;
                     <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
                 </span>
 
-                &nbsp;&nbsp;&nbsp;
-                page size
-                <select class="changePageSize" data-list-form="listForm">
-                    <option value="5" th:selected="${listForm.size} == 5">5</option>
-                    <option value="10" th:selected="${listForm.size} == 10">10</option>
-                    <option value="20" th:selected="${listForm.size} == 20">20</option>
-                    <option value="50" th:selected="${listForm.size} == 50">50</option>
-                </select>
+        &nbsp;&nbsp;&nbsp;
+        page size
+        <select class="changePageSize" data-list-form="listForm">
+            <option value="5" th:selected="${listForm.size} == 5">5</option>
+            <option value="10" th:selected="${listForm.size} == 10">10</option>
+            <option value="20" th:selected="${listForm.size} == 20">20</option>
+            <option value="50" th:selected="${listForm.size} == 50">50</option>
+        </select>
 
-                <table class="table table-sm table-striped">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>
-                            <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
-                            <span th:if="${listForm.sortColumn == 'name'}">
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
+                    <span th:if="${listForm.sortColumn == 'name'}">
                                 <span th:if="${listForm.ascending}">&uarr;</span>
                                 <span th:if="${listForm.descending}">&darr;</span>
                             </span>
-                        </th>
-                        <th>
-                            <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
-                            <span th:if="${listForm.sortColumn == 'type'}">
+                </th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
+                    <span th:if="${listForm.sortColumn == 'type'}">
                                 <span th:if="${listForm.ascending}">&uarr;</span>
                                 <span th:if="${listForm.descending}">&darr;</span>
                             </span>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button type="button" id="filterAcctList" class="btn btn-primary btn-sm"
-                                    data-list-form="listForm">Filter
-                            </button>
-                        </td>
-                        <td>
-                            <input type="text" id="newWhereName" placeholder="contains"
-                                   th:value="${listForm.whereName}"/>
-                        </td>
-                        <td>
-                            <select id="newWhereType">
-                                <option value="">select</option>
-                                <option th:each="type : ${T(norman.trash.domain.AcctType).values()}" th:value="${type}"
-                                        th:text="${type}" th:selected="${listForm.whereType} == ${type}"></option>
-                            </select>
-                        </td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="acct:${listForm}">
-                        <td><a th:href="@{/acct(id=${acct.id})}" th:text="${acct.id}"></a></td>
-                        <td th:text="${acct.name}"></td>
-                        <td th:text="${acct.type}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </form>
-        </div>
-    </div>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" id="filterAcctList" class="btn btn-primary btn-sm"
+                            data-list-form="listForm">Filter
+                    </button>
+                </td>
+                <td>
+                    <input type="text" id="newWhereName" placeholder="contains"
+                           th:value="${listForm.whereName}"/>
+                </td>
+                <td>
+                    <select id="newWhereType">
+                        <option value="">select</option>
+                        <option th:each="type : ${T(norman.trash.domain.AcctType).values()}" th:value="${type}"
+                                th:text="${type}" th:selected="${listForm.whereType} == ${type}"></option>
+                    </select>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="acct:${listForm}">
+                <td><a th:href="@{/acct(id=${acct.id})}" th:text="${acct.id}"></a></td>
+                <td th:text="${acct.name}"></td>
+                <td th:text="${acct.type}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
 <script src="js/acctList.js"></script>

@@ -1,6 +1,6 @@
 package norman.trash.service;
 
-import norman.trash.LoggingException;
+import norman.trash.NotFoundException;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.repository.AcctRepository;
@@ -23,10 +23,10 @@ public class AcctService {
         return repository.save(acct);
     }
 
-    public Acct findById(Long id) throws LoggingException {
+    public Acct findById(Long id) throws NotFoundException {
         Optional<Acct> optional = repository.findById(id);
         if (!optional.isPresent()) {
-            throw new LoggingException(LOGGER, "Acct not found, id=\"" + id + "\"");
+            throw new NotFoundException(LOGGER, "Account", id);
         }
         return optional.get();
     }

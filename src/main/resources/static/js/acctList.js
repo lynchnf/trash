@@ -1,4 +1,4 @@
-var filterAcctList = function() {
+var filterAcctList = function () {
     var listFormId = $(this).attr("data-list-form");
     console.log("changePageSize: resetting pageNumber to 0.");
     $("#" + listFormId + " .pageNumber").val(0);
@@ -14,8 +14,7 @@ var filterAcctList = function() {
     $("#whereType").val(newType);
 
     $("#" + listFormId).submit();
-}
-
+};
 
 $(document).ready(function () {
     $("#filterAcctList").on("click", filterAcctList);
