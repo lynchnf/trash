@@ -25,8 +25,8 @@ public class AcctController {
 
     @GetMapping("/acctList")
     public String loadList(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "sortColumn", required = false, defaultValue = "id") String sortColumn,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "name") String sortColumn,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
             Model model) {
         // Convert sort column from string to an array of strings.

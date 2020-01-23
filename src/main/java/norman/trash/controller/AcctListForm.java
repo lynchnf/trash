@@ -29,6 +29,14 @@ public class AcctListForm implements Page<Acct> {
         return sortOrder.getDirection();
     }
 
+    public boolean isAscending() {
+        return sortOrder.getDirection() == Sort.Direction.ASC;
+    }
+
+    public boolean isDescending() {
+        return sortOrder.getDirection() == Sort.Direction.DESC;
+    }
+
     @Override
     public int getTotalPages() {
         return innerPage.getTotalPages();

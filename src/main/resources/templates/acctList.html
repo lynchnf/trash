@@ -7,7 +7,7 @@
     <div th:replace="fragments/alerts::alerts"></div>
     <div class="row">
         <div class="col-md-12">
-            <form id="listForm" action="#" method="post" th:action="@{/acctList}">
+            <form id="listForm" action="#" method="get" th:action="@{/acctList}">
                 <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
                 <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
                 <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
@@ -16,11 +16,9 @@
                 <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
 
                 <span th:if="${listForm.hasPrevious()}">
-                    <a class="goToFirstPage" data-list-form="listForm" href="#"><i
-                            class="fa fa-angle-double-left fa-lg"></i></a>
+                    <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
                     &nbsp;
-                    <a class="goToPreviousPage" data-list-form="listForm" href="#"><i
-                            class="fa fa-angle-left fa-lg"></i></a>
+                    <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
                     &nbsp;
                 </span>
 
@@ -28,11 +26,9 @@
 
                 <span th:if="${listForm.hasNext()}">
                     &nbsp;
-                    <a class="goToNextPage" data-list-form="listForm" href="#"><i
-                            class="fa fa-angle-right fa-lg"></i></a>
+                    <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
                     &nbsp;
-                    <a class="goToLastPage" data-list-form="listForm" href="#"><i
-                            class="fa fa-angle-double-right fa-lg"></i></a>
+                    <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
                 </span>
 
                 &nbsp;&nbsp;&nbsp;
@@ -51,9 +47,17 @@
                         <th>Version</th>
                         <th>
                             <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
+                            <span th:if="${listForm.sortColumn == 'name'}">
+                                <span th:if="${listForm.ascending}">&uarr;</span>
+                                <span th:if="${listForm.descending}">&darr;</span>
+                            </span>
                         </th>
                         <th>
                             <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
+                            <span th:if="${listForm.sortColumn == 'type'}">
+                                <span th:if="${listForm.ascending}">&uarr;</span>
+                                <span th:if="${listForm.descending}">&darr;</span>
+                            </span>
                         </th>
                     </tr>
                     <tr th:each="acct:${listForm}">
