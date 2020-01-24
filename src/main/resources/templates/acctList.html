@@ -17,28 +17,28 @@
         <input type="hidden" th:field="${listForm.whereType}"/>
 
         <span th:if="${listForm.hasPrevious()}">
-                    <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
-                    &nbsp;
-                    <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
-                    &nbsp;
-                </span>
+            <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
+            &nbsp;
+            <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
+            &nbsp;
+        </span>
 
         page <span th:text="${listForm.number} + 1"></span> of <span th:text="${listForm.totalPages}"></span>
 
         <span th:if="${listForm.hasNext()}">
-                    &nbsp;
-                    <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
-                    &nbsp;
-                    <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
-                </span>
+            &nbsp;
+            <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
+            &nbsp;
+            <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
+        </span>
 
         &nbsp;&nbsp;&nbsp;
         page size
         <select class="changePageSize" data-list-form="listForm">
-            <option value="5" th:selected="${listForm.size} == 5">5</option>
-            <option value="10" th:selected="${listForm.size} == 10">10</option>
-            <option value="20" th:selected="${listForm.size} == 20">20</option>
-            <option value="50" th:selected="${listForm.size} == 50">50</option>
+            <option value="5" th:selected="${listForm.size}==5">5</option>
+            <option value="10" th:selected="${listForm.size}==10">10</option>
+            <option value="20" th:selected="${listForm.size}==20">20</option>
+            <option value="50" th:selected="${listForm.size}==50">50</option>
         </select>
 
         <table class="table table-sm table-striped">
@@ -47,17 +47,17 @@
                 <th>Id</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
-                    <span th:if="${listForm.sortColumn == 'name'}">
-                                <span th:if="${listForm.ascending}">&uarr;</span>
-                                <span th:if="${listForm.descending}">&darr;</span>
-                            </span>
+                    <span th:if="${listForm.sortColumn=='name'}">
+                        <span th:if="${listForm.ascending}">&uarr;</span>
+                        <span th:if="${listForm.descending}">&darr;</span>
+                    </span>
                 </th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
-                    <span th:if="${listForm.sortColumn == 'type'}">
-                                <span th:if="${listForm.ascending}">&uarr;</span>
-                                <span th:if="${listForm.descending}">&darr;</span>
-                            </span>
+                    <span th:if="${listForm.sortColumn=='type'}">
+                        <span th:if="${listForm.ascending}">&uarr;</span>
+                        <span th:if="${listForm.descending}">&darr;</span>
+                    </span>
                 </th>
             </tr>
             <tr>
@@ -73,8 +73,8 @@
                 <td>
                     <select id="newWhereType">
                         <option value="">select</option>
-                        <option th:each="type : ${T(norman.trash.domain.AcctType).values()}" th:value="${type}"
-                                th:text="${type}" th:selected="${listForm.whereType} == ${type}"></option>
+                        <option th:each="acctType:${T(norman.trash.domain.AcctType).values()}" th:value="${acctType}"
+                                th:text="${acctType}" th:selected="${listForm.whereType} == ${acctType}"></option>
                     </select>
                 </td>
             </tr>

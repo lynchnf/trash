@@ -13,11 +13,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Arrays;
+
+import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_ADDED;
+import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_UPDATED;
 
 @Controller
 public class AcctController {
@@ -73,5 +79,51 @@ public class AcctController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/acctList";
         }
+    }
+
+    @GetMapping("/acctEdit")
+    public String loadEdit(@RequestParam(value = "id", required = false) Long id, Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // If no acct id, new acct.
+        if (id == null) {
+            model.addAttribute("acctForm", new AcctForm());
+            return "acctEdit";
+        }
+
+        // Otherwise, edit existing acct.
+        try {
+            Acct acct = service.findById(id);
+            AcctForm acctForm = new AcctForm(acct);
+            model.addAttribute("acctForm", acctForm);
+            return "acctEdit";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
+    }
+
+    @PostMapping("/acctEdit")
+    public String processEdit(@Valid AcctForm acctForm, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "acctEdit";
+        }
+
+        // Convert form to entity ...
+        Long acctId = acctForm.getId();
+        Acct acct = acctForm.toAcct();
+
+        // ... and save.
+        Acct save = null;
+        // TODO Handle optimistic lock error
+        save = service.save(acct);
+        String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
+        if (acctId != null) {
+            successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
+        }
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        redirectAttributes.addAttribute("id", save.getId());
+        return "redirect:/acct?id={id}";
     }
 }
