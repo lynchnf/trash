@@ -3,7 +3,9 @@ package norman.trash.controller;
 import norman.trash.NotFoundException;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
+import norman.trash.domain.Tran;
 import norman.trash.service.AcctService;
+import norman.trash.service.TranService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,9 @@ public class AcctController {
     private static final String defaultSortColumn = "id";
     private static final String[] otherSortableColumns = {"name", "type"};
     @Autowired
-    private AcctService service;
+    private AcctService acctService;
+    @Autowired
+    private TranService tranService;
 
     @GetMapping("/acctList")
     // @formatter:off
@@ -55,13 +59,13 @@ public class AcctController {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
         Page<Acct> page = null;
         if (trimmedName != null && whereType != null) {
-            page = service.findByNameContainingAndType(trimmedName, whereType, pageable);
+            page = acctService.findByNameContainingAndType(trimmedName, whereType, pageable);
         } else if (trimmedName != null && whereType == null) {
-            page = service.findByNameContaining(trimmedName, pageable);
+            page = acctService.findByNameContaining(trimmedName, pageable);
         } else if (trimmedName == null && whereType != null) {
-            page = service.findByType(whereType, pageable);
+            page = acctService.findByType(whereType, pageable);
         } else {
-            page = service.findAll(pageable);
+            page = acctService.findAll(pageable);
         }
 
         AcctListForm listForm = new AcctListForm(page, whereName, whereType);
@@ -72,8 +76,17 @@ public class AcctController {
     @GetMapping("/acct")
     public String loadView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            Acct acct = service.findById(id);
+            Acct acct = acctService.findById(id);
+
+            int pageNumber = 1;
+            int pageSize = 20;
+            Sort.Direction sortDirection = Sort.Direction.DESC;
+            String[] sortColumns = {"postDate", "id"};
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<Tran> trans = tranService.findByDebitAcct_IdOrCreditAcct_Id(id, id, pageable);
+
             model.addAttribute("acct", acct);
+            model.addAttribute("trans", trans);
             return "acctView";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -93,7 +106,7 @@ public class AcctController {
 
         // Otherwise, edit existing acct.
         try {
-            Acct acct = service.findById(id);
+            Acct acct = acctService.findById(id);
             AcctForm acctForm = new AcctForm(acct);
             model.addAttribute("acctForm", acctForm);
             return "acctEdit";
@@ -117,7 +130,7 @@ public class AcctController {
         // ... and save.
         Acct save = null;
         // TODO Handle optimistic lock error
-        save = service.save(acct);
+        save = acctService.save(acct);
         String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
         if (acctId != null) {
             successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());

@@ -74,7 +74,7 @@
                     <select id="newWhereType">
                         <option value="">select</option>
                         <option th:each="acctType:${T(norman.trash.domain.AcctType).values()}" th:value="${acctType}"
-                                th:text="${acctType}" th:selected="${listForm.whereType} == ${acctType}"></option>
+                                th:text="${acctType}" th:selected="${listForm.whereType}==${acctType}"></option>
                     </select>
                 </td>
             </tr>

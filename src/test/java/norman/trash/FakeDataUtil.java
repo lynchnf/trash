@@ -24,9 +24,10 @@ public class FakeDataUtil {
     private static final int NBR_OF_ACCTS = 12;
     private static final String INSERT_INTO_ACCT =
             "INSERT INTO `acct` (`name`,`type`,`version`) VALUES ('%s','%s',0);%n";
-    private static final int NBR_OF_TRANS = 123;
+    private static final int NBR_OF_TRANS = 1234;
     private static final String INSERT_INTO_TRAN =
-            "INSERT INTO `tran` (`amount`,`post_date`,`version`,`debit_acct_id`,`credit_acct_id`) VALUES (%.2f,'%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'),(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
+            "INSERT INTO `tran` (`amount`,`post_date`,`version`,`debit_acct_id`,`credit_acct_id`) VALUES (%.2f,'%tF',0,%s,%s);%n";
+    private static final String SELECT_ACCT_ID = "(SELECT `id` FROM `acct` WHERE `name` = '%s')";
 
     private FakeDataUtil() {
     }
@@ -44,8 +45,15 @@ public class FakeDataUtil {
 
         for (int i = 0; i < NBR_OF_TRANS; i++) {
             Tran tran = buildTran(tranId, uniqueAccts);
-            System.out.printf(INSERT_INTO_TRAN, tran.getAmount(), tran.getPostDate(), tran.getDebitAcct().getName(),
-                    tran.getCreditAcct().getName());
+            String debitAcct = "null";
+            if (tran.getDebitAcct() != null) {
+                debitAcct = String.format(SELECT_ACCT_ID, tran.getDebitAcct().getName());
+            }
+            String creditAcct = "null";
+            if (tran.getCreditAcct() != null) {
+                creditAcct = String.format(SELECT_ACCT_ID, tran.getCreditAcct().getName());
+            }
+            System.out.printf(INSERT_INTO_TRAN, tran.getAmount(), tran.getPostDate(), debitAcct, creditAcct);
         }
     }
 
@@ -85,8 +93,19 @@ public class FakeDataUtil {
 
     private static Tran buildTran(long id, Map<String, Acct> uniqueAccts) {
         List<String> uniqueNames = new ArrayList<>(uniqueAccts.keySet());
-        String debitAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
-        String creditAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
+        String debitAcctName = null;
+        String creditAcctName = null;
+        int foo = RANDOM.nextInt(3);
+        if (foo == 0) {
+            debitAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
+        } else if (foo == 1) {
+            creditAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
+        } else {
+            debitAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
+            do {
+                creditAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
+            } while (debitAcctName.equals(creditAcctName));
+        }
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
@@ -98,8 +117,16 @@ public class FakeDataUtil {
 
         Tran tran = new Tran();
         tran.setId(id);
-        tran.setDebitAcct(uniqueAccts.get(debitAcctName));
-        tran.setCreditAcct(uniqueAccts.get(creditAcctName));
+        if (debitAcctName == null) {
+            tran.setDebitAcct(null);
+        } else {
+            tran.setDebitAcct(uniqueAccts.get(debitAcctName));
+        }
+        if (creditAcctName == null) {
+            tran.setCreditAcct(null);
+        } else {
+            tran.setCreditAcct(uniqueAccts.get(creditAcctName));
+        }
         tran.setPostDate(postDate);
         tran.setAmount(amount);
         return tran;

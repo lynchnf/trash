@@ -26,6 +26,25 @@
     </div>
     <a class="btn btn-primary" th:href="@{/acctEdit(id=${acct.id})}">Edit</a>
     <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${acct.id})}">Reconcile</a>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Debit Name</th>
+            <th>Credit Name</th>
+            <th>Post Date</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tran:${trans}">
+            <td th:text="${tran.id}"></td>
+            <td th:text="${tran.debitAcct}==null?'':${tran.debitAcct.name}"></td>
+            <td th:text="${tran.creditAcct}==null?'':${tran.creditAcct.name}"></td>
+            <td th:text="${tran.postDate}"></td>
+            <td th:text="${tran.amount}"></td>
+        </tbody>
+    </table>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
 </body>
