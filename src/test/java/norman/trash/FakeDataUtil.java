@@ -1,9 +1,6 @@
 package norman.trash;
 
-import norman.trash.domain.Acct;
-import norman.trash.domain.AcctType;
-import norman.trash.domain.Stmt;
-import norman.trash.domain.Tran;
+import norman.trash.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +19,7 @@ public class FakeDataUtil {
     private static final String[] CC_NAMES = {"Credit Card", "Plastic Credit", "Gold Card", "Platinum Card"};
     private static final String[] BILL_NAMES =
             {"Cable TV", "Gas", "Gym", "Insurance", "Lawn Service", "Power", "Water and Sewer"};
+    private static final String[] CAT_NAMES = {"Mortgage", "Groceries", "Utilities", "Miscellaneous"};
     private static final int NBR_OF_ACCTS = 6;
     private static final String INSERT_INTO_ACCT =
             "INSERT INTO `acct` (`name`,`type`,`version`) VALUES ('%s','%s',0);%n";
@@ -29,6 +27,7 @@ public class FakeDataUtil {
             "INSERT INTO `stmt` (`close_date`,`open_date`,`version`,`acct_id`) VALUES ('%tF','%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
     private static final String INSERT_INTO_STMT_WITH_NULL =
             "INSERT INTO `stmt` (`close_date`,`open_date`,`version`,`acct_id`) VALUES (NULL,'%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
+    private static final String INSERT_INTO_CAT = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
     private static final int NBR_OF_TRANS = 216;
     private static final String INSERT_INTO_TRAN =
             "INSERT INTO `tran` (`amount`,`post_date`,`version`,`debit_stmt_id`,`credit_stmt_id`) VALUES (%.2f,'%tF',0,%s,%s);%n";
@@ -44,6 +43,7 @@ public class FakeDataUtil {
         LOGGER.debug("Starting FakeDataUtil");
         long acctId = 1;
         long stmtId = 1;
+        long catId = 1;
         long tranId = 1;
         Map<String, Acct> uniqueAccts = new HashMap<>();
 
@@ -61,6 +61,11 @@ public class FakeDataUtil {
                             stmt.getAcct().getName());
                 }
             } while (stmt.getCloseDate() != null);
+        }
+
+        for (String name : CAT_NAMES) {
+            Cat cat = buildCat(catId++, name);
+            System.out.printf(INSERT_INTO_CAT, cat.getName());
         }
 
         for (int i = 0; i < NBR_OF_TRANS; i++) {
@@ -169,6 +174,13 @@ public class FakeDataUtil {
         stmt.setCloseDate(closeDate);
         acct.getStmts().add(stmt);
         return stmt;
+    }
+
+    private static Cat buildCat(long id, String name) {
+        Cat cat = new Cat();
+        cat.setId(id);
+        cat.setName(name);
+        return cat;
     }
 
     private static Tran buildTran(long id, Map<String, Acct> uniqueAccts) {

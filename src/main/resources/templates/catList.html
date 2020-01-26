@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/header::header"></header>
+<main class="container">
+    <h1>Account List</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+    <form id="listForm" action="#" method="get" th:action="@{/catList}">
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereName}"/>
+
+        <span th:if="${listForm.hasPrevious()}">
+            <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
+            &nbsp;
+            <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
+            &nbsp;
+        </span>
+
+        page <span th:text="${listForm.number}+1"></span> of <span th:text="${listForm.totalPages}"></span>
+
+        <span th:if="${listForm.hasNext()}">
+            &nbsp;
+            <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
+            &nbsp;
+            <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
+        </span>
+
+        &nbsp;&nbsp;&nbsp;
+        page size
+        <select class="changePageSize" data-list-form="listForm">
+            <option value="5" th:selected="${listForm.size}==5">5</option>
+            <option value="10" th:selected="${listForm.size}==10">10</option>
+            <option value="20" th:selected="${listForm.size}==20">20</option>
+            <option value="50" th:selected="${listForm.size}==50">50</option>
+        </select>
+
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
+                    <span th:if="${listForm.sortColumn=='name'}">
+                        <span th:if="${listForm.ascending}">&uarr;</span>
+                        <span th:if="${listForm.descending}">&darr;</span>
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" id="filterCatList" class="btn btn-primary btn-sm"
+                            data-list-form="listForm">Filter
+                    </button>
+                </td>
+                <td>
+                    <input type="text" id="newWhereName" placeholder="contains"
+                           th:value="${listForm.whereName}"/>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cat:${listForm}">
+                <td><a th:href="@{/cat(id=${cat.id})}" th:text="${cat.id}"></a></td>
+                <td th:text="${cat.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+<script src="js/catList.js"></script>
+</body>
+</html>

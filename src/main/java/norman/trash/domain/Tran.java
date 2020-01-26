@@ -38,20 +38,20 @@ public class Tran {
         this.version = version;
     }
 
-    public Stmt getCreditStmt() {
-        return creditStmt;
-    }
-
-    public void setCreditStmt(Stmt creditStmt) {
-        this.creditStmt = creditStmt;
-    }
-
     public Stmt getDebitStmt() {
         return debitStmt;
     }
 
     public void setDebitStmt(Stmt debitStmt) {
         this.debitStmt = debitStmt;
+    }
+
+    public Stmt getCreditStmt() {
+        return creditStmt;
+    }
+
+    public void setCreditStmt(Stmt creditStmt) {
+        this.creditStmt = creditStmt;
     }
 
     public Date getPostDate() {
