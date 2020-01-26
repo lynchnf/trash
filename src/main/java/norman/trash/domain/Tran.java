@@ -12,11 +12,11 @@ public class Tran {
     @Version
     private Integer version = 0;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "debit_acct_id")
-    private Acct debitAcct;
+    @JoinColumn(name = "debit_stmt_id")
+    private Stmt debitStmt;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "credit_acct_id")
-    private Acct creditAcct;
+    @JoinColumn(name = "credit_stmt_id")
+    private Stmt creditStmt;
     @Temporal(TemporalType.DATE)
     private Date postDate;
     @Column(precision = 9, scale = 2)
@@ -38,20 +38,20 @@ public class Tran {
         this.version = version;
     }
 
-    public Acct getDebitAcct() {
-        return debitAcct;
+    public Stmt getCreditStmt() {
+        return creditStmt;
     }
 
-    public void setDebitAcct(Acct debitAcct) {
-        this.debitAcct = debitAcct;
+    public void setCreditStmt(Stmt creditStmt) {
+        this.creditStmt = creditStmt;
     }
 
-    public Acct getCreditAcct() {
-        return creditAcct;
+    public Stmt getDebitStmt() {
+        return debitStmt;
     }
 
-    public void setCreditAcct(Acct creditAcct) {
-        this.creditAcct = creditAcct;
+    public void setDebitStmt(Stmt debitStmt) {
+        this.debitStmt = debitStmt;
     }
 
     public Date getPostDate() {

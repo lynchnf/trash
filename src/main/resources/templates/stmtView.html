@@ -4,17 +4,40 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
-    <h1>Account List</h1>
+    <h1>Account Statement</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <form id="listForm" action="#" method="get" th:action="@{/acctList}">
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${stmt.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Account</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${stmt.acct.name}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Open Date</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${stmt.openDate}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Close Date</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${stmt.closeDate}"></p>
+        </div>
+    </div>
+    <form id="listForm" action="#" method="get" th:action="@{/stmt}">
+        <input type="hidden" name="id" th:value="${stmt.id}"/>
         <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
         <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
         <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
         <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
         <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
         <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
-        <input type="hidden" th:field="${listForm.whereName}"/>
-        <input type="hidden" th:field="${listForm.whereType}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
@@ -35,61 +58,45 @@
         &nbsp;&nbsp;&nbsp;
         page size
         <select class="changePageSize" data-list-form="listForm">
-            <option value="5" th:selected="${listForm.size}==5">5</option>
             <option value="10" th:selected="${listForm.size}==10">10</option>
             <option value="20" th:selected="${listForm.size}==20">20</option>
             <option value="50" th:selected="${listForm.size}==50">50</option>
+            <option value="100" th:selected="${listForm.size}==100">100</option>
         </select>
 
         <table class="table table-sm table-striped">
             <thead>
             <tr>
                 <th>Id</th>
+                <th>Debit Account</th>
+                <th>Credit Account</th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
-                    <span th:if="${listForm.sortColumn=='name'}">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">Post Date</a>
+                    <span th:if="${listForm.sortColumn=='postDate'}">
                         <span th:if="${listForm.ascending}">&uarr;</span>
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
-                    <span th:if="${listForm.sortColumn=='type'}">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="amount" href="#">Amount</a>
+                    <span th:if="${listForm.sortColumn=='amount'}">
                         <span th:if="${listForm.ascending}">&uarr;</span>
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
-            </tr>
-            <tr>
-                <td>
-                    <button type="button" id="filterAcctList" class="btn btn-primary btn-sm"
-                            data-list-form="listForm">Filter
-                    </button>
-                </td>
-                <td>
-                    <input type="text" id="newWhereName" placeholder="contains"
-                           th:value="${listForm.whereName}"/>
-                </td>
-                <td>
-                    <select id="newWhereType">
-                        <option value="">select</option>
-                        <option th:each="acctType:${T(norman.trash.domain.AcctType).values()}" th:value="${acctType}"
-                                th:text="${acctType}" th:selected="${listForm.whereType}==${acctType}"></option>
-                    </select>
-                </td>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="acct:${listForm}">
-                <td><a th:href="@{/acct(id=${acct.id})}" th:text="${acct.id}"></a></td>
-                <td th:text="${acct.name}"></td>
-                <td th:text="${acct.type}"></td>
-            </tr>
+            <tr th:each="tran:${listForm}">
+                <td><a th:href="@{/tran(id=${tran.id})}" th:text="${tran.id}"></a></td>
+                <td th:text="${tran.creditStmt}==null?'':${tran.creditStmt.acct.name}"></td>
+                <td th:text="${tran.debitStmt}==null?'':${tran.debitStmt.acct.name}"></td>
+                <td th:text="${tran.postDate}"></td>
+                <td th:text="${tran.amount}"></td>
             </tbody>
         </table>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
-<script src="js/acctList.js"></script>
 </body>
 </html>

@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface TranRepository extends PagingAndSortingRepository<Tran, Long> {
-    Page<Tran> findByDebitAcct_IdOrCreditAcct_Id(Long debitAcctId, Long creditAcctId, Pageable pageable);
+    Page<Tran> findByDebitStmt_IdOrCreditStmt_Id(Long debitId, Long creditId, Pageable pageable);
 }

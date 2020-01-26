@@ -16,10 +16,8 @@ public class Acct {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private AcctType type;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "debitAcct")
-    private List<Tran> debitTrans = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "creditAcct")
-    private List<Tran> creditTrans = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
+    private List<Stmt> stmts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -53,19 +51,11 @@ public class Acct {
         this.type = type;
     }
 
-    public List<Tran> getDebitTrans() {
-        return debitTrans;
+    public List<Stmt> getStmts() {
+        return stmts;
     }
 
-    public void setDebitTrans(List<Tran> debitTrans) {
-        this.debitTrans = debitTrans;
-    }
-
-    public List<Tran> getCreditTrans() {
-        return creditTrans;
-    }
-
-    public void setCreditTrans(List<Tran> creditTrans) {
-        this.creditTrans = creditTrans;
+    public void setStmts(List<Stmt> stmts) {
+        this.stmts = stmts;
     }
 }

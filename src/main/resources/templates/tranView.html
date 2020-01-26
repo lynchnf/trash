@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/header::header"></header>
+<main class="container">
+    <h1>Transaction</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${tran.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Debit Account</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${tran.debitStmt}==null?'':${tran.debitStmt.acct.name}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Credit Account</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${tran.creditStmt}==null?'':${tran.creditStmt.acct.name}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Post Date</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${tran.postDate}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Amount</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${tran.amount}"></p>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>

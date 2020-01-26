@@ -3,8 +3,10 @@ package norman.trash.controller;
 import norman.trash.NotFoundException;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
+import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
 import norman.trash.service.AcctService;
+import norman.trash.service.StmtService;
 import norman.trash.service.TranService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.Calendar;
 
 import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_ADDED;
 import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_UPDATED;
@@ -31,16 +34,20 @@ import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_UPDATED;
 public class AcctController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AcctController.class);
     private static final String defaultSortColumn = "id";
-    private static final String[] otherSortableColumns = {"name", "type"};
+    private static final String[] acctSortableColumns = {"name", "type"};
+    private static final String[] stmtSortableColumns = {"openDate"};
+    private static final String[] tranSortableColumns = {"postDate", "amount"};
     @Autowired
     private AcctService acctService;
+    @Autowired
+    private StmtService stmtService;
     @Autowired
     private TranService tranService;
 
     @GetMapping("/acctList")
     // @formatter:off
-    public String loadList(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize,
+    public String loadAcctList(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "sortColumn", required = false, defaultValue = "name") String sortColumn,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
             Model model,
@@ -51,7 +58,7 @@ public class AcctController {
 
         // Convert sort column from string to an array of strings.
         String[] sortColumns = {defaultSortColumn};
-        if (Arrays.asList(otherSortableColumns).contains(sortColumn)) {
+        if (Arrays.asList(acctSortableColumns).contains(sortColumn)) {
             sortColumns = new String[]{sortColumn, defaultSortColumn};
         }
 
@@ -67,26 +74,34 @@ public class AcctController {
         } else {
             page = acctService.findAll(pageable);
         }
-
-        AcctListForm listForm = new AcctListForm(page, whereName, whereType);
-        model.addAttribute("listForm", listForm);
+        model.addAttribute("listForm", new AcctListForm(page, whereName, whereType));
         return "acctList";
     }
 
     @GetMapping("/acct")
-    public String loadView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    // @formatter:off
+    public String loadAcctView(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "12") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "openDate") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        // @formatter:on
         try {
             Acct acct = acctService.findById(id);
-
-            int pageNumber = 1;
-            int pageSize = 20;
-            Sort.Direction sortDirection = Sort.Direction.DESC;
-            String[] sortColumns = {"postDate", "id"};
-            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<Tran> trans = tranService.findByDebitAcct_IdOrCreditAcct_Id(id, id, pageable);
-
             model.addAttribute("acct", acct);
-            model.addAttribute("trans", trans);
+
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(stmtSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            }
+
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<Stmt> page = stmtService.findByAcct_Id(id, pageable);
+            ListForm<Stmt> listForm = new ListForm<>(page);
+            model.addAttribute("listForm", listForm);
             return "acctView";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -95,7 +110,7 @@ public class AcctController {
     }
 
     @GetMapping("/acctEdit")
-    public String loadEdit(@RequestParam(value = "id", required = false) Long id, Model model,
+    public String loadAcctEdit(@RequestParam(value = "id", required = false) Long id, Model model,
             RedirectAttributes redirectAttributes) {
 
         // If no acct id, new acct.
@@ -117,7 +132,7 @@ public class AcctController {
     }
 
     @PostMapping("/acctEdit")
-    public String processEdit(@Valid AcctForm acctForm, BindingResult bindingResult,
+    public String processAcctEdit(@Valid AcctForm acctForm, BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "acctEdit";
@@ -126,6 +141,22 @@ public class AcctController {
         // Convert form to entity ...
         Long acctId = acctForm.getId();
         Acct acct = acctForm.toAcct();
+
+        // If new acct, create a statement too.
+        if (acctId == null) {
+            Stmt stmt = new Stmt();
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.YEAR, 1970);
+            stmt.setOpenDate(cal.getTime());
+            stmt.setAcct(acct);
+            acct.getStmts().add(stmt);
+        }
 
         // ... and save.
         Acct save = null;
@@ -138,5 +169,48 @@ public class AcctController {
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         redirectAttributes.addAttribute("id", save.getId());
         return "redirect:/acct?id={id}";
+    }
+
+    @GetMapping("/stmt")
+    // @formatter:off
+    public String loadStmtView(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        // @formatter:on
+        try {
+            Stmt stmt = stmtService.findById(id);
+            model.addAttribute("stmt", stmt);
+
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(tranSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            }
+
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<Tran> page = tranService.findByDebitStmt_IdOrCreditStmt_Id(id, id, pageable);
+            ListForm<Tran> listForm = new ListForm<>(page);
+            model.addAttribute("listForm", listForm);
+            return "stmtView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
+    }
+
+    @GetMapping("/tran")
+    public String loadTranView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Tran tran = tranService.findById(id);
+            model.addAttribute("tran", tran);
+            return "tranView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
     }
 }

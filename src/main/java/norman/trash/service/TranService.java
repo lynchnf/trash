@@ -34,7 +34,7 @@ public class TranService {
         return repository.existsById(id);
     }
 
-    public Page<Tran> findByDebitAcct_IdOrCreditAcct_Id(Long debitAcctId, Long creditAcctId, Pageable pageable) {
-        return repository.findByDebitAcct_IdOrCreditAcct_Id(debitAcctId, creditAcctId, pageable);
+    public Page<Tran> findByDebitStmt_IdOrCreditStmt_Id(Long debitId, Long creditId, Pageable pageable) {
+        return repository.findByDebitStmt_IdOrCreditStmt_Id(debitId, creditId, pageable);
     }
 }
