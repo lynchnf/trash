@@ -35,7 +35,7 @@ public class AcctController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AcctController.class);
     private static final String defaultSortColumn = "id";
     private static final String[] acctSortableColumns = {"name", "type"};
-    private static final String[] stmtSortableColumns = {"openDate"};
+    private static final String[] stmtSortableColumns = {"closeDate"};
     private static final String[] tranSortableColumns = {"postDate", "amount"};
     @Autowired
     private AcctService acctService;
@@ -83,7 +83,7 @@ public class AcctController {
     public String loadAcctView(@RequestParam("id") Long id,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "12") int pageSize,
-            @RequestParam(value = "sortColumn", required = false, defaultValue = "openDate") String sortColumn,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "closeDate") String sortColumn,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -150,10 +150,10 @@ public class AcctController {
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-            cal.set(Calendar.MONTH, Calendar.JANUARY);
-            cal.set(Calendar.YEAR, 1970);
-            stmt.setOpenDate(cal.getTime());
+            cal.set(Calendar.DAY_OF_MONTH, 31);
+            cal.set(Calendar.MONTH, Calendar.DECEMBER);
+            cal.set(Calendar.YEAR, 9999);
+            stmt.setCloseDate(cal.getTime());
             stmt.setAcct(acct);
             acct.getStmts().add(stmt);
         }

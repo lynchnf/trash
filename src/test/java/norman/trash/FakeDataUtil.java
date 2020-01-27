@@ -23,10 +23,8 @@ public class FakeDataUtil {
     private static final int NBR_OF_ACCTS = 6;
     private static final String INSERT_INTO_ACCT =
             "INSERT INTO `acct` (`name`,`type`,`version`) VALUES ('%s','%s',0);%n";
-    private static final String INSERT_INTO_STMT_WITH_DATE =
-            "INSERT INTO `stmt` (`close_date`,`open_date`,`version`,`acct_id`) VALUES ('%tF','%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
-    private static final String INSERT_INTO_STMT_WITH_NULL =
-            "INSERT INTO `stmt` (`close_date`,`open_date`,`version`,`acct_id`) VALUES (NULL,'%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
+    private static final String INSERT_INTO_STMT =
+            "INSERT INTO `stmt` (`close_date`,`version`,`acct_id`) VALUES ('%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
     private static final String INSERT_INTO_CAT = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
     private static final int NBR_OF_TRANS = 216;
     private static final String INSERT_INTO_TRAN =
@@ -36,41 +34,73 @@ public class FakeDataUtil {
     private static final String SELECT_STMT_WITH_NULL =
             "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date` IS NULL AND y.`name`='%s')";
     private static final String SELECT_CAT_WITH_NAME = "(SELECT `id` FROM `cat` WHERE `name`='%s')";
+    private static Date today;
+    private static Date endOfTime;
+    private static Date beginningOfTime;
 
     private FakeDataUtil() {
     }
 
     public static void main(String[] args) {
         LOGGER.debug("Starting FakeDataUtil");
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        today = cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.YEAR, 1970);
+        beginningOfTime = cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.YEAR, 9999);
+        endOfTime = cal.getTime();
+
         long acctId = 1;
         long stmtId = 1;
         long catId = 1;
         long tranId = 1;
         Map<String, Acct> uniqueAccts = new HashMap<>();
-
-        for (int i = 0; i < NBR_OF_ACCTS; i++) {
-            Acct acct = buildAcct(acctId++, uniqueAccts);
-            System.out.printf(INSERT_INTO_ACCT, acct.getName(), acct.getType());
-
-            Stmt stmt = null;
-            do {
-                stmt = buildStmt(acct, stmtId++);
-                if (stmt.getCloseDate() == null) {
-                    System.out.printf(INSERT_INTO_STMT_WITH_NULL, stmt.getOpenDate(), stmt.getAcct().getName());
-                } else {
-                    System.out.printf(INSERT_INTO_STMT_WITH_DATE, stmt.getCloseDate(), stmt.getOpenDate(),
-                            stmt.getAcct().getName());
-                }
-            } while (stmt.getCloseDate() != null);
-        }
+        List<Stmt> stmts = new ArrayList<>();
+        List<Tran> trans = new ArrayList<>();
 
         for (String name : CAT_NAMES) {
             Cat cat = buildCat(catId++, name);
             System.out.printf(INSERT_INTO_CAT, cat.getName());
         }
 
+        for (int i = 0; i < NBR_OF_ACCTS; i++) {
+            Acct acct = buildAcct(acctId++, uniqueAccts);
+            uniqueAccts.put(acct.getName(), acct);
+            System.out.printf(INSERT_INTO_ACCT, acct.getName(), acct.getType());
+
+            Stmt stmt;
+            do {
+                stmt = buildStmt(acct, stmtId++);
+                stmts.add(stmt);
+            } while (!stmt.getCloseDate().equals(endOfTime));
+        }
+
         for (int i = 0; i < NBR_OF_TRANS; i++) {
             Tran tran = buildTran(tranId, uniqueAccts);
+            trans.add(tran);
+        }
+
+        for (Stmt stmt : stmts) {
+            BigDecimal totalAmount = BigDecimal.ZERO;
+            for (Tran tran : stmt.getDebitTrans()) {
+                totalAmount = totalAmount.subtract(tran.getAmount());
+            }
+            for (Tran tran : stmt.getCreditTrans()) {
+                totalAmount = totalAmount.add(tran.getAmount());
+            }
+            System.out.printf(INSERT_INTO_STMT, stmt.getCloseDate(), stmt.getAcct().getName());
+        }
+
+        for (Tran tran : trans) {
             String debitStmt = "null";
             if (tran.getDebitStmt() != null) {
                 String acctName = tran.getDebitStmt().getAcct().getName();
@@ -100,8 +130,8 @@ public class FakeDataUtil {
     }
 
     private static Acct buildAcct(long id, Map<String, Acct> uniqueAccts) {
-        String name = null;
-        AcctType acctType = null;
+        String name;
+        AcctType acctType;
         do {
             String firstPartName = FIRST_PART_NAMES[RANDOM.nextInt(FIRST_PART_NAMES.length)];
             acctType = AcctType.values()[RANDOM.nextInt(AcctType.values().length)];
@@ -121,7 +151,6 @@ public class FakeDataUtil {
             } else {
                 throw new RuntimeException("Invalid acctType=\"" + acctType + "\"");
             }
-
             name = firstPartName + " " + lastPartName;
         } while (uniqueAccts.keySet().contains(name));
 
@@ -129,55 +158,38 @@ public class FakeDataUtil {
         acct.setId(id);
         acct.setName(name);
         acct.setType(acctType);
-        uniqueAccts.put(name, acct);
         return acct;
     }
 
     private static Stmt buildStmt(Acct acct, long id) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        Date today = cal.getTime();
-
-        Date openDate = null;
         Date closeDate = null;
+        Calendar cal = Calendar.getInstance();
 
-        // If this is the first statement, open date is the beginning of time and close date is a bit more than a year ago.
+        // If this is the first statement, generate a random close date a bit more than a year ago.
         if (acct.getStmts().isEmpty()) {
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-            cal.set(Calendar.MONTH, Calendar.JANUARY);
-            cal.set(Calendar.YEAR, 1970);
-            openDate = cal.getTime();
             cal.setTime(today);
             cal.add(Calendar.DATE, -1 * (RANDOM.nextInt(28) + 365));
             closeDate = cal.getTime();
         } else {
-            // Otherwise, this statement's opening date is the day after the last close date and the this close date is
-            // a month after the last close date.
+            // Otherwise this close date is a month after the last close date.
             int lastIdx = acct.getStmts().size() - 1;
             Stmt lastStmt = acct.getStmts().get(lastIdx);
             Date lastCloseDate = lastStmt.getCloseDate();
-            cal.setTime(lastCloseDate);
-            cal.add(Calendar.DATE, 1);
-            openDate = cal.getTime();
             cal.setTime(lastCloseDate);
             cal.add(Calendar.MONTH, 1);
             closeDate = cal.getTime();
         }
 
-        // If the close date is today or later, set it to null to indicate this is the current statement.
+        // If the close date is today or later, set it to the end of time.
         if (!closeDate.before(today)) {
-            closeDate = null;
+            closeDate = endOfTime;
         }
 
         Stmt stmt = new Stmt();
         stmt.setId(id);
         stmt.setAcct(acct);
-        stmt.setOpenDate(openDate);
-        stmt.setCloseDate(closeDate);
         acct.getStmts().add(stmt);
+        stmt.setCloseDate(closeDate);
         return stmt;
     }
 
@@ -204,10 +216,7 @@ public class FakeDataUtil {
             } while (debitAcctName.equals(creditAcctName));
         }
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.setTime(today);
         cal.add(Calendar.DATE, -1 * RANDOM.nextInt(365));
         Date postDate = cal.getTime();
         BigDecimal amount = BigDecimal.valueOf(RANDOM.nextInt(100000), 2);
@@ -218,8 +227,16 @@ public class FakeDataUtil {
 
         Tran tran = new Tran();
         tran.setId(id);
-        tran.setDebitStmt(findStmt(postDate, debitAcctName, uniqueAccts));
-        tran.setCreditStmt(findStmt(postDate, creditAcctName, uniqueAccts));
+        Stmt debitStmt = findStmt(postDate, debitAcctName, uniqueAccts);
+        if (debitStmt != null) {
+            tran.setDebitStmt(debitStmt);
+            debitStmt.getDebitTrans().add(tran);
+        }
+        Stmt creditStmt = findStmt(postDate, creditAcctName, uniqueAccts);
+        if (creditStmt != null) {
+            tran.setCreditStmt(creditStmt);
+            creditStmt.getCreditTrans().add(tran);
+        }
         tran.setPostDate(postDate);
         tran.setAmount(amount);
         if (catName != null) {
@@ -234,13 +251,18 @@ public class FakeDataUtil {
         if (acctName == null) {
             return null;
         } else {
+            Date closeDate = beginningOfTime;
+
             Acct acct = uniqueAccts.get(acctName);
-            Stmt stmt;
-            int idx = 0;
-            do {
-                stmt = acct.getStmts().get(idx++);
-            } while (stmt.getOpenDate().after(postDate) ||
-                    stmt.getCloseDate() != null && stmt.getCloseDate().before(postDate));
+            List<Stmt> stmts = acct.getStmts();
+            Stmt stmt = null;
+            for (int i = 0; i < stmts.size(); i++) {
+                Date lastCloseDate = closeDate;
+                closeDate = stmts.get(i).getCloseDate();
+                if (lastCloseDate.before(postDate) && !closeDate.before(postDate)) {
+                    stmt = stmts.get(i);
+                }
+            }
             return stmt;
         }
     }

@@ -67,19 +67,17 @@
             <tr>
                 <th>Id</th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="openDate" href="#">Open Date</a>
-                    <span th:if="${listForm.sortColumn=='openDate'}">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="closeDate" href="#">Close Date</a>
+                    <span th:if="${listForm.sortColumn=='closeDate'}">
                         <span th:if="${listForm.ascending}">&uarr;</span>
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
-                <th>Close Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="stmt:${listForm}">
                 <td><a th:href="@{/stmt(id=${stmt.id})}" th:text="${stmt.id}"></a></td>
-                <td th:text="${stmt.openDate}"></td>
                 <td th:text="${stmt.closeDate}"></td>
             </tbody>
         </table>

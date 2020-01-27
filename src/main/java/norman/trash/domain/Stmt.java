@@ -1,6 +1,7 @@
 package norman.trash.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +16,6 @@ public class Stmt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acct_id")
     private Acct acct;
-    @Temporal(TemporalType.DATE)
-    private Date openDate;
     @Temporal(TemporalType.DATE)
     private Date closeDate;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "debitStmt")
@@ -46,14 +45,6 @@ public class Stmt {
 
     public void setAcct(Acct acct) {
         this.acct = acct;
-    }
-
-    public Date getOpenDate() {
-        return openDate;
-    }
-
-    public void setOpenDate(Date openDate) {
-        this.openDate = openDate;
     }
 
     public Date getCloseDate() {
