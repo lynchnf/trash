@@ -24,6 +24,48 @@
             <p class="form-control-plaintext" th:text="${acct.type}"></p>
         </div>
     </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Address Name</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.addressName}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Address Line 1</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.address1}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Address Line 2</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.address2}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">City</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.city}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">State</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.state}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Zip Code</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.zipCode}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Phone Number</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${acct.phoneNumber}"></p>
+        </div>
+    </div>
     <a class="btn btn-primary" th:href="@{/acctEdit(id=${acct.id})}">Edit</a>
     <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${acct.id})}">Reconcile</a>
 
