@@ -4,7 +4,7 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
-    <h1>Account Statement</h1>
+    <h1>Statement</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
@@ -30,6 +30,8 @@
             <p class="form-control-plaintext" th:text="${stmt.closeDate}"></p>
         </div>
     </div>
+
+    <h2>Transactions</h2>
     <form id="listForm" action="#" method="get" th:action="@{/stmt}">
         <input type="hidden" name="id" th:value="${stmt.id}"/>
         <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
@@ -70,6 +72,7 @@
                 <th>Id</th>
                 <th>Debit Account</th>
                 <th>Credit Account</th>
+                <th>Category</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">Post Date</a>
                     <span th:if="${listForm.sortColumn=='postDate'}">
@@ -91,6 +94,7 @@
                 <td><a th:href="@{/tran(id=${tran.id})}" th:text="${tran.id}"></a></td>
                 <td th:text="${tran.creditStmt}==null?'':${tran.creditStmt.acct.name}"></td>
                 <td th:text="${tran.debitStmt}==null?'':${tran.debitStmt.acct.name}"></td>
+                <td th:text="${tran.cat}==null?'':${tran.cat.name}"></td>
                 <td th:text="${tran.postDate}"></td>
                 <td th:text="${tran.amount}"></td>
             </tbody>

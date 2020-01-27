@@ -30,11 +30,12 @@ public class FakeDataUtil {
     private static final String INSERT_INTO_CAT = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
     private static final int NBR_OF_TRANS = 216;
     private static final String INSERT_INTO_TRAN =
-            "INSERT INTO `tran` (`amount`,`post_date`,`version`,`debit_stmt_id`,`credit_stmt_id`) VALUES (%.2f,'%tF',0,%s,%s);%n";
+            "INSERT INTO `tran` (`amount`,`post_date`,`version`,`debit_stmt_id`,`credit_stmt_id`,`cat_id`) VALUES (%.2f,'%tF',0,%s,%s,%s);%n";
     private static final String SELECT_STMT_WITH_DATE =
             "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date`='%tF' AND y.`name`='%s')";
     private static final String SELECT_STMT_WITH_NULL =
             "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date` IS NULL AND y.`name`='%s')";
+    private static final String SELECT_CAT_WITH_NAME = "(SELECT `id` FROM `cat` WHERE `name`='%s')";
 
     private FakeDataUtil() {
     }
@@ -90,7 +91,11 @@ public class FakeDataUtil {
                     creditStmt = String.format(SELECT_STMT_WITH_DATE, stmtDate, acctName);
                 }
             }
-            System.out.printf(INSERT_INTO_TRAN, tran.getAmount(), tran.getPostDate(), debitStmt, creditStmt);
+            String cat = "null";
+            if (tran.getCat() != null) {
+                cat = String.format(SELECT_CAT_WITH_NAME, tran.getCat().getName());
+            }
+            System.out.printf(INSERT_INTO_TRAN, tran.getAmount(), tran.getPostDate(), debitStmt, creditStmt, cat);
         }
     }
 
@@ -206,6 +211,10 @@ public class FakeDataUtil {
         cal.add(Calendar.DATE, -1 * RANDOM.nextInt(365));
         Date postDate = cal.getTime();
         BigDecimal amount = BigDecimal.valueOf(RANDOM.nextInt(100000), 2);
+        String catName = null;
+        if (RANDOM.nextInt(10) != 0) {
+            catName = CAT_NAMES[RANDOM.nextInt(CAT_NAMES.length)];
+        }
 
         Tran tran = new Tran();
         tran.setId(id);
@@ -213,6 +222,11 @@ public class FakeDataUtil {
         tran.setCreditStmt(findStmt(postDate, creditAcctName, uniqueAccts));
         tran.setPostDate(postDate);
         tran.setAmount(amount);
+        if (catName != null) {
+            Cat cat = new Cat();
+            cat.setName(catName);
+            tran.setCat(cat);
+        }
         return tran;
     }
 

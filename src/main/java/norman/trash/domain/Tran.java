@@ -17,6 +17,9 @@ public class Tran {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "credit_stmt_id")
     private Stmt creditStmt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cat_id")
+    private Cat cat;
     @Temporal(TemporalType.DATE)
     private Date postDate;
     @Column(precision = 9, scale = 2)
@@ -52,6 +55,14 @@ public class Tran {
 
     public void setCreditStmt(Stmt creditStmt) {
         this.creditStmt = creditStmt;
+    }
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
     }
 
     public Date getPostDate() {

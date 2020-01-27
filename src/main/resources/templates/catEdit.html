@@ -4,7 +4,7 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
-    <h1>Account Edit</h1>
+    <h1>Category Edit</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <form th:action="@{/catEdit}" th:object="${catForm}" method="post">
         <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">

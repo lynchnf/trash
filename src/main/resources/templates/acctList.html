@@ -4,7 +4,7 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
-    <h1>Account List</h1>
+    <h1>Accounts</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <form id="listForm" action="#" method="get" th:action="@{/acctList}">
         <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>

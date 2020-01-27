@@ -1,6 +1,8 @@
 package norman.trash.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cat {
@@ -11,6 +13,8 @@ public class Cat {
     private Integer version = 0;
     @Column(length = 100)
     private String name;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cat")
+    private List<Tran> trans = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -34,5 +38,13 @@ public class Cat {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Tran> getTrans() {
+        return trans;
+    }
+
+    public void setTrans(List<Tran> trans) {
+        this.trans = trans;
     }
 }
