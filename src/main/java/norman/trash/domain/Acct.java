@@ -1,6 +1,7 @@
 package norman.trash.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,10 @@ public class Acct {
     private String zipCode;
     @Column(length = 20)
     private String phoneNumber;
+    @Column(precision = 11, scale = 2)
+    private BigDecimal creditLimit;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
+    private List<AcctNbr> acctNbrs = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
     private List<Stmt> stmts = new ArrayList<>();
 
@@ -119,6 +124,22 @@ public class Acct {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
+    public List<AcctNbr> getAcctNbrs() {
+        return acctNbrs;
+    }
+
+    public void setAcctNbrs(List<AcctNbr> acctNbrs) {
+        this.acctNbrs = acctNbrs;
     }
 
     public List<Stmt> getStmts() {

@@ -1,6 +1,8 @@
 package norman.trash.controller;
 
 import norman.trash.NotFoundException;
+import norman.trash.controller.view.CatForm;
+import norman.trash.controller.view.CatListForm;
 import norman.trash.domain.Cat;
 import norman.trash.service.CatService;
 import org.apache.commons.lang3.StringUtils;
@@ -21,8 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Arrays;
 
-import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_ADDED;
-import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_UPDATED;
+import static norman.trash.MessagesConstants.SUCCESSFULLY_ADDED;
+import static norman.trash.MessagesConstants.SUCCESSFULLY_UPDATED;
 
 @Controller
 public class CatController {
@@ -110,9 +112,9 @@ public class CatController {
         Cat save = null;
         // TODO Handle optimistic lock error
         save = catService.save(cat);
-        String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
+        String successMessage = String.format(SUCCESSFULLY_ADDED, "Category", save.getId());
         if (catId != null) {
-            successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
+            successMessage = String.format(SUCCESSFULLY_UPDATED, "Category", save.getId());
         }
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         redirectAttributes.addAttribute("id", save.getId());

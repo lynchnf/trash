@@ -1,8 +1,8 @@
 package norman.trash.service;
 
 import norman.trash.NotFoundException;
-import norman.trash.domain.Cat;
-import norman.trash.domain.repository.CatRepository;
+import norman.trash.domain.AcctNbr;
+import norman.trash.domain.repository.AcctNbrRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +13,17 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class CatService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CatService.class);
+public class AcctNbrService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AcctNbrService.class);
     @Autowired
-    private CatRepository repository;
+    private AcctNbrRepository repository;
 
-    public Cat save(Cat cat) {
-        return repository.save(cat);
+    public AcctNbr save(AcctNbr acctNbr) {
+        return repository.save(acctNbr);
     }
 
-    public Cat findById(Long id) throws NotFoundException {
-        Optional<Cat> optional = repository.findById(id);
+    public AcctNbr findById(Long id) throws NotFoundException {
+        Optional<AcctNbr> optional = repository.findById(id);
         if (!optional.isPresent()) {
             throw new NotFoundException(LOGGER, "Account", id);
         }
@@ -34,11 +34,7 @@ public class CatService {
         return repository.existsById(id);
     }
 
-    public Page<Cat> findAll(Pageable pageable) {
+    public Page<AcctNbr> findAll(Pageable pageable) {
         return repository.findAll(pageable);
-    }
-
-    public Page<Cat> findByNameContaining(String name, Pageable pageable) {
-        return repository.findByNameContaining(name, pageable);
     }
 }

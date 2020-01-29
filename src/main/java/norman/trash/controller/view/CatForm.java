@@ -1,4 +1,4 @@
-package norman.trash.controller;
+package norman.trash.controller.view;
 
 import norman.trash.domain.Cat;
 import org.apache.commons.lang3.StringUtils;

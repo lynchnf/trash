@@ -13,7 +13,7 @@ public class Stmt {
     @Version
     private Integer version = 0;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_id")
+    @JoinColumn(name = "acct_id", nullable = false)
     private Acct acct;
     @Temporal(TemporalType.DATE)
     private Date closeDate;

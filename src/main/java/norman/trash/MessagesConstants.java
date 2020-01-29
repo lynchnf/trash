@@ -1,4 +1,4 @@
-package norman.trash.controller;
+package norman.trash;
 
 public class MessagesConstants {
     public static final String NOT_FOUND_ERROR = "%s was not found for id=%d.";

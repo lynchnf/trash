@@ -1,4 +1,4 @@
-package norman.trash.controller;
+package norman.trash.controller.view;
 
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;

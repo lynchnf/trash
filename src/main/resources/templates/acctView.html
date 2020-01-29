@@ -9,69 +9,100 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.id}"></p>
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.name}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Type</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.type}"></p>
+            <p class="form-control-plaintext" th:text="${view.type}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Address Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.addressName}"></p>
+            <p class="form-control-plaintext" th:text="${view.addressName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Address Line 1</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.address1}"></p>
+            <p class="form-control-plaintext" th:text="${view.address1}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Address Line 2</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.address2}"></p>
+            <p class="form-control-plaintext" th:text="${view.address2}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">City</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.city}"></p>
+            <p class="form-control-plaintext" th:text="${view.city}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">State</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.state}"></p>
+            <p class="form-control-plaintext" th:text="${view.state}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Zip Code</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.zipCode}"></p>
+            <p class="form-control-plaintext" th:text="${view.zipCode}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Phone Number</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${acct.phoneNumber}"></p>
+            <p class="form-control-plaintext" th:text="${view.phoneNumber}"></p>
         </div>
     </div>
-    <a class="btn btn-primary" th:href="@{/acctEdit(id=${acct.id})}">Edit</a>
-    <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${acct.id})}">Reconcile</a>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Credit Limit</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.creditLimit}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Acct Number</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.number}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Effective</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.effDate}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Balance</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.balance}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Last Tran</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.lastTranDate}"></p>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" th:href="@{/acctEdit(id=${view.id})}">Edit</a>
+    <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${view.id})}">Reconcile</a>
 
     <h2>Statements</h2>
     <form id="listForm" action="#" method="get" th:action="@{/acct}">
-        <input type="hidden" name="id" th:value="${acct.id}"/>
+        <input type="hidden" name="id" th:value="${view.id}"/>
         <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
         <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
         <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
@@ -115,12 +146,16 @@
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
+                <th>Debits</th>
+                <th>Credits</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="stmt:${listForm}">
-                <td><a th:href="@{/stmt(id=${stmt.id})}" th:text="${stmt.id}"></a></td>
-                <td th:text="${stmt.closeDate}"></td>
+            <tr th:each="row:${listForm.rows}">
+                <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td th:text="${row.closeDate}"></td>
+                <td th:text="${row.debitAmount}"></td>
+                <td th:text="${row.creditAmount}"></td>
             </tbody>
         </table>
     </form>

@@ -9,25 +9,37 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${stmt.id}"></p>
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${stmt.acct.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.acctName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Close Date</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${stmt.closeDate}"></p>
+            <p class="form-control-plaintext" th:text="${view.closeDate}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Debits</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.debitAmount}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Credits</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.creditAmount}"></p>
         </div>
     </div>
 
     <h2>Transactions</h2>
     <form id="listForm" action="#" method="get" th:action="@{/stmt}">
-        <input type="hidden" name="id" th:value="${stmt.id}"/>
+        <input type="hidden" name="id" th:value="${view.id}"/>
         <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
         <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
         <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
@@ -64,8 +76,8 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Debit Account</th>
-                <th>Credit Account</th>
+                <th>This Account</th>
+                <th>Other Account</th>
                 <th>Category</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">Post Date</a>
@@ -74,23 +86,23 @@
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
-                <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="amount" href="#">Amount</a>
-                    <span th:if="${listForm.sortColumn=='amount'}">
-                        <span th:if="${listForm.ascending}">&uarr;</span>
-                        <span th:if="${listForm.descending}">&darr;</span>
-                    </span>
-                </th>
+                <th>Amount</th>
+                <th>Check Number</th>
+                <th>Name</th>
+                <th>Memo</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="tran:${listForm}">
-                <td><a th:href="@{/tran(id=${tran.id})}" th:text="${tran.id}"></a></td>
-                <td th:text="${tran.creditStmt}==null?'':${tran.creditStmt.acct.name}"></td>
-                <td th:text="${tran.debitStmt}==null?'':${tran.debitStmt.acct.name}"></td>
-                <td th:text="${tran.cat}==null?'':${tran.cat.name}"></td>
-                <td th:text="${tran.postDate}"></td>
-                <td th:text="${tran.amount}"></td>
+            <tr th:each="row:${listForm.rows}">
+                <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td th:text="${row.viewingAcctName}"></td>
+                <td th:text="${row.otherAcctName}"></td>
+                <td th:text="${row.catName}"></td>
+                <td th:text="${row.postDate}"></td>
+                <td th:text="${row.amount}"></td>
+                <td th:text="${row.checkNumber}"></td>
+                <td th:text="${row.name}"></td>
+                <td th:text="${row.memo}"></td>
             </tbody>
         </table>
     </form>

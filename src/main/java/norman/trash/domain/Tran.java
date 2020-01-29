@@ -24,6 +24,12 @@ public class Tran {
     private Date postDate;
     @Column(precision = 9, scale = 2)
     private BigDecimal amount;
+    @Column(length = 10)
+    private String checkNumber;
+    @Column(length = 100)
+    private String name;
+    @Column(length = 100)
+    private String memo;
 
     public Long getId() {
         return id;
@@ -79,5 +85,29 @@ public class Tran {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(String checkNumber) {
+        this.checkNumber = checkNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

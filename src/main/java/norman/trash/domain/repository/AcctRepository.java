@@ -1,4 +1,4 @@
-package norman.trash.repository;
+package norman.trash.domain.repository;
 
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;

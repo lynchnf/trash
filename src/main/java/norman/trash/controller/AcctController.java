@@ -1,6 +1,7 @@
 package norman.trash.controller;
 
 import norman.trash.NotFoundException;
+import norman.trash.controller.view.*;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.domain.Stmt;
@@ -27,8 +28,8 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_ADDED;
-import static norman.trash.controller.MessagesConstants.SUCCESSFULLY_UPDATED;
+import static norman.trash.MessagesConstants.SUCCESSFULLY_ADDED;
+import static norman.trash.MessagesConstants.SUCCESSFULLY_UPDATED;
 
 @Controller
 public class AcctController {
@@ -36,7 +37,7 @@ public class AcctController {
     private static final String defaultSortColumn = "id";
     private static final String[] acctSortableColumns = {"name", "type"};
     private static final String[] stmtSortableColumns = {"closeDate"};
-    private static final String[] tranSortableColumns = {"postDate", "amount"};
+    private static final String[] tranSortableColumns = {"postDate"};
     @Autowired
     private AcctService acctService;
     @Autowired
@@ -90,7 +91,8 @@ public class AcctController {
         // @formatter:on
         try {
             Acct acct = acctService.findById(id);
-            model.addAttribute("acct", acct);
+            AcctView view = new AcctView(acct);
+            model.addAttribute("view", view);
 
             // Convert sort column from string to an array of strings.
             String[] sortColumns = {defaultSortColumn};
@@ -100,9 +102,56 @@ public class AcctController {
 
             PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
             Page<Stmt> page = stmtService.findByAcct_Id(id, pageable);
-            ListForm<Stmt> listForm = new ListForm<>(page);
+            StmtListForm listForm = new StmtListForm(page);
             model.addAttribute("listForm", listForm);
             return "acctView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
+    }
+
+    @GetMapping("/stmt")
+    // @formatter:off
+    public String loadStmtView(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        // @formatter:on
+        try {
+            Stmt stmt = stmtService.findById(id);
+            StmtView view = new StmtView(stmt);
+            model.addAttribute("view", view);
+
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(tranSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            }
+
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<Tran> page = tranService.findByDebitStmt_IdOrCreditStmt_Id(id, id, pageable);
+            TranListForm listForm = new TranListForm(page, stmt.getAcct().getId());
+            model.addAttribute("listForm", listForm);
+            return "stmtView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
+    }
+
+    @GetMapping("/tran")
+    public String loadTranView(@RequestParam("id") Long id,
+            @RequestParam(value = "viewingAcctId", required = false) Long viewingAcctId, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Tran tran = tranService.findById(id);
+            TranView view = new TranView(tran, viewingAcctId);
+            model.addAttribute("view", view);
+            return "tranView";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/acctList";
@@ -169,48 +218,5 @@ public class AcctController {
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         redirectAttributes.addAttribute("id", save.getId());
         return "redirect:/acct?id={id}";
-    }
-
-    @GetMapping("/stmt")
-    // @formatter:off
-    public String loadStmtView(@RequestParam("id") Long id,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize,
-            @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
-            @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        // @formatter:on
-        try {
-            Stmt stmt = stmtService.findById(id);
-            model.addAttribute("stmt", stmt);
-
-            // Convert sort column from string to an array of strings.
-            String[] sortColumns = {defaultSortColumn};
-            if (Arrays.asList(tranSortableColumns).contains(sortColumn)) {
-                sortColumns = new String[]{sortColumn, defaultSortColumn};
-            }
-
-            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<Tran> page = tranService.findByDebitStmt_IdOrCreditStmt_Id(id, id, pageable);
-            ListForm<Tran> listForm = new ListForm<>(page);
-            model.addAttribute("listForm", listForm);
-            return "stmtView";
-        } catch (NotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/acctList";
-        }
-    }
-
-    @GetMapping("/tran")
-    public String loadTranView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            Tran tran = tranService.findById(id);
-            model.addAttribute("tran", tran);
-            return "tranView";
-        } catch (NotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/acctList";
-        }
     }
 }

@@ -9,37 +9,55 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.id}"></p>
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Debit Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.debitStmt}==null?'':${tran.debitStmt.acct.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.debitAcctName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Credit Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.creditStmt}==null?'':${tran.creditStmt.acct.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.creditAcctName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Category</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.cat}==null?'':${tran.cat.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.catName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Post Date</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.postDate}"></p>
+            <p class="form-control-plaintext" th:text="${view.postDate}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Amount</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${tran.amount}"></p>
+            <p class="form-control-plaintext" th:text="${view.amount}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Check Number</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.checkNumber}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Name</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.name}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Memo</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.memo}"></p>
         </div>
     </div>
 </main>

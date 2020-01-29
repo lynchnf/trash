@@ -59,6 +59,11 @@
                         <span th:if="${listForm.descending}">&darr;</span>
                     </span>
                 </th>
+                <th>Credit Limit</th>
+                <th>Acct Number</th>
+                <th>Effective</th>
+                <th>Balance</th>
+                <th>Last Tran</th>
             </tr>
             <tr>
                 <td>
@@ -80,10 +85,15 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="acct:${listForm}">
-                <td><a th:href="@{/acct(id=${acct.id})}" th:text="${acct.id}"></a></td>
-                <td th:text="${acct.name}"></td>
-                <td th:text="${acct.type}"></td>
+            <tr th:each="row:${listForm.rows}">
+                <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td th:text="${row.name}"></td>
+                <td th:text="${row.type}"></td>
+                <td th:text="${row.creditLimit}"></td>
+                <td th:text="${row.number}"></td>
+                <td th:text="${row.effDate}"></td>
+                <td th:text="${row.balance}"></td>
+                <td th:text="${row.lastTranDate}"></td>
             </tr>
             </tbody>
         </table>

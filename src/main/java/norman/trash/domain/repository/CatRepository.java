@@ -1,4 +1,4 @@
-package norman.trash.repository;
+package norman.trash.domain.repository;
 
 import norman.trash.domain.Cat;
 import org.springframework.data.domain.Page;

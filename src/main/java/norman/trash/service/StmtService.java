@@ -2,7 +2,7 @@ package norman.trash.service;
 
 import norman.trash.NotFoundException;
 import norman.trash.domain.Stmt;
-import norman.trash.repository.StmtRepository;
+import norman.trash.domain.repository.StmtRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

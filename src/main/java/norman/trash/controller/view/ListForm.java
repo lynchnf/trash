@@ -1,4 +1,4 @@
-package norman.trash.controller;
+package norman.trash.controller.view;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
