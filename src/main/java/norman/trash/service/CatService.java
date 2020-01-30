@@ -18,8 +18,8 @@ public class CatService {
     @Autowired
     private CatRepository repository;
 
-    public Page<Cat> findByNameContaining(String name, Pageable pageable) {
-        return repository.findByNameContaining(name, pageable);
+    public Page<Cat> findByName(String name, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCase(name, pageable);
     }
 
     public Page<Cat> findAll(Pageable pageable) {

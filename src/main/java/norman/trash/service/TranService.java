@@ -18,8 +18,8 @@ public class TranService {
     @Autowired
     private TranRepository repository;
 
-    public Page<Tran> findByDebitStmt_IdOrCreditStmt_Id(Long debitAcctId, Long creditAcctId, Pageable pageable) {
-        return repository.findByDebitStmt_IdOrCreditStmt_Id(debitAcctId, creditAcctId, pageable);
+    public Page<Tran> findByStmtId(Long stmtId, Pageable pageable) {
+        return repository.findByDebitStmt_IdOrCreditStmt_Id(stmtId, stmtId, pageable);
     }
 
     public Tran findById(Long id) throws NotFoundException {

@@ -18,7 +18,7 @@ public class StmtService {
     @Autowired
     private StmtRepository repository;
 
-    public Page<Stmt> findByAcct_Id(Long acctId, Pageable pageable) {
+    public Page<Stmt> findByAcctId(Long acctId, Pageable pageable) {
         return repository.findByAcct_Id(acctId, pageable);
     }
 

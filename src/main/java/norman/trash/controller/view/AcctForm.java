@@ -1,35 +1,58 @@
 package norman.trash.controller.view;
 
+import norman.trash.controller.view.validation.AfterDateIfValueChange;
 import norman.trash.domain.Acct;
+import norman.trash.domain.AcctNbr;
 import norman.trash.domain.AcctType;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
+@AfterDateIfValueChange(newDate = "effDate", oldDate = "oldEffDate", newString = "number", oldString = "oldNumber",
+        message = "If Account Number changed, new Effective Date must be after the old Effective Date.")
 public class AcctForm {
     private Long id;
     private Integer version = 0;
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = "Account Name may not be blank.")
+    @Size(max = 50, message = "Account Name may not be over {max} characters long.")
     private String name;
-    @NotNull
+    @NotNull(message = "Account Type may not be blank.")
     private AcctType type;
-    @Size(max = 50)
+    @Size(max = 50, message = "Address Name may not be over {max} characters long.")
     private String addressName;
-    @Size(max = 50)
+    @Size(max = 50, message = "Address Line 1 may not be over {max} characters long.")
     private String address1;
-    @Size(max = 50)
+    @Size(max = 50, message = "Address Line 2 may not be over {max} characters long.")
     private String address2;
-    @Size(max = 50)
+    @Size(max = 50, message = "City may not be over {max} characters long.")
     private String city;
-    @Size(max = 2)
+    @Size(max = 2, message = "State may not be over {max} characters long.")
     private String state;
-    @Size(max = 10)
+    @Size(max = 10, message = "Zip Code may not be over {max} characters long.")
     private String zipCode;
-    @Size(max = 20)
+    @Size(max = 20, message = "Phone Number may not be over {max} characters long.")
     private String phoneNumber;
+    @Min(value = 0, message = "Credit Limit may not be negative.")
+    @Digits(integer = 7, fraction = 2,
+            message = "Credit Limit value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    private BigDecimal creditLimit;
+    @NotBlank(message = "Account Number may not be blank.")
+    @Size(max = 50, message = "Account Number may not be over {max} characters long.")
+    private String number;
+    @NotNull(message = "Effective Date may not be blank.")
+    @DateTimeFormat(pattern = "M/d/yyyy")
+    private Date effDate;
+    private String oldNumber;
+    @DateTimeFormat(pattern = "M/d/yyyy")
+    private Date oldEffDate;
+    @NotNull(message = "Beginning Balance may not be blank.")
+    @Digits(integer = 7, fraction = 2,
+            message = "BeginningBalance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    private BigDecimal beginningBalance;
 
     public AcctForm() {
     }
@@ -46,6 +69,16 @@ public class AcctForm {
         state = acct.getState();
         zipCode = acct.getZipCode();
         phoneNumber = acct.getPhoneNumber();
+        creditLimit = acct.getCreditLimit();
+
+        // Get the account number and effective date from the latest acctNbr.
+        List<AcctNbr> acctNbrs = acct.getAcctNbrs();
+        acctNbrs.sort((acctNbr1, acctNbr2) -> acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate()));
+        AcctNbr acctNbr = acctNbrs.iterator().next();
+        number = acctNbr.getNumber();
+        oldNumber = acctNbr.getNumber();
+        effDate = acctNbr.getEffDate();
+        oldEffDate = acctNbr.getEffDate();
     }
 
     public Acct toAcct() {
@@ -61,7 +94,15 @@ public class AcctForm {
         acct.setState(StringUtils.trimToNull(state));
         acct.setZipCode(StringUtils.trimToNull(zipCode));
         acct.setPhoneNumber(StringUtils.trimToNull(phoneNumber));
+        acct.setCreditLimit(creditLimit);
         return acct;
+    }
+
+    public AcctNbr toAcctNbr() {
+        AcctNbr acctNbr = new AcctNbr();
+        acctNbr.setNumber(StringUtils.trimToNull(number));
+        acctNbr.setEffDate(effDate);
+        return acctNbr;
     }
 
     public Long getId() {
@@ -150,5 +191,53 @@ public class AcctForm {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public Date getEffDate() {
+        return effDate;
+    }
+
+    public void setEffDate(Date effDate) {
+        this.effDate = effDate;
+    }
+
+    public String getOldNumber() {
+        return oldNumber;
+    }
+
+    public void setOldNumber(String oldNumber) {
+        this.oldNumber = oldNumber;
+    }
+
+    public Date getOldEffDate() {
+        return oldEffDate;
+    }
+
+    public void setOldEffDate(Date oldEffDate) {
+        this.oldEffDate = oldEffDate;
+    }
+
+    public BigDecimal getBeginningBalance() {
+        return beginningBalance;
+    }
+
+    public void setBeginningBalance(BigDecimal beginningBalance) {
+        this.beginningBalance = beginningBalance;
     }
 }

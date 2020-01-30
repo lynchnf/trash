@@ -2,10 +2,7 @@ package norman.trash.controller;
 
 import norman.trash.NotFoundException;
 import norman.trash.controller.view.*;
-import norman.trash.domain.Acct;
-import norman.trash.domain.AcctType;
-import norman.trash.domain.Stmt;
-import norman.trash.domain.Tran;
+import norman.trash.domain.*;
 import norman.trash.service.AcctService;
 import norman.trash.service.StmtService;
 import norman.trash.service.TranService;
@@ -25,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static norman.trash.MessagesConstants.SUCCESSFULLY_ADDED;
-import static norman.trash.MessagesConstants.SUCCESSFULLY_UPDATED;
+import static norman.trash.MessagesConstants.*;
 
 @Controller
 public class AcctController {
@@ -67,9 +64,9 @@ public class AcctController {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
         Page<Acct> page = null;
         if (trimmedName != null && whereType != null) {
-            page = acctService.findByNameContainingAndType(trimmedName, whereType, pageable);
+            page = acctService.findByNameAndType(trimmedName, whereType, pageable);
         } else if (trimmedName != null && whereType == null) {
-            page = acctService.findByNameContaining(trimmedName, pageable);
+            page = acctService.findByName(trimmedName, pageable);
         } else if (trimmedName == null && whereType != null) {
             page = acctService.findByType(whereType, pageable);
         } else {
@@ -101,7 +98,7 @@ public class AcctController {
             }
 
             PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<Stmt> page = stmtService.findByAcct_Id(id, pageable);
+            Page<Stmt> page = stmtService.findByAcctId(id, pageable);
             StmtListForm listForm = new StmtListForm(page);
             model.addAttribute("listForm", listForm);
             return "acctView";
@@ -133,7 +130,7 @@ public class AcctController {
             }
 
             PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<Tran> page = tranService.findByDebitStmt_IdOrCreditStmt_Id(id, id, pageable);
+            Page<Tran> page = tranService.findByStmtId(id, pageable);
             TranListForm listForm = new TranListForm(page, stmt.getAcct().getId());
             model.addAttribute("listForm", listForm);
             return "stmtView";
@@ -187,13 +184,20 @@ public class AcctController {
             return "acctEdit";
         }
 
-        // Convert form to entity ...
+        // Convert form to entity.
         Long acctId = acctForm.getId();
         Acct acct = acctForm.toAcct();
 
-        // If new acct, create a statement too.
+        // If this is a new acct, we also need an acct number, a current period statement and a beginning statement and
+        // transaction.
         if (acctId == null) {
-            Stmt stmt = new Stmt();
+            // Account number.
+            AcctNbr acctNbr = acctForm.toAcctNbr();
+            acctNbr.setAcct(acct);
+            acct.getAcctNbrs().add(acctNbr);
+
+            // Current period statement.
+            Stmt currentStmt = new Stmt();
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MILLISECOND, 0);
             cal.set(Calendar.SECOND, 0);
@@ -202,12 +206,41 @@ public class AcctController {
             cal.set(Calendar.DAY_OF_MONTH, 31);
             cal.set(Calendar.MONTH, Calendar.DECEMBER);
             cal.set(Calendar.YEAR, 9999);
-            stmt.setCloseDate(cal.getTime());
-            stmt.setAcct(acct);
-            acct.getStmts().add(stmt);
+            currentStmt.setCloseDate(cal.getTime());
+            currentStmt.setAcct(acct);
+            acct.getStmts().add(currentStmt);
+
+            // Beginning period statement.
+            Stmt beginningStmt = new Stmt();
+            beginningStmt.setCloseDate(acctForm.getEffDate());
+            beginningStmt.setAcct(acct);
+            acct.getStmts().add(beginningStmt);
+
+            // Beginning transaction.
+            Tran tran = new Tran();
+            tran.setPostDate(acctForm.getEffDate());
+            BigDecimal amount = acctForm.getBeginningBalance();
+            if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                tran.setAmount(amount.negate());
+                tran.setDebitStmt(beginningStmt);
+                beginningStmt.getDebitTrans().add(tran);
+            } else {
+                tran.setAmount(amount);
+                tran.setCreditStmt(beginningStmt);
+                beginningStmt.getCreditTrans().add(tran);
+            }
+            tran.setName(BEGINNING_BALANCE);
+
+            // Otherwise, this is an existing account. If either the acctNumber or effective date changed, we need to
+            // save the account number with the account.
+        } else if (!acctForm.getNumber().equals(acctForm.getOldNumber()) ||
+                !acctForm.getEffDate().equals(acctForm.getOldEffDate())) {
+            AcctNbr acctNbr = acctForm.toAcctNbr();
+            acctNbr.setAcct(acct);
+            acct.getAcctNbrs().add(acctNbr);
         }
 
-        // ... and save.
+        // Save entity.
         Acct save = null;
         // TODO Handle optimistic lock error
         save = acctService.save(acct);

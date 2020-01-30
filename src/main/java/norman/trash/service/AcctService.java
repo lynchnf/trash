@@ -19,12 +19,12 @@ public class AcctService {
     @Autowired
     private AcctRepository repository;
 
-    public Page<Acct> findByNameContainingAndType(String name, AcctType type, Pageable pageable) {
-        return repository.findByNameContainingAndType(name, type, pageable);
+    public Page<Acct> findByNameAndType(String name, AcctType type, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCaseAndType(name, type, pageable);
     }
 
-    public Page<Acct> findByNameContaining(String name, Pageable pageable) {
-        return repository.findByNameContaining(name, pageable);
+    public Page<Acct> findByName(String name, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCase(name, pageable);
     }
 
     public Page<Acct> findByType(AcctType type, Pageable pageable) {

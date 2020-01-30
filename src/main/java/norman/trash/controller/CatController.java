@@ -55,7 +55,7 @@ public class CatController {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
         Page<Cat> page = null;
         if (trimmedName != null) {
-            page = catService.findByNameContaining(trimmedName, pageable);
+            page = catService.findByName(trimmedName, pageable);
         } else {
             page = catService.findAll(pageable);
         }

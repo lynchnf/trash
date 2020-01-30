@@ -9,8 +9,8 @@ import javax.validation.constraints.Size;
 public class CatForm {
     private Long id;
     private Integer version = 0;
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Category Name may not be blank.")
+    @Size(max = 100, message = "Category Name may not be over {max} characters long.")
     private String name;
 
     public CatForm() {

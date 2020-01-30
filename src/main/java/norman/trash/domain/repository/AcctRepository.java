@@ -7,9 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface AcctRepository extends PagingAndSortingRepository<Acct, Long> {
-    Page<Acct> findByNameContainingAndType(String name, AcctType type, Pageable pageable);
+    Page<Acct> findByNameContainingIgnoreCaseAndType(String name, AcctType type, Pageable pageable);
 
-    Page<Acct> findByNameContaining(String name, Pageable pageable);
+    Page<Acct> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Page<Acct> findByType(AcctType type, Pageable pageable);
 }

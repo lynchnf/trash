@@ -37,7 +37,7 @@ public class TranView {
             if (debitStmt != null && viewingAcctId == debitStmt.getAcct().getId()) {
                 viewingAcctName = debitAcctName;
                 otherAcctName = creditAcctName;
-                amount = BigDecimal.ZERO.subtract(tran.getAmount());
+                amount = tran.getAmount().negate();
             } else if (creditStmt != null && viewingAcctId == creditStmt.getAcct().getId()) {
                 viewingAcctName = creditAcctName;
                 otherAcctName = debitAcctName;

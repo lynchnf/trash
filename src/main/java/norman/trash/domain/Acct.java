@@ -31,7 +31,7 @@ public class Acct {
     private String zipCode;
     @Column(length = 20)
     private String phoneNumber;
-    @Column(precision = 11, scale = 2)
+    @Column(precision = 9, scale = 2)
     private BigDecimal creditLimit;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
     private List<AcctNbr> acctNbrs = new ArrayList<>();

@@ -1,10 +1,14 @@
 # Things To Do
 
-* Put opening balance and closing balance in statement.
-* Categories.
-* Update transactions.
 * Handle optimistic lock error.
+* Upload OFX files.
 
 ## Things done
 
-* Lose statement open date and make close data not null.
+* Lose statement open date and make close date not null.
+* Categories.
+* Update transactions with check number, name, and memo.
+
+## Things rejected
+
+* Put opening balance and closing balance in statement.

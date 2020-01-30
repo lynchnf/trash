@@ -4,6 +4,7 @@ import norman.trash.domain.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class AcctView {
     private Long id;
@@ -35,14 +36,12 @@ public class AcctView {
         phoneNumber = acct.getPhoneNumber();
         creditLimit = acct.getCreditLimit();
 
-        number = null;
-        effDate = null;
-        for (AcctNbr acctNbr : acct.getAcctNbrs()) {
-            if (effDate == null || effDate.before(acctNbr.getEffDate())) {
-                number = acctNbr.getNumber();
-                effDate = acctNbr.getEffDate();
-            }
-        }
+        // Get the account number and effective date from the latest acctNbr.
+        List<AcctNbr> acctNbrs = acct.getAcctNbrs();
+        acctNbrs.sort((acctNbr1, acctNbr2) -> acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate()));
+        AcctNbr acctNbr = acctNbrs.iterator().next();
+        number = acctNbr.getNumber();
+        effDate = acctNbr.getEffDate();
 
         balance = BigDecimal.ZERO;
         lastTranDate = null;
