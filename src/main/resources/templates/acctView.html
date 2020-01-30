@@ -97,19 +97,25 @@
         </div>
     </div>
 
-    <h2>Account Numbers</h2>
-    <table class="table table-sm table-striped">
-        <thead>
-        <tr>
-            <th>Id</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>123</td>
-        </tr>
-        </tbody>
-    </table>
+    <div th:if="not ${view.oldAcctNbrs.empty}">
+        <h2>Old Account Numbers</h2>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Account Number</th>
+                <th>Effective Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="oldAcctNbr:${view.oldAcctNbrs}">
+                <td th:text="${oldAcctNbr.id}"></td>
+                <td th:text="${oldAcctNbr.number}"></td>
+                <td th:text="${oldAcctNbr.effDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <a class="btn btn-primary" th:href="@{/acctEdit(id=${view.id})}">Edit</a>
     <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${view.id})}">Reconcile</a>

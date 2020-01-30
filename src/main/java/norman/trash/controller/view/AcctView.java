@@ -3,6 +3,7 @@ package norman.trash.controller.view;
 import norman.trash.domain.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class AcctView {
     private Date effDate;
     private BigDecimal balance;
     private Date lastTranDate;
+    private List<AcctNbr> oldAcctNbrs = new ArrayList<>();
 
     public AcctView(Acct acct) {
         id = acct.getId();
@@ -39,9 +41,15 @@ public class AcctView {
         // Get the account number and effective date from the latest acctNbr.
         List<AcctNbr> acctNbrs = acct.getAcctNbrs();
         acctNbrs.sort((acctNbr1, acctNbr2) -> acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate()));
-        AcctNbr acctNbr = acctNbrs.iterator().next();
-        number = acctNbr.getNumber();
-        effDate = acctNbr.getEffDate();
+        if (acctNbrs.size() >= 1) {
+            number = acctNbrs.get(0).getNumber();
+            effDate = acctNbrs.get(0).getEffDate();
+        }
+
+        // Get older account numbers, if there are any.
+        if (acctNbrs.size() > 1) {
+            oldAcctNbrs.addAll(acctNbrs.subList(1, acctNbrs.size()));
+        }
 
         balance = BigDecimal.ZERO;
         lastTranDate = null;
@@ -119,5 +127,9 @@ public class AcctView {
 
     public Date getLastTranDate() {
         return lastTranDate;
+    }
+
+    public List<AcctNbr> getOldAcctNbrs() {
+        return oldAcctNbrs;
     }
 }

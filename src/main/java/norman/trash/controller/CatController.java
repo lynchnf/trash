@@ -3,6 +3,7 @@ package norman.trash.controller;
 import norman.trash.NotFoundException;
 import norman.trash.controller.view.CatForm;
 import norman.trash.controller.view.CatListForm;
+import norman.trash.controller.view.CatView;
 import norman.trash.domain.Cat;
 import norman.trash.service.CatService;
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +68,8 @@ public class CatController {
     public String loadCatView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Cat cat = catService.findById(id);
-            model.addAttribute("cat", cat);
+            CatView view = new CatView(cat);
+            model.addAttribute("view", view);
             return "catView";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -79,13 +81,13 @@ public class CatController {
     public String loadCatEdit(@RequestParam(value = "id", required = false) Long id, Model model,
             RedirectAttributes redirectAttributes) {
 
-        // If no cat id, new cat.
+        // If no id, new category.
         if (id == null) {
             model.addAttribute("catForm", new CatForm());
             return "catEdit";
         }
 
-        // Otherwise, edit existing cat.
+        // Otherwise, edit existing category.
         try {
             Cat cat = catService.findById(id);
             CatForm catForm = new CatForm(cat);
@@ -104,11 +106,11 @@ public class CatController {
             return "catEdit";
         }
 
-        // Convert form to entity ...
+        // Convert form to entity.
         Long catId = catForm.getId();
         Cat cat = catForm.toCat();
 
-        // ... and save.
+        // Save entity.
         Cat save = null;
         // TODO Handle optimistic lock error
         save = catService.save(cat);
