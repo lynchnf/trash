@@ -17,9 +17,9 @@
         <input type="hidden" th:field="${listForm.whereType}"/>
 
         <span th:if="${listForm.hasPrevious()}">
-            <a class="goToFirstPage" data-list-form="listForm" href="#">&lt;&lt;</a>
+            <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
             &nbsp;
-            <a class="goToPreviousPage" data-list-form="listForm" href="#">&lt;</a>
+            <a class="goToPreviousPage" data-list-form="listForm" href="#"><i class="fas fa-angle-left"></i></a>
             &nbsp;
         </span>
 
@@ -27,9 +27,9 @@
 
         <span th:if="${listForm.hasNext()}">
             &nbsp;
-            <a class="goToNextPage" data-list-form="listForm" href="#">&gt;</a>
+            <a class="goToNextPage" data-list-form="listForm" href="#"><i class="fas fa-angle-right"></i></a>
             &nbsp;
-            <a class="goToLastPage" data-list-form="listForm" href="#">&gt;&gt;</a>
+            <a class="goToLastPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-right"></i></a>
         </span>
 
         &nbsp;&nbsp;&nbsp;
@@ -46,18 +46,22 @@
             <tr>
                 <th>Id</th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">Name</a>
-                    <span th:if="${listForm.sortColumn=='name'}">
-                        <span th:if="${listForm.ascending}">&uarr;</span>
-                        <span th:if="${listForm.descending}">&darr;</span>
-                    </span>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">
+                        Name
+                        <span th:if="${listForm.sortColumn=='name'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
                 </th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">Type</a>
-                    <span th:if="${listForm.sortColumn=='type'}">
-                        <span th:if="${listForm.ascending}">&uarr;</span>
-                        <span th:if="${listForm.descending}">&darr;</span>
-                    </span>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">
+                        Type
+                        <span th:if="${listForm.sortColumn=='type'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
                 </th>
                 <th>Credit Limit</th>
                 <th>Acct Number</th>
