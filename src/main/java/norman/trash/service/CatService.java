@@ -18,27 +18,23 @@ public class CatService {
     @Autowired
     private CatRepository repository;
 
-    public Cat save(Cat cat) {
-        return repository.save(cat);
-    }
-
-    public Cat findById(Long id) throws NotFoundException {
-        Optional<Cat> optional = repository.findById(id);
-        if (!optional.isPresent()) {
-            throw new NotFoundException(LOGGER, "Account", id);
-        }
-        return optional.get();
-    }
-
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
+    public Page<Cat> findByNameContaining(String name, Pageable pageable) {
+        return repository.findByNameContaining(name, pageable);
     }
 
     public Page<Cat> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Page<Cat> findByNameContaining(String name, Pageable pageable) {
-        return repository.findByNameContaining(name, pageable);
+    public Cat findById(Long id) throws NotFoundException {
+        Optional<Cat> optional = repository.findById(id);
+        if (!optional.isPresent()) {
+            throw new NotFoundException(LOGGER, "Category", id);
+        }
+        return optional.get();
+    }
+
+    public Cat save(Cat cat) {
+        return repository.save(cat);
     }
 }

@@ -18,8 +18,8 @@ public class TranService {
     @Autowired
     private TranRepository repository;
 
-    public Tran save(Tran tran) {
-        return repository.save(tran);
+    public Page<Tran> findByDebitStmt_IdOrCreditStmt_Id(Long debitAcctId, Long creditAcctId, Pageable pageable) {
+        return repository.findByDebitStmt_IdOrCreditStmt_Id(debitAcctId, creditAcctId, pageable);
     }
 
     public Tran findById(Long id) throws NotFoundException {
@@ -28,13 +28,5 @@ public class TranService {
             throw new NotFoundException(LOGGER, "Transaction", id);
         }
         return optional.get();
-    }
-
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    public Page<Tran> findByDebitStmt_IdOrCreditStmt_Id(Long debitId, Long creditId, Pageable pageable) {
-        return repository.findByDebitStmt_IdOrCreditStmt_Id(debitId, creditId, pageable);
     }
 }

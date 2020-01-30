@@ -18,8 +18,8 @@ public class StmtService {
     @Autowired
     private StmtRepository repository;
 
-    public Stmt save(Stmt stmt) {
-        return repository.save(stmt);
+    public Page<Stmt> findByAcct_Id(Long acctId, Pageable pageable) {
+        return repository.findByAcct_Id(acctId, pageable);
     }
 
     public Stmt findById(Long id) throws NotFoundException {
@@ -28,13 +28,5 @@ public class StmtService {
             throw new NotFoundException(LOGGER, "Statement", id);
         }
         return optional.get();
-    }
-
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    public Page<Stmt> findByAcct_Id(Long acctId, Pageable pageable) {
-        return repository.findByAcct_Id(acctId, pageable);
     }
 }
