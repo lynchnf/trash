@@ -1,6 +1,7 @@
 package norman.trash.service;
 
 import norman.trash.NotFoundException;
+import norman.trash.OptimisticLockingException;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.domain.repository.AcctRepository;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -43,7 +45,11 @@ public class AcctService {
         return optional.get();
     }
 
-    public Acct save(Acct acct) {
-        return repository.save(acct);
+    public Acct save(Acct acct) throws OptimisticLockingException {
+        try {
+            return repository.save(acct);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new OptimisticLockingException(LOGGER, "Account", acct.getId(), e);
+        }
     }
 }

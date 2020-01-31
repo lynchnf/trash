@@ -1,6 +1,7 @@
 package norman.trash.controller;
 
 import norman.trash.NotFoundException;
+import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.*;
 import norman.trash.domain.*;
 import norman.trash.service.AcctService;
@@ -241,15 +242,18 @@ public class AcctController {
         }
 
         // Save entity.
-        Acct save = null;
-        // TODO Handle optimistic lock error
-        save = acctService.save(acct);
-        String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
-        if (acctId != null) {
-            successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
+        try {
+            Acct save = acctService.save(acct);
+            String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
+            if (acctId != null) {
+                successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
+            }
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            redirectAttributes.addAttribute("id", save.getId());
+            return "redirect:/acct?id={id}";
+        } catch (OptimisticLockingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
         }
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        redirectAttributes.addAttribute("id", save.getId());
-        return "redirect:/acct?id={id}";
     }
 }

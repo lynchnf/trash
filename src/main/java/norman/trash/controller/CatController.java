@@ -1,6 +1,7 @@
 package norman.trash.controller;
 
 import norman.trash.NotFoundException;
+import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.CatForm;
 import norman.trash.controller.view.CatListForm;
 import norman.trash.controller.view.CatView;
@@ -111,15 +112,19 @@ public class CatController {
         Cat cat = catForm.toCat();
 
         // Save entity.
-        Cat save = null;
         // TODO Handle optimistic lock error
-        save = catService.save(cat);
-        String successMessage = String.format(SUCCESSFULLY_ADDED, "Category", save.getId());
-        if (catId != null) {
-            successMessage = String.format(SUCCESSFULLY_UPDATED, "Category", save.getId());
+        try {
+            Cat save = catService.save(cat);
+            String successMessage = String.format(SUCCESSFULLY_ADDED, "Category", save.getId());
+            if (catId != null) {
+                successMessage = String.format(SUCCESSFULLY_UPDATED, "Category", save.getId());
+            }
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            redirectAttributes.addAttribute("id", save.getId());
+            return "redirect:/cat?id={id}";
+        } catch (OptimisticLockingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/catList";
         }
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        redirectAttributes.addAttribute("id", save.getId());
-        return "redirect:/cat?id={id}";
     }
 }
