@@ -76,8 +76,7 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>This Account</th>
-                <th>Other Account</th>
+                <th>Transfer Account</th>
                 <th>Category</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">
@@ -91,20 +90,17 @@
                 <th>Amount</th>
                 <th>Check Number</th>
                 <th>Name</th>
-                <th>Memo</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${row.viewingAcctName}"></td>
                 <td th:text="${row.otherAcctName}"></td>
                 <td th:text="${row.catName}"></td>
                 <td th:text="${row.postDate}"></td>
                 <td th:text="${row.amount}"></td>
                 <td th:text="${row.checkNumber}"></td>
                 <td th:text="${row.name}"></td>
-                <td th:text="${row.memo}"></td>
             </tbody>
         </table>
     </form>

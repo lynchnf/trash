@@ -2,6 +2,8 @@
 
 * Handle optimistic lock error.
 * Upload OFX files.
+* Reconcile account.
+* Edit transaction.
 
 ## Things done
 

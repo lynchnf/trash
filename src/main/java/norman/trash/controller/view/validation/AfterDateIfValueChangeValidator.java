@@ -36,7 +36,7 @@ public class AfterDateIfValueChangeValidator implements ConstraintValidator<Afte
             return oldDateValue.equals(newDateValue);
             // Otherwise, string value has changed. New date must be after old date.
         } else {
-            return oldDateValue.before(newDateValue);
+            return newDateValue != null && oldDateValue.before(newDateValue);
         }
     }
 }

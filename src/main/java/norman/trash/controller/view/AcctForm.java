@@ -1,6 +1,7 @@
 package norman.trash.controller.view;
 
 import norman.trash.controller.view.validation.AfterDateIfValueChange;
+import norman.trash.controller.view.validation.NotNullIfNew;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctNbr;
 import norman.trash.domain.AcctType;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @AfterDateIfValueChange(newDate = "effDate", oldDate = "oldEffDate", newString = "number", oldString = "oldNumber",
         message = "If Account Number changed, new Effective Date must be after the old Effective Date.")
+@NotNullIfNew(obj = "beginningBalance", id = "id", message = "If new Account, Beginning Balance may not be blank.")
 public class AcctForm {
     private Long id;
     private Integer version = 0;
@@ -49,9 +51,8 @@ public class AcctForm {
     private String oldNumber;
     @DateTimeFormat(pattern = "M/d/yyyy")
     private Date oldEffDate;
-    @NotNull(message = "Beginning Balance may not be blank.")
     @Digits(integer = 7, fraction = 2,
-            message = "BeginningBalance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+            message = "Beginning Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal beginningBalance;
 
     public AcctForm() {
