@@ -112,7 +112,6 @@ public class CatController {
         Cat cat = catForm.toCat();
 
         // Save entity.
-        // TODO Handle optimistic lock error
         try {
             Cat save = catService.save(cat);
             String successMessage = String.format(SUCCESSFULLY_ADDED, "Category", save.getId());

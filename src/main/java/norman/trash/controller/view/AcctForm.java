@@ -1,7 +1,7 @@
 package norman.trash.controller.view;
 
 import norman.trash.controller.view.validation.AfterDateIfValueChange;
-import norman.trash.controller.view.validation.NotNullIfNew;
+import norman.trash.controller.view.validation.NotNullIfCondition;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctNbr;
 import norman.trash.domain.AcctType;
@@ -15,9 +15,11 @@ import java.util.List;
 
 @AfterDateIfValueChange(newDate = "effDate", oldDate = "oldEffDate", newString = "number", oldString = "oldNumber",
         message = "If Account Number changed, new Effective Date must be after the old Effective Date.")
-@NotNullIfNew(obj = "beginningBalance", id = "id", message = "If new Account, Beginning Balance may not be blank.")
+@NotNullIfCondition(field = "beginningBalance", condition = "newEntity",
+        message = "If new Account, Beginning Balance may not be blank.")
 public class AcctForm {
     private Long id;
+    private boolean newEntity;
     private Integer version = 0;
     @NotBlank(message = "Account Name may not be blank.")
     @Size(max = 50, message = "Account Name may not be over {max} characters long.")
@@ -60,6 +62,7 @@ public class AcctForm {
 
     public AcctForm(Acct acct) {
         id = acct.getId();
+        newEntity = id == null;
         version = acct.getVersion();
         name = acct.getName();
         type = acct.getType();
@@ -89,6 +92,7 @@ public class AcctForm {
         acct.setName(StringUtils.trimToNull(name));
         acct.setType(type);
         acct.setAddressName(StringUtils.trimToNull(addressName));
+        if (addressName==null) addressName=name;
         acct.setAddress1(StringUtils.trimToNull(address1));
         acct.setAddress2(StringUtils.trimToNull(address2));
         acct.setCity(StringUtils.trimToNull(city));
@@ -112,6 +116,14 @@ public class AcctForm {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isNewEntity() {
+        return newEntity;
+    }
+
+    public void setNewEntity(boolean newEntity) {
+        this.newEntity = newEntity;
     }
 
     public Integer getVersion() {

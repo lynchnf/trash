@@ -256,4 +256,28 @@ public class AcctController {
             return "redirect:/acctList";
         }
     }
+
+    @GetMapping("/acctReconcile")
+    public String loadAcctReconcile(@RequestParam(value = "id") Long id, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Acct acct = acctService.findById(id);
+            AcctReconcileForm acctReconcileForm = new AcctReconcileForm(acct);
+            model.addAttribute("acctReconcileForm", acctReconcileForm);
+            return "acctReconcile";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
+    }
+
+    @PostMapping("/acctReconcile")
+    public String processAcctReconcile(@Valid AcctReconcileForm acctReconcileForm, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "acctReconcile";
+        }
+        // TODO More code goes here.
+        return "stmtReconcile";
+    }
 }
