@@ -24,10 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.*;
 
 import static norman.trash.MessagesConstants.*;
+import static norman.trash.controller.view.BalanceType.*;
 
 @Controller
 public class AcctController {
@@ -255,6 +255,61 @@ public class AcctController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/acctList";
         }
+    }
+
+    @GetMapping("/acctBalance")
+    public String loadAcctBalance(@RequestParam(value = "id") Long id, Model model,
+            RedirectAttributes redirectAttributes) throws NotFoundException {
+        Acct acct = acctService.findById(id);
+        AcctView view = new AcctView(acct);
+        model.addAttribute("view", view);
+
+        // Load rows.
+        List<BalanceView> rows = new ArrayList<>();
+        for (Stmt stmt : acct.getStmts()) {
+            BalanceView stmtRow = new BalanceView(stmt);
+            rows.add(stmtRow);
+
+            for (Tran tran : stmt.getDebitTrans()) {
+                BalanceView debitRow = new BalanceView(tran, DEBIT_TRAN);
+                rows.add(debitRow);
+            }
+            for (Tran tran : stmt.getCreditTrans()) {
+                BalanceView creditTran = new BalanceView(tran, CREDIT_TRAN);
+                rows.add(creditTran);
+            }
+        }
+
+        // Sort rows.
+        Comparator<BalanceView> comparator = new Comparator<BalanceView>() {
+            public int compare(BalanceView bal1, BalanceView bal2) {
+                int dateCompare = bal1.getPostDate().compareTo(bal2.getPostDate());
+                if (dateCompare != 0) {
+                    return dateCompare;
+                }
+                if (bal1.getType() == STMT && (bal2.getType() == DEBIT_TRAN || bal2.getType() == CREDIT_TRAN)) {
+                    return 1;
+                } else if ((bal1.getType() == DEBIT_TRAN || bal1.getType() == CREDIT_TRAN) && bal2.getType() == STMT) {
+                    return -1;
+                }
+                return bal1.getId().compareTo(bal2.getId());
+            }
+        };
+        rows.sort(comparator);
+
+        // Update balance of rows.
+        BigDecimal balance = BigDecimal.ZERO;
+        for (BalanceView row : rows) {
+            if (row.getType() != STMT) {
+                balance = balance.add(row.getAmount());
+            }
+            row.setBalance(balance);
+        }
+
+        Collections.reverse(rows);
+        model.addAttribute("rows", rows);
+
+        return "acctBalance";
     }
 
     @GetMapping("/acctReconcile")

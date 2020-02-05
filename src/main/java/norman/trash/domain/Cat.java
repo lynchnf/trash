@@ -11,7 +11,7 @@ public class Cat {
     private Long id;
     @Version
     private Integer version = 0;
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String name;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cat")
     private List<Tran> trans = new ArrayList<>();

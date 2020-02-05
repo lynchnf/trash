@@ -21,8 +21,9 @@ public class Tran {
     @JoinColumn(name = "cat_id")
     private Cat cat;
     @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date postDate;
-    @Column(precision = 9, scale = 2)
+    @Column(precision = 9, scale = 2, nullable = false)
     private BigDecimal amount;
     @Column(length = 10)
     private String checkNumber;

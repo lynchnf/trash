@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/header::header"></header>
+<main class="container">
+    <h1>Account Balances</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Name</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.name}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Type</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.type}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Credit Limit</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.creditLimit}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Acct Number</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.number}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Effective</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.effDate}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Balance</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.balance}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Last Tran</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.lastTranDate}"></p>
+        </div>
+    </div>
+
+    <h2>Transactions</h2>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Post Date</th>
+            <th>Check Number</th>
+            <th>Name</th>
+            <th>Memo</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Balance</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row:${rows}">
+            <td th:text="${row.id}"></td>
+            <td th:text="${row.type}"></td>
+            <td th:text="${row.postDate}"></td>
+            <td th:text="${row.checkNumber}"></td>
+            <td th:text="${row.name}"></td>
+            <td th:text="${row.memo}"></td>
+            <td th:text="${row.catName}"></td>
+            <td th:text="${row.amount}"></td>
+            <td th:text="${row.balance}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>

@@ -1,20 +1,25 @@
 package norman.trash.controller.view.validation;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = NotNullIfConditionValidator.class)
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotNullIfCondition {
-    String message() default "If condition, must not be null";
+    String fieldName();
 
-    String field();
+    String conditionField();
 
-    String condition();
+    String message() default "must not be null if condition";
 
-    @Target({ElementType.TYPE})
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
+    @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @interface List {
         NotNullIfCondition[] value();

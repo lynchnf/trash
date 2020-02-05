@@ -6,26 +6,31 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class NotNullIfConditionValidator implements ConstraintValidator<NotNullIfCondition, Object> {
-    private String field;
-    private String condition;
+    private String fieldName;
+    private String conditionField;
 
     @Override
     public void initialize(NotNullIfCondition constraintAnnotation) {
-        field = constraintAnnotation.field();
-        condition = constraintAnnotation.condition();
+        fieldName = constraintAnnotation.fieldName();
+        conditionField = constraintAnnotation.conditionField();
     }
 
     @Override
-    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
-        BeanWrapperImpl beanWrapper = new BeanWrapperImpl(o);
-        Object fieldValue = beanWrapper.getPropertyValue(field);
-        boolean conditionValue = (boolean) beanWrapper.getPropertyValue(condition);
-        // If condition is false, we don't care about the value of the field.
-        if (!conditionValue) {
-            return true;
-            // Otherwise, the field must not be null.
-        } else {
-            return fieldValue != null;
+    public boolean isValid(Object formBean, ConstraintValidatorContext context) {
+        boolean isValid = true;
+        if (formBean != null) {
+            boolean conditionValue = (boolean) new BeanWrapperImpl(formBean).getPropertyValue(conditionField);
+            if (conditionValue) {
+                Object fieldValue = new BeanWrapperImpl(formBean).getPropertyValue(fieldName);
+                isValid = fieldValue != null;
+            }
         }
+
+        if (!isValid) {
+            context.disableDefaultConstraintViolation();
+            String message = context.getDefaultConstraintMessageTemplate();
+            context.buildConstraintViolationWithTemplate(message).addPropertyNode(fieldName).addConstraintViolation();
+        }
+        return isValid;
     }
 }

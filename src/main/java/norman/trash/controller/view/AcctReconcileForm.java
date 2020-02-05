@@ -12,12 +12,12 @@ import java.util.Date;
 
 // @formatter:off
 @NotNullIfCondition.List({
-        @NotNullIfCondition(field = "previousBalance", condition = "cc", message = "If Credit Card, Previous Balance may not be blank."),
-        @NotNullIfCondition(field = "paymentsAndOtherCredits", condition = "cc", message = "If Credit Card, Payments And Other Credits may not be blank."),
-        @NotNullIfCondition(field = "purchasesAndAdjustments", condition = "cc", message = "If Credit Card, Purchases And Adjustments may not be blank."),
-        @NotNullIfCondition(field = "feesCharged", condition = "cc", message = "If Credit Card, Fees Charged may not be blank."),
-        @NotNullIfCondition(field = "interestCharged", condition = "cc", message = "If Credit Card, Interest Charged may not be blank."),
-        @NotNullIfCondition(field = "statementClosingDate", condition = "cc", message = "If Credit Card, Statement Closing Date may not be blank.")})
+        @NotNullIfCondition(fieldName = "openBalance", conditionField = "cc", message = "If Credit Card, Previous Balance may not be blank."),
+        @NotNullIfCondition(fieldName = "debits", conditionField = "cc", message = "If Credit Card, Purchases And Adjustments may not be blank."),
+        @NotNullIfCondition(fieldName = "credits", conditionField = "cc", message = "If Credit Card, Payments And Other Credits may not be blank."),
+        @NotNullIfCondition(fieldName = "fees", conditionField = "cc", message = "If Credit Card, Fees Charged may not be blank."),
+        @NotNullIfCondition(fieldName = "interest", conditionField = "cc", message = "If Credit Card, Interest Charged may not be blank."),
+        @NotNullIfCondition(fieldName = "closeDate", conditionField = "cc", message = "If Credit Card, Statement Closing Date may not be blank.")})
 // @formatter:on
 public class AcctReconcileForm {
     private Long id;
@@ -27,31 +27,31 @@ public class AcctReconcileForm {
     private boolean cc;
     @Digits(integer = 7, fraction = 2,
             message = "Previous Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal previousBalance;
-    @Digits(integer = 7, fraction = 2,
-            message = "Payments And Other Credits value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal paymentsAndOtherCredits;
+    private BigDecimal openBalance;
     @Digits(integer = 7, fraction = 2,
             message = "Purchases And Adjustments value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal purchasesAndAdjustments;
+    private BigDecimal debits;
+    @Digits(integer = 7, fraction = 2,
+            message = "Payments And Other Credits value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    private BigDecimal credits;
     @Digits(integer = 7, fraction = 2,
             message = "Fees Charged value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal feesCharged;
+    private BigDecimal fees;
     @Digits(integer = 7, fraction = 2,
             message = "Interest Charged value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal interestCharged;
+    private BigDecimal interest;
     @NotNull(message = "New Balance may not be blank.")
     @Digits(integer = 7, fraction = 2,
             message = "New Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal newBalance;
+    private BigDecimal closeBalance;
     @Digits(integer = 7, fraction = 2,
             message = "Minimum Payment Due value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal minimumPaymentDue;
+    private BigDecimal minimumDue;
     @NotNull(message = "Payment Due Date may not be blank.")
     @DateTimeFormat(pattern = "M/d/yyyy")
-    private Date paymentDueDate;
+    private Date dueDate;
     @DateTimeFormat(pattern = "M/d/yyyy")
-    private Date statementClosingDate;
+    private Date closeDate;
 
     public AcctReconcileForm() {
     }
@@ -104,75 +104,75 @@ public class AcctReconcileForm {
         this.cc = cc;
     }
 
-    public BigDecimal getPreviousBalance() {
-        return previousBalance;
+    public BigDecimal getOpenBalance() {
+        return openBalance;
     }
 
-    public void setPreviousBalance(BigDecimal previousBalance) {
-        this.previousBalance = previousBalance;
+    public void setOpenBalance(BigDecimal openBalance) {
+        this.openBalance = openBalance;
     }
 
-    public BigDecimal getPaymentsAndOtherCredits() {
-        return paymentsAndOtherCredits;
+    public BigDecimal getDebits() {
+        return debits;
     }
 
-    public void setPaymentsAndOtherCredits(BigDecimal paymentsAndOtherCredits) {
-        this.paymentsAndOtherCredits = paymentsAndOtherCredits;
+    public void setDebits(BigDecimal debits) {
+        this.debits = debits;
     }
 
-    public BigDecimal getPurchasesAndAdjustments() {
-        return purchasesAndAdjustments;
+    public BigDecimal getCredits() {
+        return credits;
     }
 
-    public void setPurchasesAndAdjustments(BigDecimal purchasesAndAdjustments) {
-        this.purchasesAndAdjustments = purchasesAndAdjustments;
+    public void setCredits(BigDecimal credits) {
+        this.credits = credits;
     }
 
-    public BigDecimal getFeesCharged() {
-        return feesCharged;
+    public BigDecimal getFees() {
+        return fees;
     }
 
-    public void setFeesCharged(BigDecimal feesCharged) {
-        this.feesCharged = feesCharged;
+    public void setFees(BigDecimal fees) {
+        this.fees = fees;
     }
 
-    public BigDecimal getInterestCharged() {
-        return interestCharged;
+    public BigDecimal getInterest() {
+        return interest;
     }
 
-    public void setInterestCharged(BigDecimal interestCharged) {
-        this.interestCharged = interestCharged;
+    public void setInterest(BigDecimal interest) {
+        this.interest = interest;
     }
 
-    public BigDecimal getNewBalance() {
-        return newBalance;
+    public BigDecimal getCloseBalance() {
+        return closeBalance;
     }
 
-    public void setNewBalance(BigDecimal newBalance) {
-        this.newBalance = newBalance;
+    public void setCloseBalance(BigDecimal closeBalance) {
+        this.closeBalance = closeBalance;
     }
 
-    public BigDecimal getMinimumPaymentDue() {
-        return minimumPaymentDue;
+    public BigDecimal getMinimumDue() {
+        return minimumDue;
     }
 
-    public void setMinimumPaymentDue(BigDecimal minimumPaymentDue) {
-        this.minimumPaymentDue = minimumPaymentDue;
+    public void setMinimumDue(BigDecimal minimumDue) {
+        this.minimumDue = minimumDue;
     }
 
-    public Date getPaymentDueDate() {
-        return paymentDueDate;
+    public Date getDueDate() {
+        return dueDate;
     }
 
-    public void setPaymentDueDate(Date paymentDueDate) {
-        this.paymentDueDate = paymentDueDate;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
-    public Date getStatementClosingDate() {
-        return statementClosingDate;
+    public Date getCloseDate() {
+        return closeDate;
     }
 
-    public void setStatementClosingDate(Date statementClosingDate) {
-        this.statementClosingDate = statementClosingDate;
+    public void setCloseDate(Date closeDate) {
+        this.closeDate = closeDate;
     }
 }

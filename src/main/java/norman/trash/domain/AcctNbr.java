@@ -13,9 +13,10 @@ public class AcctNbr {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acct_id", nullable = false)
     private Acct acct;
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String number;
     @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date effDate;
 
     public Long getId() {

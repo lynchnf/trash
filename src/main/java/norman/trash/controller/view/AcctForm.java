@@ -15,11 +15,11 @@ import java.util.List;
 
 @AfterDateIfValueChange(newDate = "effDate", oldDate = "oldEffDate", newString = "number", oldString = "oldNumber",
         message = "If Account Number changed, new Effective Date must be after the old Effective Date.")
-@NotNullIfCondition(field = "beginningBalance", condition = "newEntity",
+@NotNullIfCondition(fieldName = "beginningBalance", conditionField = "newEntity",
         message = "If new Account, Beginning Balance may not be blank.")
 public class AcctForm {
     private Long id;
-    private boolean newEntity;
+    private boolean newEntity = true;
     private Integer version = 0;
     @NotBlank(message = "Account Name may not be blank.")
     @Size(max = 50, message = "Account Name may not be over {max} characters long.")
@@ -62,7 +62,7 @@ public class AcctForm {
 
     public AcctForm(Acct acct) {
         id = acct.getId();
-        newEntity = id == null;
+        newEntity = acct.getId() == null;
         version = acct.getVersion();
         name = acct.getName();
         type = acct.getType();
@@ -92,7 +92,9 @@ public class AcctForm {
         acct.setName(StringUtils.trimToNull(name));
         acct.setType(type);
         acct.setAddressName(StringUtils.trimToNull(addressName));
-        if (addressName==null) addressName=name;
+        if (addressName == null) {
+            addressName = name;
+        }
         acct.setAddress1(StringUtils.trimToNull(address1));
         acct.setAddress2(StringUtils.trimToNull(address2));
         acct.setCity(StringUtils.trimToNull(city));

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static norman.trash.MessagesConstants.BEGINNING_BALANCE;
+
 public class FakeDataUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(FakeDataUtil.class);
     private static final Random RANDOM = new Random();
@@ -23,20 +25,6 @@ public class FakeDataUtil {
     private static final String[] CC_NAMES = {"Credit Card", "Plastic Credit", "Gold Card", "Platinum Card"};
     private static final String[] BILL_NAMES =
             {"Cable TV", "Gas", "Gym", "Insurance", "Lawn Service", "Power", "Water and Sewer"};
-    private static final String INSERT_INTO_ACCT =
-            "INSERT INTO `acct` (`name`,`type`,`version`,`address_name`,`address1`,`address2`,`city`,`state`,`zip_code`,`phone_number`,`credit_limit`) VALUES ('%s','%s',0,'%s','%s',%s,'%s','%s','%s','%s',%s);%n";
-    private static final String INSERT_INTO_ACCT_NBR =
-            "INSERT INTO `acct_nbr` (`eff_date`, `number`, `version`, `acct_id`) VALUES ('%tF','%s',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
-    private static final String INSERT_INTO_STMT =
-            "INSERT INTO `stmt` (`close_date`,`version`,`acct_id`) VALUES ('%tF',0,(SELECT `id` FROM `acct` WHERE `name` = '%s'));%n";
-    private static final String INSERT_INTO_CAT = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
-    private static final String INSERT_INTO_TRAN =
-            "INSERT INTO `tran` (`amount`,`post_date`,`check_number`,`name`,`memo`,`version`,`debit_stmt_id`,`credit_stmt_id`,`cat_id`) VALUES (%.2f,'%tF',%s,'%s','%s',0,%s,%s,%s);%n";
-    private static final String SELECT_STMT_WITH_DATE =
-            "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date`='%tF' AND y.`name`='%s')";
-    private static final String SELECT_STMT_WITH_NULL =
-            "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date` IS NULL AND y.`name`='%s')";
-    private static final String SELECT_CAT_WITH_NAME = "(SELECT `id` FROM `cat` WHERE `name`='%s')";
     private static Date today;
     private static Date endOfTime;
     private static Date beginningOfTime;
@@ -47,6 +35,7 @@ public class FakeDataUtil {
     public static void main(String[] args) {
         LOGGER.debug("Starting FakeDataUtil");
 
+        // Set standard dates.
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
@@ -67,77 +56,68 @@ public class FakeDataUtil {
         long acctNbrId = 1;
         long stmtId = 1;
         long tranId = 1;
-        Map<String, Cat> catMap = new HashMap<>();
-        Map<String, Acct> acctMap = new HashMap<>();
+        Map<String, Cat> catMap = new LinkedHashMap<>();
+        Map<String, Acct> acctMap = new LinkedHashMap<>();
+        List<Tran> tranList = new ArrayList<>();
 
         for (String name : CAT_NAMES) {
             Cat cat = buildCat(catId++, name);
             catMap.put(cat.getName(), cat);
-            System.out.printf(INSERT_INTO_CAT, cat.getName());
         }
 
         for (int i = 0; i < NBR_OF_ACCTS; i++) {
             Acct acct = buildAcct(acctId++, acctMap);
             acctMap.put(acct.getName(), acct);
-            String address2 = "NULL";
-            if (acct.getAddress2() != null) {
-                address2 = "'" + acct.getAddress2() + "'";
-            }
-            String creditLimit = "NULL";
-            if (acct.getCreditLimit() != null) {
-                creditLimit = String.format("%.2f", acct.getCreditLimit());
-            }
-            System.out
-                    .printf(INSERT_INTO_ACCT, acct.getName(), acct.getType(), acct.getAddressName(), acct.getAddress1(),
-                            address2, acct.getCity(), acct.getState(), acct.getZipCode(), acct.getPhoneNumber(),
-                            creditLimit);
 
             int nbrOfAcctNbrs = RANDOM.nextInt(4) + 1;
             for (int j = 0; j < nbrOfAcctNbrs; j++) {
                 int effDaysAgo = 400 - j * 100;
                 AcctNbr acctNbr = buildAcctNbr(acctNbrId++, effDaysAgo, acct);
-                System.out.printf(INSERT_INTO_ACCT_NBR, acctNbr.getEffDate(), acctNbr.getNumber(), acct.getName());
             }
 
             Stmt stmt;
             do {
-                stmt = buildStmt(stmtId++, acct);
-                System.out.printf(INSERT_INTO_STMT, stmt.getCloseDate(), stmt.getAcct().getName());
+                stmt = buildStmt(stmtId++, acct, tranId++, tranList);
             } while (!stmt.getCloseDate().equals(endOfTime));
         }
 
         for (int i = 0; i < NBR_OF_TRANS; i++) {
             Tran tran = buildTran(tranId++, acctMap, catMap);
-            String debitStmt = "NULL";
-            if (tran.getDebitStmt() != null) {
-                String acctName = tran.getDebitStmt().getAcct().getName();
-                Date stmtDate = tran.getDebitStmt().getCloseDate();
-                if (stmtDate == null) {
-                    debitStmt = String.format(SELECT_STMT_WITH_NULL, acctName);
+            tranList.add(tran);
+        }
+
+        // Update statements.
+        for (Acct acct : acctMap.values()) {
+            Stmt previousStmt = null;
+            for (Stmt stmt : acct.getStmts()) {
+                if (previousStmt != null && !stmt.getCloseDate().equals(endOfTime)) {
+                    updateStmt(stmt, previousStmt);
+                }
+                previousStmt = stmt;
+            }
+        }
+
+        // Now print insert statements for everything.
+        for (Cat cat : catMap.values()) {
+            printInsertCat(cat);
+        }
+        for (Acct acct : acctMap.values()) {
+            printInsertAcct(acct);
+            for (AcctNbr acctNbr : acct.getAcctNbrs()) {
+                printInsertAcctNbr(acctNbr);
+            }
+            boolean first = true;
+            for (Stmt stmt : acct.getStmts()) {
+                if (first || stmt.getCloseDate().equals(endOfTime)) {
+                    printInsertBeginOrCurrentStmt(stmt);
+                    first = false;
                 } else {
-                    debitStmt = String.format(SELECT_STMT_WITH_DATE, stmtDate, acctName);
+                    printInsertStmt(stmt);
                 }
             }
-            String creditStmt = "NULL";
-            if (tran.getCreditStmt() != null) {
-                String acctName = tran.getCreditStmt().getAcct().getName();
-                Date stmtDate = tran.getCreditStmt().getCloseDate();
-                if (stmtDate == null) {
-                    creditStmt = String.format(SELECT_STMT_WITH_NULL, acctName);
-                } else {
-                    creditStmt = String.format(SELECT_STMT_WITH_DATE, stmtDate, acctName);
-                }
-            }
-            String cat = "NULL";
-            if (tran.getCat() != null) {
-                cat = String.format(SELECT_CAT_WITH_NAME, tran.getCat().getName());
-            }
-            String checkNumber = "NULL";
-            if (tran.getCheckNumber() != null) {
-                checkNumber = "'" + tran.getCheckNumber() + "'";
-            }
-            System.out.printf(INSERT_INTO_TRAN, tran.getAmount(), tran.getPostDate(), checkNumber, tran.getName(),
-                    tran.getMemo(), debitStmt, creditStmt, cat);
+        }
+        for (Tran tran : tranList) {
+            printInsertTran(tran);
         }
     }
 
@@ -224,16 +204,16 @@ public class FakeDataUtil {
         return acctNbr;
     }
 
-    private static Stmt buildStmt(long id, Acct acct) {
+    private static Stmt buildStmt(long id, Acct acct, long tranId, List<Tran> tranList) {
         Stmt stmt = new Stmt();
         stmt.setId(id);
 
         // Generate a random close date.
         Date closeDate = null;
         Calendar cal = Calendar.getInstance();
-
         // If this is the first statement, generate a random close date a bit more than a year ago.
-        if (acct.getStmts().isEmpty()) {
+        boolean firstStmt = acct.getStmts().isEmpty();
+        if (firstStmt) {
             cal.setTime(today);
             cal.add(Calendar.DATE, -1 * (RANDOM.nextInt(28) + 365));
             closeDate = cal.getTime();
@@ -257,6 +237,27 @@ public class FakeDataUtil {
         // Attach to account.
         stmt.setAcct(acct);
         acct.getStmts().add(stmt);
+
+        // Also add the first transaction to set beginning balance.
+        if (firstStmt) {
+            Tran tran = new Tran();
+            tran.setPostDate(closeDate);
+            BigDecimal amount = BigDecimal.valueOf(RANDOM.nextInt(200000) - 100000, 2);
+
+            tran.setName(BEGINNING_BALANCE);
+            // If amount is zero or positive, it is attached as a credit transaction.
+            if (amount.compareTo(BigDecimal.ZERO) >= 0) {
+                tran.setAmount(amount);
+                tran.setCreditStmt(stmt);
+                stmt.getCreditTrans().add(tran);
+            } else {
+                // Otherwise, it is attached as a debit transaction.
+                tran.setAmount(amount.negate());
+                tran.setDebitStmt(stmt);
+                stmt.getDebitTrans().add(tran);
+            }
+            tranList.add(tran);
+        }
         return stmt;
     }
 
@@ -331,5 +332,127 @@ public class FakeDataUtil {
             }
         }
         return stmt;
+    }
+
+    private static void updateStmt(Stmt stmt, Stmt previousStmt) {
+        BigDecimal openBalance;
+        if (previousStmt.getCloseBalance() != null) {
+            openBalance = previousStmt.getCloseBalance();
+        } else {
+            openBalance = BigDecimal.ZERO;
+            for (Tran tran : previousStmt.getDebitTrans()) {
+                openBalance = openBalance.subtract(tran.getAmount());
+            }
+            for (Tran tran : previousStmt.getCreditTrans()) {
+                openBalance = openBalance.add(tran.getAmount());
+            }
+        }
+        stmt.setOpenBalance(openBalance);
+
+        BigDecimal debits = BigDecimal.ZERO;
+        for (Tran tran : stmt.getDebitTrans()) {
+            debits = debits.subtract(tran.getAmount());
+        }
+        stmt.setDebits(debits);
+
+        BigDecimal credits = BigDecimal.ZERO;
+        for (Tran tran : stmt.getCreditTrans()) {
+            credits = credits.add(tran.getAmount());
+        }
+        stmt.setCredits(credits);
+
+        stmt.setFees(BigDecimal.ZERO);
+        stmt.setInterest(BigDecimal.ZERO);
+        stmt.setCloseBalance(openBalance.add(debits).add(credits));
+        stmt.setMinimumDue(BigDecimal.valueOf(2500, 2));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(stmt.getCloseDate());
+        cal.add(Calendar.DATE, 27);
+        stmt.setDueDate(cal.getTime());
+    }
+
+    private static void printInsertCat(Cat cat) {
+        String insertIntoCat = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
+        System.out.printf(insertIntoCat, cat.getName());
+    }
+
+    private static void printInsertAcct(Acct acct) {
+        String address2 = "NULL";
+        if (acct.getAddress2() != null) {
+            address2 = "'" + acct.getAddress2() + "'";
+        }
+
+        String creditLimit = "NULL";
+        if (acct.getCreditLimit() != null) {
+            creditLimit = String.format("%.2f", acct.getCreditLimit());
+        }
+
+        String insertIntoAcct =
+                "INSERT INTO `acct` (`address1`,`address2`,`address_name`,`city`,`credit_limit`,`name`,`phone_number`,`state`,`type`,`version`,`zip_code`)" +
+                        " VALUES ('%s',%s,'%s','%s',%s,'%s','%s','%s','%s',0,'%s');%n";
+        System.out.printf(insertIntoAcct, acct.getAddress1(), address2, acct.getAddressName(), acct.getCity(),
+                creditLimit, acct.getName(), acct.getPhoneNumber(), acct.getState(), acct.getType(), acct.getZipCode());
+    }
+
+    private static void printInsertAcctNbr(AcctNbr acctNbr) {
+        String insertIntoAcctNbr = "INSERT INTO `acct_nbr` (`eff_date`, `number`, `version`, `acct_id`)" +
+                " VALUES ('%tF','%s',0,(SELECT `id` FROM `acct` WHERE `name`='%s'));%n";
+        System.out.printf(insertIntoAcctNbr, acctNbr.getEffDate(), acctNbr.getNumber(), acctNbr.getAcct().getName());
+    }
+
+    private static void printInsertStmt(Stmt stmt) {
+        String insertIntoStmt =
+                "INSERT INTO `stmt` (`close_balance`,`close_date`,`credits`,`debits`,`due_date`,`fees`,`interest`,`minimum_due`,`open_balance`,`version`,`acct_id`)" +
+                        " VALUES (%.2f,'%tF',%.2f,%.2f,'%tF',%.2f,%.2f,%.2f,%.2f,0,(SELECT `id` FROM `acct` WHERE `name`='%s'));%n";
+        System.out.printf(insertIntoStmt, stmt.getCloseBalance(), stmt.getCloseDate(), stmt.getCredits(),
+                stmt.getDebits(), stmt.getDueDate(), stmt.getFees(), stmt.getInterest(), stmt.getMinimumDue(),
+                stmt.getOpenBalance(), stmt.getAcct().getName());
+    }
+
+    private static void printInsertBeginOrCurrentStmt(Stmt stmt) {
+        String insertIntoStmt = "INSERT INTO `stmt` (`close_date`,`version`,`acct_id`)" +
+                " VALUES ('%tF',0,(SELECT `id` FROM `acct` WHERE `name`='%s'));%n";
+        System.out.printf(insertIntoStmt, stmt.getCloseDate(), stmt.getAcct().getName());
+    }
+
+    private static void printInsertTran(Tran tran) {
+        String checkNumber = "NULL";
+        if (tran.getCheckNumber() != null) {
+            checkNumber = "'" + tran.getCheckNumber() + "'";
+        }
+
+        String memo = "NULL";
+        if (tran.getMemo() != null) {
+            memo = "'" + tran.getMemo() + "'";
+        }
+
+        String selectCatWithName = "(SELECT `id` FROM `cat` WHERE `name`='%s')";
+        String cat = "NULL";
+        if (tran.getCat() != null) {
+            cat = String.format(selectCatWithName, tran.getCat().getName());
+        }
+
+        String selectStmtWithDateAndName =
+                "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date`='%tF' AND y.`name`='%s')";
+        String creditStmt = "NULL";
+        if (tran.getCreditStmt() != null) {
+            String acctName = tran.getCreditStmt().getAcct().getName();
+            Date stmtDate = tran.getCreditStmt().getCloseDate();
+            creditStmt = String.format(selectStmtWithDateAndName, stmtDate, acctName);
+        }
+
+        String debitStmt = "NULL";
+        if (tran.getDebitStmt() != null) {
+            String acctName = tran.getDebitStmt().getAcct().getName();
+            Date stmtDate = tran.getDebitStmt().getCloseDate();
+            debitStmt = String.format(selectStmtWithDateAndName, stmtDate, acctName);
+        }
+
+        String insertIntoTran =
+                "INSERT INTO `tran` (`amount`,`check_number`,`memo`,`name`,`post_date`,`version`,`cat_id`,`credit_stmt_id`,`debit_stmt_id`)" +
+                        " VALUES (%.2f,%s,%s,'%s','%tF',0,%s,%s,%s);%n";
+        System.out.printf(insertIntoTran, tran.getAmount(), checkNumber, memo, tran.getName(), tran.getPostDate(), cat,
+                creditStmt, debitStmt);
     }
 }

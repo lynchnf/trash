@@ -37,57 +37,57 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Previous Balance</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{previousBalance}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{openBalance}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Payments And Other Credits</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{paymentsAndOtherCredits}"
+                <input type="text" class="form-control" th:field="*{credits}"
                        th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Purchases And Adjustments</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{purchasesAndAdjustments}"
+                <input type="text" class="form-control" th:field="*{debits}"
                        th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Fees Charged</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{feesCharged}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{fees}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Interest Charged</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{interestCharged}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{interest}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">New Balance</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{newBalance}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{closeBalance}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Minimum Payment Due</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{minimumPaymentDue}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{minimumDue}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Payment Due Date</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{paymentDueDate}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{dueDate}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Statment Closing Date</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" th:field="*{statementClosingDate}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{closeDate}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Reconcile</button>

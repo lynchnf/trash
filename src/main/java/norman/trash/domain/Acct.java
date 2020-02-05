@@ -12,10 +12,10 @@ public class Acct {
     private Long id;
     @Version
     private Integer version = 0;
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(length = 10, nullable = false)
     private AcctType type;
     @Column(length = 50)
     private String addressName;
