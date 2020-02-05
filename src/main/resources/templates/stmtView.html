@@ -15,7 +15,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.acctName}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -25,15 +25,51 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Debits</label>
+        <label class="col-sm-3 col-form-label">openBalance</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.debitAmount}"></p>
+            <p class="form-control-plaintext" th:text="${view.openBalance}"></p>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Credits</label>
+        <label class="col-sm-3 col-form-label">debits</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.creditAmount}"></p>
+            <p class="form-control-plaintext" th:text="${view.debits}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">credits</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.credits}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">fees</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.fees}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">interest</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.interest}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">closeBalance</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.closeBalance}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">minimumDue</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.minimumDue}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">dueDate</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.dueDate}"></p>
         </div>
     </div>
 

@@ -169,16 +169,28 @@
                         </span>
                     </a>
                 </th>
+                <th>Open Balance</th>
                 <th>Debits</th>
                 <th>Credits</th>
+                <th>Fees</th>
+                <th>Interest</th>
+                <th>Close Balance</th>
+                <th>Minimum Due</th>
+                <th>Due Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
                 <td th:text="${row.closeDate}"></td>
-                <td th:text="${row.debitAmount}"></td>
-                <td th:text="${row.creditAmount}"></td>
+                <td th:text="${row.openBalance}"></td>
+                <td th:text="${row.debits}"></td>
+                <td th:text="${row.credits}"></td>
+                <td th:text="${row.fees}"></td>
+                <td th:text="${row.interest}"></td>
+                <td th:text="${row.closeBalance}"></td>
+                <td th:text="${row.minimumDue}"></td>
+                <td th:text="${row.dueDate}"></td>
             </tbody>
         </table>
     </form>

@@ -1,7 +1,6 @@
 package norman.trash.controller.view;
 
 import norman.trash.domain.Stmt;
-import norman.trash.domain.Tran;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,22 +9,27 @@ public class StmtView {
     private Long id;
     private String acctName;
     private Date closeDate;
-    private BigDecimal debitAmount;
-    private BigDecimal creditAmount;
+    private BigDecimal openBalance;
+    private BigDecimal debits;
+    private BigDecimal credits;
+    private BigDecimal fees;
+    private BigDecimal interest;
+    private BigDecimal closeBalance;
+    private BigDecimal minimumDue;
+    private Date dueDate;
 
     public StmtView(Stmt stmt) {
         id = stmt.getId();
         acctName = stmt.getAcct().getName();
         closeDate = stmt.getCloseDate();
-
-        debitAmount = BigDecimal.ZERO;
-        for (Tran tran : stmt.getDebitTrans()) {
-            debitAmount = debitAmount.subtract(tran.getAmount());
-        }
-        creditAmount = BigDecimal.ZERO;
-        for (Tran tran : stmt.getCreditTrans()) {
-            creditAmount = creditAmount.add(tran.getAmount());
-        }
+        openBalance = stmt.getOpenBalance();
+        debits = stmt.getDebits();
+        credits = stmt.getCredits();
+        fees = stmt.getFees();
+        interest = stmt.getInterest();
+        closeBalance = stmt.getCloseBalance();
+        minimumDue = stmt.getMinimumDue();
+        dueDate = stmt.getDueDate();
     }
 
     public Long getId() {
@@ -40,11 +44,35 @@ public class StmtView {
         return closeDate;
     }
 
-    public BigDecimal getDebitAmount() {
-        return debitAmount;
+    public BigDecimal getOpenBalance() {
+        return openBalance;
     }
 
-    public BigDecimal getCreditAmount() {
-        return creditAmount;
+    public BigDecimal getDebits() {
+        return debits;
+    }
+
+    public BigDecimal getCredits() {
+        return credits;
+    }
+
+    public BigDecimal getFees() {
+        return fees;
+    }
+
+    public BigDecimal getInterest() {
+        return interest;
+    }
+
+    public BigDecimal getCloseBalance() {
+        return closeBalance;
+    }
+
+    public BigDecimal getMinimumDue() {
+        return minimumDue;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
     }
 }
