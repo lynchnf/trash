@@ -42,6 +42,19 @@ public class AcctController {
     private StmtService stmtService;
     @Autowired
     private TranService tranService;
+    private Date endOfTime;
+
+    public AcctController() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.YEAR, 9999);
+        endOfTime = cal.getTime();
+    }
 
     @GetMapping("/acctList")
     // @formatter:off
@@ -199,15 +212,7 @@ public class AcctController {
 
             // Current period statement.
             Stmt currentStmt = new Stmt();
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.MILLISECOND, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.DAY_OF_MONTH, 31);
-            cal.set(Calendar.MONTH, Calendar.DECEMBER);
-            cal.set(Calendar.YEAR, 9999);
-            currentStmt.setCloseDate(cal.getTime());
+            currentStmt.setCloseDate(endOfTime);
             currentStmt.setAcct(acct);
             acct.getStmts().add(currentStmt);
 
@@ -259,57 +264,63 @@ public class AcctController {
 
     @GetMapping("/acctBalance")
     public String loadAcctBalance(@RequestParam(value = "id") Long id, Model model,
-            RedirectAttributes redirectAttributes) throws NotFoundException {
-        Acct acct = acctService.findById(id);
-        AcctView view = new AcctView(acct);
-        model.addAttribute("view", view);
+            RedirectAttributes redirectAttributes) {
+        try {
+            Acct acct = acctService.findById(id);
+            AcctView view = new AcctView(acct);
+            model.addAttribute("view", view);
 
-        // Load rows.
-        List<BalanceView> rows = new ArrayList<>();
-        for (Stmt stmt : acct.getStmts()) {
-            BalanceView stmtRow = new BalanceView(stmt);
-            rows.add(stmtRow);
+            // Load rows.
+            List<BalanceView> rows = new ArrayList<>();
+            for (Stmt stmt : acct.getStmts()) {
+                BalanceView stmtRow = new BalanceView(stmt);
+                rows.add(stmtRow);
 
-            for (Tran tran : stmt.getDebitTrans()) {
-                BalanceView debitRow = new BalanceView(tran, DEBIT_TRAN);
-                rows.add(debitRow);
-            }
-            for (Tran tran : stmt.getCreditTrans()) {
-                BalanceView creditTran = new BalanceView(tran, CREDIT_TRAN);
-                rows.add(creditTran);
-            }
-        }
-
-        // Sort rows.
-        Comparator<BalanceView> comparator = new Comparator<BalanceView>() {
-            public int compare(BalanceView bal1, BalanceView bal2) {
-                int dateCompare = bal1.getPostDate().compareTo(bal2.getPostDate());
-                if (dateCompare != 0) {
-                    return dateCompare;
+                for (Tran tran : stmt.getDebitTrans()) {
+                    BalanceView debitRow = new BalanceView(tran, DEBIT_TRAN);
+                    rows.add(debitRow);
                 }
-                if (bal1.getType() == STMT && (bal2.getType() == DEBIT_TRAN || bal2.getType() == CREDIT_TRAN)) {
-                    return 1;
-                } else if ((bal1.getType() == DEBIT_TRAN || bal1.getType() == CREDIT_TRAN) && bal2.getType() == STMT) {
-                    return -1;
+                for (Tran tran : stmt.getCreditTrans()) {
+                    BalanceView creditTran = new BalanceView(tran, CREDIT_TRAN);
+                    rows.add(creditTran);
                 }
-                return bal1.getId().compareTo(bal2.getId());
             }
-        };
-        rows.sort(comparator);
 
-        // Update balance of rows.
-        BigDecimal balance = BigDecimal.ZERO;
-        for (BalanceView row : rows) {
-            if (row.getType() != STMT) {
-                balance = balance.add(row.getAmount());
+            // Sort rows.
+            Comparator<BalanceView> comparator = new Comparator<BalanceView>() {
+                public int compare(BalanceView bal1, BalanceView bal2) {
+                    int dateCompare = bal1.getPostDate().compareTo(bal2.getPostDate());
+                    if (dateCompare != 0) {
+                        return dateCompare;
+                    }
+                    if (bal1.getType() == STMT && (bal2.getType() == DEBIT_TRAN || bal2.getType() == CREDIT_TRAN)) {
+                        return 1;
+                    } else if ((bal1.getType() == DEBIT_TRAN || bal1.getType() == CREDIT_TRAN) &&
+                            bal2.getType() == STMT) {
+                        return -1;
+                    }
+                    return bal1.getId().compareTo(bal2.getId());
+                }
+            };
+            rows.sort(comparator);
+
+            // Update balance of rows.
+            BigDecimal balance = BigDecimal.ZERO;
+            for (BalanceView row : rows) {
+                if (row.getType() != STMT) {
+                    balance = balance.add(row.getAmount());
+                }
+                row.setBalance(balance);
             }
-            row.setBalance(balance);
+
+            Collections.reverse(rows);
+            model.addAttribute("rows", rows);
+
+            return "acctBalance";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
         }
-
-        Collections.reverse(rows);
-        model.addAttribute("rows", rows);
-
-        return "acctBalance";
     }
 
     @GetMapping("/acctReconcile")
@@ -332,7 +343,40 @@ public class AcctController {
         if (bindingResult.hasErrors()) {
             return "acctReconcile";
         }
-        // TODO More code goes here.
-        return "stmtReconcile";
+
+        Long acctId = acctReconcileForm.getId();
+        try {
+            Acct acct = acctService.findById(acctId);
+            acct.setVersion(acctReconcileForm.getVersion());
+
+            // Update current statement to be the reconciled statement.
+            for (Stmt stmt : acct.getStmts()) {
+                if (stmt.getCloseDate().equals(endOfTime)) {
+                    stmt.setOpenBalance(acctReconcileForm.getOpenBalance());
+                    stmt.setDebits(acctReconcileForm.getDebits());
+                    stmt.setCredits(acctReconcileForm.getCredits());
+                    stmt.setFees(acctReconcileForm.getFees());
+                    stmt.setInterest(acctReconcileForm.getInterest());
+                    stmt.setCloseBalance(acctReconcileForm.getCloseBalance());
+                    stmt.setMinimumDue(acctReconcileForm.getMinimumDue());
+                    stmt.setDueDate(acctReconcileForm.getDueDate());
+                    stmt.setCloseDate(acctReconcileForm.getCloseDate());
+                }
+            }
+            // New current period statement.
+            Stmt currentStmt = new Stmt();
+            currentStmt.setCloseDate(endOfTime);
+            currentStmt.setAcct(acct);
+            acct.getStmts().add(currentStmt);
+
+            Acct save = acctService.save(acct);
+            String successMessage = String.format(SUCCESSFULLY_RECONCILED, save.getId());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            redirectAttributes.addAttribute("id", save.getId());
+            return "redirect:/acct?id={id}";
+        } catch (NotFoundException | OptimisticLockingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
     }
 }
