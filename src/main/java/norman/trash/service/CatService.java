@@ -28,6 +28,11 @@ public class CatService {
         return repository.findAll(pageable);
     }
 
+    public Iterable<Cat> findAll() {
+        // FIXME sorted by name.
+        return repository.findAll();
+    }
+
     public Cat findById(Long id) throws NotFoundException {
         Optional<Cat> optional = repository.findById(id);
         if (!optional.isPresent()) {

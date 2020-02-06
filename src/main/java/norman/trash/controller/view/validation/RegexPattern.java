@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RegexPattern {
-    String message() default "Invalid regular expression.";
+    String message() default "Invalid Regular Expression.";
 
     Class<?>[] groups() default {};
 

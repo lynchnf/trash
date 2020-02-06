@@ -10,10 +10,10 @@ import javax.validation.constraints.Size;
 public class PatternRow {
     private Long id;
     private Integer version = 0;
-    @NotNull
+    @NotNull(message = "Category may not be blank.")
     private Long catId;
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "Regular Expression may not be blank.")
+    @Size(max = 255, message = "Regular Expression may not be over {max} characters long.")
     @RegexPattern
     private String regex;
 

@@ -3,9 +3,9 @@
 * Reconcile account.
 * Edit transaction.
 * Upload OFX files.
-* Reminders
-* Production profile.
+* Reminders.
 * Automatically assign categories to transactions.
+* Rename header fragment to menu or navbar.
 
 ## Things done
 
@@ -13,6 +13,7 @@
 * Categories.
 * Update transactions with check number, name, and memo.
 * Handle optimistic lock error.
+* Production profile.
 
 ## Things rejected
 

@@ -1,7 +1,13 @@
 package norman.trash.controller;
 
+import norman.trash.MultipleOptimisticLockingException;
+import norman.trash.NotFoundException;
+import norman.trash.controller.view.PatternForm;
 import norman.trash.controller.view.PatternListForm;
+import norman.trash.controller.view.PatternRow;
+import norman.trash.domain.Cat;
 import norman.trash.domain.Pattern;
+import norman.trash.service.CatService;
 import norman.trash.service.PatternService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,10 +18,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static norman.trash.MessagesConstants.MULTIPLE_SUCCESSFULLY_UPDATED;
 
 @Controller
 public class PatternController {
@@ -24,6 +39,8 @@ public class PatternController {
     private static final String[] catSortableColumns = {"seq", "regex"};
     @Autowired
     private PatternService patternService;
+    @Autowired
+    private CatService catService;
 
     @GetMapping("/patternList")
     // @formatter:off
@@ -54,15 +71,54 @@ public class PatternController {
         return "patternList";
     }
 
-/*
     @GetMapping("/patternEdit")
-    public String loadEdit(Model model) {
-        Iterable<Pattern> patterns = patternService.findAllPatterns();
-        norman.junk.controller.PatternForm patternForm = new PatternForm(patterns);
+    public String loadPatternEdit(Model model) {
+        Iterable<Pattern> patterns = patternService.findAll();
+        Iterable<Cat> cats = catService.findAll();
+        PatternForm patternForm = new PatternForm(patterns, cats);
         model.addAttribute("patternForm", patternForm);
         return "patternEdit";
     }
 
+    @PostMapping("/patternEdit")
+    private String processPatternEdit(@Valid PatternForm patternForm, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "patternEdit";
+        }
+
+        try {
+            List<Pattern> patterns = new ArrayList<>();
+            for (int i = 0; i < patternForm.getPatternRows().size(); i++) {
+                if (i != 2) {
+                    PatternRow patternRow = patternForm.getPatternRows().get(i);
+                    Pattern pattern = new Pattern();
+                    pattern.setId(patternRow.getId());
+                    pattern.setVersion(patternRow.getVersion());
+                    pattern.setRegex(patternRow.getRegex());
+                    Long catId = patternRow.getCatId();
+                    Cat cat = catService.findById(catId);
+                    pattern.setCat(cat);
+                    pattern.setSeq(i + 1);
+                    patterns.add(pattern);
+                }
+            }
+            patternService.saveAll(patterns);
+            String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Patterns");
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            return "redirect:/patternList";
+        } catch (NotFoundException | MultipleOptimisticLockingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/patternList";
+        }
+    }
+
+    @ModelAttribute("allCats")
+    public Iterable<Cat> loadCatsDropDown() {
+        return catService.findAll();
+    }
+
+/*
     @PostMapping("/patternEdit")
     public String processEdit(@Valid PatternForm patternForm, BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
