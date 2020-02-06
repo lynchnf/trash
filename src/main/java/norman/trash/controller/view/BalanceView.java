@@ -18,9 +18,6 @@ public class BalanceView {
     private BigDecimal amount;
     private BigDecimal balance;
 
-    public BalanceView() {
-    }
-
     public BalanceView(Stmt stmt) {
         type = BalanceType.STMT;
         id = stmt.getId();

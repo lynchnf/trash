@@ -22,12 +22,11 @@ public class AfterDateIfValueChangeValidator implements ConstraintValidator<Afte
     }
 
     @Override
-    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
-        BeanWrapperImpl beanWrapper = new BeanWrapperImpl(o);
-        Date newDateValue = (Date) beanWrapper.getPropertyValue(newDate);
-        Date oldDateValue = (Date) beanWrapper.getPropertyValue(oldDate);
-        String newStringValue = (String) beanWrapper.getPropertyValue(newString);
-        String oldStringValue = (String) beanWrapper.getPropertyValue(oldString);
+    public boolean isValid(Object formBean, ConstraintValidatorContext constraintValidatorContext) {
+        Date newDateValue = (Date) new BeanWrapperImpl(formBean).getPropertyValue(newDate);
+        Date oldDateValue = (Date) new BeanWrapperImpl(formBean).getPropertyValue(oldDate);
+        String newStringValue = (String) new BeanWrapperImpl(formBean).getPropertyValue(newString);
+        String oldStringValue = (String) new BeanWrapperImpl(formBean).getPropertyValue(oldString);
         // If old string value is blank, this is a new record and we don't care about the date.
         if (StringUtils.isBlank(oldStringValue)) {
             return true;

@@ -6,16 +6,16 @@ public class CatView {
     private Long id;
     private String name;
 
+    public CatView(Cat cat) {
+        id = cat.getId();
+        name = cat.getName();
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public CatView(Cat cat) {
-        id = cat.getId();
-        name = cat.getName();
     }
 }

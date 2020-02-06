@@ -14,6 +14,8 @@ public class Cat {
     @Column(length = 100, nullable = false)
     private String name;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cat")
+    private List<Pattern> patterns = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cat")
     private List<Tran> trans = new ArrayList<>();
 
     public Long getId() {
@@ -38,6 +40,14 @@ public class Cat {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Pattern> getPatterns() {
+        return patterns;
+    }
+
+    public void setPatterns(List<Pattern> patterns) {
+        this.patterns = patterns;
     }
 
     public List<Tran> getTrans() {

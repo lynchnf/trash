@@ -1,7 +1,16 @@
 INSERT INTO `cat` (`name`,`version`) VALUES ('Mortgage',0);
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*ZEALOUS.*',1,0,(SELECT `id` FROM `cat` WHERE `name`='Mortgage'));
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*FUNKY.*',2,0,(SELECT `id` FROM `cat` WHERE `name`='Mortgage'));
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*YUCKY.*',3,0,(SELECT `id` FROM `cat` WHERE `name`='Mortgage'));
 INSERT INTO `cat` (`name`,`version`) VALUES ('Groceries',0);
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*XENOPHOBIC.*',4,0,(SELECT `id` FROM `cat` WHERE `name`='Groceries'));
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*EVIL.*',5,0,(SELECT `id` FROM `cat` WHERE `name`='Groceries'));
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*FUNKY.*',6,0,(SELECT `id` FROM `cat` WHERE `name`='Groceries'));
 INSERT INTO `cat` (`name`,`version`) VALUES ('Utilities',0);
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*NUCLEAR.*',7,0,(SELECT `id` FROM `cat` WHERE `name`='Utilities'));
 INSERT INTO `cat` (`name`,`version`) VALUES ('Miscellaneous',0);
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*FUNKY.*',8,0,(SELECT `id` FROM `cat` WHERE `name`='Miscellaneous'));
+INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`) VALUES ('.*PEDANTIC.*',9,0,(SELECT `id` FROM `cat` WHERE `name`='Miscellaneous'));
 INSERT INTO `acct` (`address1`,`address2`,`address_name`,`city`,`credit_limit`,`name`,`phone_number`,`state`,`type`,`version`,`zip_code`) VALUES ('2695 Recalcitrant St',NULL,'Zealous Cable TV Inc.','Violent City',NULL,'Zealous Cable TV','201-112-7264','NU','BILL',0,'79345-8772');
 INSERT INTO `acct_nbr` (`eff_date`, `number`, `version`, `acct_id`) VALUES ('2019-01-01','16273',0,(SELECT `id` FROM `acct` WHERE `name`='Zealous Cable TV'));
 INSERT INTO `acct_nbr` (`eff_date`, `number`, `version`, `acct_id`) VALUES ('2019-04-11','53254',0,(SELECT `id` FROM `acct` WHERE `name`='Zealous Cable TV'));

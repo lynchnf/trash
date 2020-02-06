@@ -52,6 +52,7 @@ public class FakeDataUtil {
         endOfTime = cal.getTime();
 
         long catId = 1;
+        long patternId = 1;
         long acctId = 1;
         long acctNbrId = 1;
         long stmtId = 1;
@@ -63,6 +64,11 @@ public class FakeDataUtil {
         for (String name : CAT_NAMES) {
             Cat cat = buildCat(catId++, name);
             catMap.put(cat.getName(), cat);
+
+            int nbrOfPatterns = RANDOM.nextInt(4) + 1;
+            for (int j = 0; j < nbrOfPatterns; j++) {
+                Pattern pattern = buildPattern(patternId++, cat);
+            }
         }
 
         for (int i = 0; i < NBR_OF_ACCTS; i++) {
@@ -100,6 +106,9 @@ public class FakeDataUtil {
         // Now print insert statements for everything.
         for (Cat cat : catMap.values()) {
             printInsertCat(cat);
+            for (Pattern pattern : cat.getPatterns()) {
+                printInsertPattern(pattern);
+            }
         }
         for (Acct acct : acctMap.values()) {
             printInsertAcct(acct);
@@ -126,6 +135,15 @@ public class FakeDataUtil {
         cat.setId(id);
         cat.setName(name);
         return cat;
+    }
+
+    private static Pattern buildPattern(long id, Cat cat) {
+        Pattern pattern = new Pattern();
+        pattern.setSeq((int) id);
+        pattern.setRegex(".*" + WORDS[RANDOM.nextInt(WORDS.length)].toUpperCase() + ".*");
+        pattern.setCat(cat);
+        cat.getPatterns().add(pattern);
+        return pattern;
     }
 
     private static Acct buildAcct(long id, Map<String, Acct> acctMap) {
@@ -375,6 +393,12 @@ public class FakeDataUtil {
     private static void printInsertCat(Cat cat) {
         String insertIntoCat = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
         System.out.printf(insertIntoCat, cat.getName());
+    }
+
+    private static void printInsertPattern(Pattern pattern) {
+        String insertIntoPattern = "INSERT INTO `pattern` (`regex`,`seq`,`version`,`cat_id`)" +
+                " VALUES ('%s',%d,0,(SELECT `id` FROM `cat` WHERE `name`='%s'));%n";
+        System.out.printf(insertIntoPattern, pattern.getRegex(), pattern.getSeq(), pattern.getCat().getName());
     }
 
     private static void printInsertAcct(Acct acct) {
