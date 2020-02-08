@@ -74,8 +74,7 @@ public class PatternController {
     @GetMapping("/patternEdit")
     public String loadPatternEdit(Model model) {
         Iterable<Pattern> patterns = patternService.findAll();
-        Iterable<Cat> cats = catService.findAll();
-        PatternForm patternForm = new PatternForm(patterns, cats);
+        PatternForm patternForm = new PatternForm(patterns);
         model.addAttribute("patternForm", patternForm);
         return "patternEdit";
     }
@@ -90,20 +89,18 @@ public class PatternController {
         try {
             List<Pattern> patterns = new ArrayList<>();
             for (int i = 0; i < patternForm.getPatternRows().size(); i++) {
-                if (i != 2) {
-                    PatternRow patternRow = patternForm.getPatternRows().get(i);
-                    Pattern pattern = new Pattern();
-                    pattern.setId(patternRow.getId());
-                    pattern.setVersion(patternRow.getVersion());
-                    pattern.setRegex(patternRow.getRegex());
-                    Long catId = patternRow.getCatId();
-                    Cat cat = catService.findById(catId);
-                    pattern.setCat(cat);
-                    pattern.setSeq(i + 1);
-                    patterns.add(pattern);
-                }
+                PatternRow patternRow = patternForm.getPatternRows().get(i);
+                Pattern pattern = new Pattern();
+                pattern.setId(patternRow.getId());
+                pattern.setVersion(patternRow.getVersion());
+                pattern.setRegex(patternRow.getRegex());
+                Long catId = patternRow.getCatId();
+                Cat cat = catService.findById(catId);
+                pattern.setCat(cat);
+                pattern.setSeq(i + 1);
+                patterns.add(pattern);
             }
-            patternService.saveAll(patterns);
+            patternService.saveAll(patterns, patternForm.getIdList());
             String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Patterns");
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/patternList";
@@ -117,32 +114,4 @@ public class PatternController {
     public Iterable<Cat> loadCatsDropDown() {
         return catService.findAll();
     }
-
-/*
-    @PostMapping("/patternEdit")
-    public String processEdit(@Valid PatternForm patternForm, BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            return "patternEdit";
-        }
-        // Convert form to entities and save.
-        List<Pattern> patterns = patternForm.toPatterns(categoryService);
-        try {
-            patternService.saveAllPatterns(patterns);
-            String successMessage = String.format(SUCCESSFULLY_UPDATED_MULTI, "Patterns");
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
-            return "redirect:/patternList";
-        } catch (JunkOptimisticLockingException e) {
-            String msg = String.format(MULTI_OPTIMISTIC_LOCK_ERROR, "Patterns");
-            logger.warn(msg, e);
-            redirectAttributes.addFlashAttribute("errorMessage", msg);
-            return "redirect:/patternList";
-        }
-    }
-
-    @ModelAttribute("allCategories")
-    public Iterable<Category> loadCategoryDropDown() {
-        return categoryService.findAllCategories();
-    }
-*/
 }

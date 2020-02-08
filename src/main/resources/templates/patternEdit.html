@@ -10,28 +10,27 @@
         <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
             <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
         </ul>
-        <input type="hidden" th:field="*{catMap}"/>
+        <input type="hidden" th:field="*{idList}"/>
+        <select id="copyCatDropDown" class="d-none">
+            <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
+        </select>
         <table class="table table-sm table-striped">
             <thead>
             <tr>
                 <th>Actions</th>
-                <th>Sequence</th>
                 <th>Regular Expression</th>
                 <th>Category</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="patternRow,iterStat:*{patternRows}">
+            <tbody id="tbodyPatternEdit">
+            <tr th:each="patternRow,iterStat:*{patternRows}" th:id="${'patternRows' + iterStat.index}">
                 <td>
                     <input type="hidden" th:field="*{patternRows[__${iterStat.index}__].id}"/>
                     <input type="hidden" th:field="*{patternRows[__${iterStat.index}__].version}"/>
-                    <a><i class="fas fa-angle-double-up" title="Move to top"></i></i></a>
-                    <a><i class="fas fa-angle-up" title="Move up"></i></i></a>
-                    <a><i class="fas fa-angle-down" title="Move down"></i></a>
-                    <a><i class="fas fa-angle-double-down" title="Move to bottom"></i></a>
-                    <a><i class="fas fa-ban" title="Delete"></i></a>
+                    <a class="moveRowUp" href="#"><i class="fas fa-arrow-up" title="Move up"></i></i></a>
+                    <a class="moveRowDown" href="#"><i class="fas fa-arrow-down" title="Move down"></i></a>
+                    <a class="deleteRow" href="#"><i class="fas fa-ban" title="Delete"></i></a>
                 </td>
-                <td th:text="${iterStat.count}"></td>
                 <td>
                     <input type="text" class="form-control" th:field="*{patternRows[__${iterStat.index}__].regex}"
                            th:errorclass="is-invalid"/>
@@ -47,7 +46,7 @@
             </tbody>
         </table>
         <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary">Add</button>
+        <button type="button" id="addPatternEdit" class="btn btn-secondary">Add</button>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>

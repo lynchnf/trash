@@ -8,8 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PatternService {
@@ -26,13 +29,17 @@ public class PatternService {
     }
 
     public Iterable<Pattern> findAll() {
-        // FIXME Sort by seq.
-        return repository.findAll();
+        return repository.findAll(Sort.by("seq"));
     }
 
-    public Iterable<Pattern> saveAll(Iterable<Pattern> patterns) throws MultipleOptimisticLockingException {
+    public void saveAll(Iterable<Pattern> patterns, List<Long> idList) throws MultipleOptimisticLockingException {
         try {
-            return repository.saveAll(patterns);
+            for (Pattern pattern : patterns) {
+                idList.remove(pattern.getId());
+            }
+            repository.saveAll(patterns);
+            Iterable<Pattern> pattensToDelete = repository.findAllById(idList);
+            repository.deleteAll(pattensToDelete);
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new MultipleOptimisticLockingException(LOGGER, "Patterns", e);
         }

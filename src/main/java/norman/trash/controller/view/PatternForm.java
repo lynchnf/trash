@@ -1,29 +1,24 @@
 package norman.trash.controller.view;
 
-import norman.trash.domain.Cat;
 import norman.trash.domain.Pattern;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PatternForm {
     @Valid
     private List<PatternRow> patternRows = new ArrayList<>();
-    private Map<Long, String> catMap = new LinkedHashMap<>();
+    private List<Long> idList = new ArrayList<>();
 
     public PatternForm() {
     }
 
-    public PatternForm(Iterable<Pattern> patterns, Iterable<Cat> cats) {
+    public PatternForm(Iterable<Pattern> patterns) {
         for (Pattern pattern : patterns) {
             PatternRow patternRow = new PatternRow(pattern);
             patternRows.add(patternRow);
-        }
-        for (Cat cat : cats) {
-            catMap.put(cat.getId(), cat.getName());
+            idList.add(pattern.getId());
         }
     }
 
@@ -35,11 +30,11 @@ public class PatternForm {
         this.patternRows = patternRows;
     }
 
-    public Map<Long, String> getCatMap() {
-        return catMap;
+    public List<Long> getIdList() {
+        return idList;
     }
 
-    public void setCatMap(Map<Long, String> catMap) {
-        this.catMap = catMap;
+    public void setIdList(List<Long> idList) {
+        this.idList = idList;
     }
 }

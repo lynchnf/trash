@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,7 @@ public class CatService {
     }
 
     public Iterable<Cat> findAll() {
-        // FIXME sorted by name.
-        return repository.findAll();
+        return repository.findAll(Sort.by("name"));
     }
 
     public Cat findById(Long id) throws NotFoundException {
