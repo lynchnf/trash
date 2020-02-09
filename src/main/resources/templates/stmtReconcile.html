@@ -4,82 +4,83 @@
 <body>
 <header th:replace="fragments/header::header"></header>
 <main class="container">
-    <h1>Account Reconcile</h1>
+    <h1>Statement Reconcile</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <form th:action="@{/acctReconcile}" th:object="${acctReconcileForm}" method="post">
+    <form th:action="@{/stmtReconcile}" th:object="${stmtReconcileForm}" method="post">
         <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
             <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
         </ul>
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{version}"/>
+        <input type="hidden" th:field="*{acctId}"/>
         <input type="hidden" th:field="*{name}"/>
         <input type="hidden" th:field="*{type}"/>
         <input type="hidden" th:field="*{cc}"/>
+        <input type="hidden" th:field="*{billOrCc}"/>
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Id</label>
             <div class="col-sm-9">
-                <p class="form-control-plaintext" th:text="${acctReconcileForm.id}"></p>
+                <p class="form-control-plaintext" th:text="${stmtReconcileForm.id}"></p>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Name</label>
             <div class="col-sm-9">
-                <p class="form-control-plaintext" th:text="${acctReconcileForm.name}"></p>
+                <p class="form-control-plaintext" th:text="${stmtReconcileForm.name}"></p>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Type</label>
             <div class="col-sm-9">
-                <p class="form-control-plaintext" th:text="${acctReconcileForm.type}"></p>
+                <p class="form-control-plaintext" th:text="${stmtReconcileForm.type}"></p>
             </div>
         </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Previous Balance</label>
+        <div th:if="*{cc}" class="form-group row">
+            <label class="col-sm-3 col-form-label">Opening Balance</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{openBalance}" th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{cc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Payments And Other Credits</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{credits}"
                        th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{cc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Purchases And Adjustments</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{debits}"
                        th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{cc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Fees Charged</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{fees}" th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{cc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Interest Charged</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{interest}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label">New Balance</label>
+            <label class="col-sm-3 col-form-label">Closing Balance</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{closeBalance}" th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{cc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Minimum Payment Due</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{minimumDue}" th:errorclass="is-invalid"/>
             </div>
         </div>
-        <div class="form-group row">
+        <div th:if="*{billOrCc}" class="form-group row">
             <label class="col-sm-3 col-form-label">Payment Due Date</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{dueDate}" th:errorclass="is-invalid"/>
@@ -92,6 +93,51 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Reconcile</button>
+
+        <h2>Transactions</h2>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Sel</th>
+                <th>Id</th>
+                <th>Category</th>
+                <th>Post Date</th>
+                <th>Amount</th>
+                <th>Check Number</th>
+                <th>Name</th>
+                <th>Memo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stmtReconcileRow,iterStat:*{stmtReconcileRows}">
+                <td>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].type}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].id}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].version}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].postDate}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].amount}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].checkNumber}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].name}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].memo}"/>
+                    <input type="checkbox" class="form-control"
+                           th:field="*{stmtReconcileRows[__${iterStat.index}__].selected}"/>
+                </td>
+                <td th:text="${stmtReconcileRow.id}"></td>
+                <td>
+                    <select class="form-control" th:field="*{stmtReconcileRows[__${iterStat.index}__].catId}"
+                            th:errorclass="is-invalid">
+                        <option value="">select</option>
+                        <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                    </select>
+                </td>
+                <td th:text="${stmtReconcileRow.postDate}"></td>
+                <td th:text="${stmtReconcileRow.amount}"></td>
+                <td th:text="${stmtReconcileRow.checkNumber}"></td>
+                <td th:text="${stmtReconcileRow.name}"></td>
+                <td th:text="${stmtReconcileRow.memo}"></td>
+            </tr>
+            </tbody>
+        </table>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>

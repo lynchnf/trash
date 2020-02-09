@@ -57,19 +57,27 @@ var swapFields = function (rowId1, rowId2, suffix) {
 
 var addPatternEdit = function () {
     var nbrOfRows = $("#tbodyPatternEdit TR").length;
-    $("#tbodyPatternEdit")
-        .append("<tr id=\"patternRows" + nbrOfRows + "\">" + "<td>" + "<input type=\"hidden\" id=\"patternRows" +
-            nbrOfRows + ".id\" name=\"patternRows[" + nbrOfRows + "].id\" value=\"\">" +
-            "<input type=\"hidden\" id=\"patternRows" + nbrOfRows + ".version\" name=\"patternRows[" + nbrOfRows +
-            "].version\" value=\"0\">" +
-            "<a class=\"moveRowUp\" href=\"#\"><i class=\"fas fa-arrow-up\" title=\"Move up\"></i></a> " +
-            "<a class=\"moveRowDown\" href=\"#\"><i class=\"fas fa-arrow-down\" title=\"Move down\"></i></a> " +
-            "<a class=\"deleteRow\" href=\"#\"><i class=\"fas fa-ban\" title=\"Delete\"></i></a>" + "</td>" + "<td>" +
-            "<input type=\"text\" class=\"form-control\" id=\"patternRows" + nbrOfRows +
-            ".regex\" name=\"patternRows[" + nbrOfRows + "].regex\" value=\"\">" + "</td>" + "<td>" +
-            "<select class=\"form-control\" id=\"patternRows" + nbrOfRows + ".catId\" name=\"patternRows[" + nbrOfRows +
-            "].catId\">" + "<option value=\"\">select</option>" + $("#copyCatDropDown").html() + "</select>" + "</td>" +
-            "</tr>");
+    // @formatter:off
+    $("#tbodyPatternEdit").append(
+        "<tr id=\"patternRows" + nbrOfRows + "\">" +
+            "<td>" +
+                "<input type=\"hidden\" id=\"patternRows" + nbrOfRows + ".id\" name=\"patternRows[" + nbrOfRows + "].id\" value=\"\">" +
+                "<input type=\"hidden\" id=\"patternRows" + nbrOfRows + ".version\" name=\"patternRows[" + nbrOfRows + "].version\" value=\"0\">" +
+                "<a class=\"moveRowUp\" href=\"#\"><i class=\"fas fa-arrow-up\" title=\"Move up\"></i></a> " +
+                "<a class=\"moveRowDown\" href=\"#\"><i class=\"fas fa-arrow-down\" title=\"Move down\"></i></a> " +
+                "<a class=\"deleteRow\" href=\"#\"><i class=\"fas fa-ban\" title=\"Delete\"></i></a>" +
+            "</td>" +
+            "<td>" +
+                "<input type=\"text\" class=\"form-control\" id=\"patternRows" + nbrOfRows + ".regex\" name=\"patternRows[" + nbrOfRows + "].regex\" value=\"\">" +
+            "</td>" +
+            "<td>" +
+                "<select class=\"form-control\" id=\"patternRows" + nbrOfRows + ".catId\" name=\"patternRows[" + nbrOfRows + "].catId\">" +
+                    "<option value=\"\">select</option>" +
+                    $("#copyCatDropDown").html() +
+                "</select>" +
+            "</td>" +
+        "</tr>");
+    // @formatter:on
     $(".moveRowUp").on("click", moveRowUp);
     $(".moveRowDown").on("click", moveRowDown);
     $(".deleteRow").on("click", deleteRow);
@@ -81,5 +89,3 @@ $(document).ready(function () {
     $(".deleteRow").on("click", deleteRow);
     $("#addPatternEdit").on("click", addPatternEdit);
 });
-
-

@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +78,12 @@ public class AcctForm {
 
         // Get the account number and effective date from the latest acctNbr.
         List<AcctNbr> acctNbrs = acct.getAcctNbrs();
-        acctNbrs.sort((acctNbr1, acctNbr2) -> acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate()));
+        Comparator<AcctNbr> comparator = new Comparator<AcctNbr>() {
+            public int compare(AcctNbr acctNbr1, AcctNbr acctNbr2) {
+                return acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate());
+            }
+        };
+        acctNbrs.sort(comparator);
         AcctNbr acctNbr = acctNbrs.iterator().next();
         number = acctNbr.getNumber();
         oldNumber = acctNbr.getNumber();

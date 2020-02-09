@@ -119,7 +119,7 @@
 
     <a class="btn btn-primary" th:href="@{/acctEdit(id=${view.id})}">Edit</a>
     <a class="btn btn-secondary" th:href="@{/acctBalance(id=${view.id})}">Balances</a>
-    <a class="btn btn-secondary" th:href="@{/acctReconcile(id=${view.id})}">Reconcile</a>
+    <a class="btn btn-secondary" th:href="@{/stmtReconcile(id=${view.currentStmtId})}">Reconcile</a>
 
     <h2>Statements</h2>
     <form id="listForm" action="#" method="get" th:action="@{/acct}">

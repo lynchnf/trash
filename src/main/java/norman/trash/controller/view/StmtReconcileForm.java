@@ -1,32 +1,43 @@
 package norman.trash.controller.view;
 
 import norman.trash.controller.view.validation.NotNullIfCondition;
-import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
+import norman.trash.domain.Stmt;
+import norman.trash.domain.Tran;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+
+import static norman.trash.domain.AcctType.BILL;
+import static norman.trash.domain.AcctType.CC;
 
 // @formatter:off
 @NotNullIfCondition.List({
-        @NotNullIfCondition(fieldName = "openBalance", conditionField = "cc", message = "If Credit Card, Previous Balance may not be blank."),
+        @NotNullIfCondition(fieldName = "openBalance", conditionField = "cc", message = "If Credit Card, Opening Balance may not be blank."),
         @NotNullIfCondition(fieldName = "debits", conditionField = "cc", message = "If Credit Card, Purchases And Adjustments may not be blank."),
         @NotNullIfCondition(fieldName = "credits", conditionField = "cc", message = "If Credit Card, Payments And Other Credits may not be blank."),
         @NotNullIfCondition(fieldName = "fees", conditionField = "cc", message = "If Credit Card, Fees Charged may not be blank."),
         @NotNullIfCondition(fieldName = "interest", conditionField = "cc", message = "If Credit Card, Interest Charged may not be blank."),
-        @NotNullIfCondition(fieldName = "closeDate", conditionField = "cc", message = "If Credit Card, Statement Closing Date may not be blank.")})
+        @NotNullIfCondition(fieldName = "minimumDue", conditionField = "cc", message = "If Credit Card, Minimum Payment may not be blank."),
+        @NotNullIfCondition(fieldName = "dueDate", conditionField = "billOrCc", message = "If Bill or Credit Card, Payment Due Date may not be blank.")})
 // @formatter:on
-public class AcctReconcileForm {
+public class StmtReconcileForm {
     private Long id;
     private Integer version = 0;
+    private Long acctId;
     private String name;
     private AcctType type;
     private boolean cc;
+    private boolean billOrCc;
     @Digits(integer = 7, fraction = 2,
-            message = "Previous Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+            message = "Opening Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal openBalance;
     @Digits(integer = 7, fraction = 2,
             message = "Purchases And Adjustments value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
@@ -40,28 +51,45 @@ public class AcctReconcileForm {
     @Digits(integer = 7, fraction = 2,
             message = "Interest Charged value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal interest;
-    @NotNull(message = "New Balance may not be blank.")
     @Digits(integer = 7, fraction = 2,
-            message = "New Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+            message = "Closing Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    @NotNull(message = "Closing Balance may not be blank.")
     private BigDecimal closeBalance;
     @Digits(integer = 7, fraction = 2,
             message = "Minimum Payment Due value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal minimumDue;
-    @NotNull(message = "Payment Due Date may not be blank.")
     @DateTimeFormat(pattern = "M/d/yyyy")
     private Date dueDate;
     @DateTimeFormat(pattern = "M/d/yyyy")
+    @NotNull(message = "Statement Closing Date may not be blank.")
     private Date closeDate;
+    @Valid
+    private List<StmtReconcileRow> stmtReconcileRows = new ArrayList<>();
 
-    public AcctReconcileForm() {
+    public StmtReconcileForm() {
     }
 
-    public AcctReconcileForm(Acct acct) {
-        id = acct.getId();
-        version = acct.getVersion();
-        name = acct.getName();
-        type = acct.getType();
-        cc = type == AcctType.CC;
+    public StmtReconcileForm(Stmt stmt) {
+        id = stmt.getAcct().getId();
+        version = stmt.getAcct().getVersion();
+        name = stmt.getAcct().getName();
+        type = stmt.getAcct().getType();
+        cc = type == CC;
+        billOrCc = type == BILL || type == CC;
+        for (Tran tran : stmt.getDebitTrans()) {
+            stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.DEBIT_TRAN));
+        }
+        for (Tran tran : stmt.getCreditTrans()) {
+            stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.CREDIT_TRAN));
+        }
+
+        Comparator<StmtReconcileRow> comparator = new Comparator<StmtReconcileRow>() {
+            @Override
+            public int compare(StmtReconcileRow row1, StmtReconcileRow row2) {
+                return row1.getPostDate().compareTo(row2.getPostDate());
+            }
+        };
+        stmtReconcileRows.sort(comparator);
     }
 
     public Long getId() {
@@ -78,6 +106,14 @@ public class AcctReconcileForm {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Long getAcctId() {
+        return acctId;
+    }
+
+    public void setAcctId(Long acctId) {
+        this.acctId = acctId;
     }
 
     public String getName() {
@@ -102,6 +138,14 @@ public class AcctReconcileForm {
 
     public void setCc(boolean cc) {
         this.cc = cc;
+    }
+
+    public boolean isBillOrCc() {
+        return billOrCc;
+    }
+
+    public void setBillOrCc(boolean billOrCc) {
+        this.billOrCc = billOrCc;
     }
 
     public BigDecimal getOpenBalance() {
@@ -174,5 +218,13 @@ public class AcctReconcileForm {
 
     public void setCloseDate(Date closeDate) {
         this.closeDate = closeDate;
+    }
+
+    public List<StmtReconcileRow> getStmtReconcileRows() {
+        return stmtReconcileRows;
+    }
+
+    public void setStmtReconcileRows(List<StmtReconcileRow> stmtReconcileRows) {
+        this.stmtReconcileRows = stmtReconcileRows;
     }
 }
