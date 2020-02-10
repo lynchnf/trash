@@ -6,6 +6,7 @@
 * Reminders.
 * Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
+* Create toPattern and toStmt methods in view objects.
 
 ## Things done
 
