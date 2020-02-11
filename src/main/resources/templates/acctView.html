@@ -81,7 +81,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Effective</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.effDate}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -93,7 +93,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Last Tran</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.lastTranDate}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
         </div>
     </div>
 
@@ -111,7 +111,7 @@
             <tr th:each="oldAcctNbr:${view.oldAcctNbrs}">
                 <td th:text="${oldAcctNbr.id}"></td>
                 <td th:text="${oldAcctNbr.number}"></td>
-                <td th:text="${oldAcctNbr.effDate}"></td>
+                <td th:text="${#dates.format(oldAcctNbr.effDate,'M/d/yyyy')}"></td>
             </tr>
             </tbody>
         </table>
@@ -182,7 +182,7 @@
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${row.closeDate}"></td>
+                <td th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></td>
                 <td th:text="${row.openBalance}"></td>
                 <td th:text="${row.debits}"></td>
                 <td th:text="${row.credits}"></td>
@@ -190,7 +190,7 @@
                 <td th:text="${row.interest}"></td>
                 <td th:text="${row.closeBalance}"></td>
                 <td th:text="${row.minimumDue}"></td>
-                <td th:text="${row.dueDate}"></td>
+                <td th:text="${#dates.format(row.dueDate,'M/d/yyyy')}"></td>
             </tbody>
         </table>
     </form>

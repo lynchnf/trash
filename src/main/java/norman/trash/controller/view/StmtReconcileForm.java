@@ -1,6 +1,7 @@
 package norman.trash.controller.view;
 
 import norman.trash.controller.view.validation.NotNullIfCondition;
+import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
@@ -51,9 +52,9 @@ public class StmtReconcileForm {
     @Digits(integer = 7, fraction = 2,
             message = "Interest Charged value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal interest;
+    @NotNull(message = "Closing Balance may not be blank.")
     @Digits(integer = 7, fraction = 2,
             message = "Closing Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    @NotNull(message = "Closing Balance may not be blank.")
     private BigDecimal closeBalance;
     @Digits(integer = 7, fraction = 2,
             message = "Minimum Payment Due value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
@@ -70,12 +71,26 @@ public class StmtReconcileForm {
     }
 
     public StmtReconcileForm(Stmt stmt) {
-        id = stmt.getAcct().getId();
-        version = stmt.getAcct().getVersion();
+        id = stmt.getId();
+        version = stmt.getVersion();
+        acctId = stmt.getAcct().getId();
         name = stmt.getAcct().getName();
         type = stmt.getAcct().getType();
         cc = type == CC;
         billOrCc = type == BILL || type == CC;
+
+/*
+        openBalance = stmt.getOpenBalance();
+        debits = stmt.getDebits();
+        credits = stmt.getCredits();
+        fees = stmt.getFees();
+        interest = stmt.getInterest();
+        closeBalance = stmt.getCloseBalance();
+        minimumDue = stmt.getMinimumDue();
+        dueDate = stmt.getDueDate();
+        closeDate = stmt.getCloseDate();
+*/
+
         for (Tran tran : stmt.getDebitTrans()) {
             stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.DEBIT_TRAN));
         }
@@ -90,6 +105,24 @@ public class StmtReconcileForm {
             }
         };
         stmtReconcileRows.sort(comparator);
+    }
+
+    public Stmt toStmt() {
+        Stmt stmt = new Stmt();
+        stmt.setId(id);
+        stmt.setVersion(version);
+        stmt.setAcct(new Acct());
+        stmt.getAcct().setId(acctId);
+        stmt.setOpenBalance(openBalance);
+        stmt.setDebits(debits);
+        stmt.setCredits(credits);
+        stmt.setFees(fees);
+        stmt.setInterest(interest);
+        stmt.setCloseBalance(closeBalance);
+        stmt.setMinimumDue(minimumDue);
+        stmt.setDueDate(dueDate);
+        stmt.setCloseDate(closeDate);
+        return stmt;
     }
 
     public Long getId() {

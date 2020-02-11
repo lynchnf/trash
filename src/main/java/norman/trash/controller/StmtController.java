@@ -1,11 +1,9 @@
 package norman.trash.controller;
 
 import norman.trash.NotFoundException;
-import norman.trash.TrashUtils;
 import norman.trash.controller.view.StmtReconcileForm;
 import norman.trash.controller.view.StmtView;
 import norman.trash.controller.view.TranListForm;
-import norman.trash.domain.Acct;
 import norman.trash.domain.Cat;
 import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
@@ -98,28 +96,7 @@ public class StmtController {
             return "stmtReconcile";
         }
 
-        Long acctId = stmtReconcileForm.getAcctId();
-        Acct acct = acctService.findById(acctId);
-
-        Stmt stmt = new Stmt();
-        stmt.setAcct(acct);
-        stmt.setId(stmtReconcileForm.getId());
-        stmt.setVersion(stmtReconcileForm.getVersion());
-        stmt.setOpenBalance(stmtReconcileForm.getOpenBalance());
-        stmt.setDebits(stmtReconcileForm.getDebits());
-        stmt.setCredits(stmtReconcileForm.getCredits());
-        stmt.setFees(stmtReconcileForm.getFees());
-        stmt.setInterest(stmtReconcileForm.getInterest());
-        stmt.setCloseBalance(stmtReconcileForm.getCloseBalance());
-        stmt.setMinimumDue(stmtReconcileForm.getMinimumDue());
-        stmt.setDueDate(stmtReconcileForm.getDueDate());
-        stmt.setCloseDate(stmtReconcileForm.getCloseDate());
-
-        Stmt newStmt = new Stmt();
-        newStmt.setAcct(acct);
-        newStmt.setCloseDate(TrashUtils.getEndOfTime());
-
-        return "foo";
+        return "redirect:/acctList";
     }
 
     @ModelAttribute("allCats")

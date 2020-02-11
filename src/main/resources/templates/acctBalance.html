@@ -39,7 +39,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Effective</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.effDate}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -51,7 +51,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Last Tran</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.lastTranDate}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
         </div>
     </div>
 
@@ -74,7 +74,7 @@
         <tr th:each="row:${rows}">
             <td th:text="${row.id}"></td>
             <td th:text="${row.type}"></td>
-            <td th:text="${row.postDate}"></td>
+            <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
             <td th:text="${row.checkNumber}"></td>
             <td th:text="${row.name}"></td>
             <td th:text="${row.memo}"></td>

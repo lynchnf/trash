@@ -1,7 +1,9 @@
 package norman.trash.controller.view;
 
 import norman.trash.domain.Cat;
+import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,7 +13,10 @@ public class StmtReconcileRow {
     private boolean selected;
     private Long id;
     private Integer version = 0;
+    private Long debitStmtId;
+    private Long creditStmtId;
     private Long catId;
+    @DateTimeFormat(pattern = "M/d/yyyy")
     private Date postDate;
     private BigDecimal amount;
     private String checkNumber;
@@ -26,6 +31,14 @@ public class StmtReconcileRow {
         selected = false;
         id = tran.getId();
         version = tran.getVersion();
+        Stmt debitStmt = tran.getDebitStmt();
+        if (debitStmt != null) {
+            debitStmtId = debitStmt.getId();
+        }
+        Stmt creditStmt = tran.getCreditStmt();
+        if (creditStmt != null) {
+            creditStmtId = creditStmt.getId();
+        }
         Cat cat = tran.getCat();
         if (cat != null) {
             catId = cat.getId();
@@ -39,6 +52,30 @@ public class StmtReconcileRow {
         checkNumber = tran.getCheckNumber();
         name = tran.getName();
         memo = tran.getMemo();
+    }
+
+    public Tran toTran() {
+        Tran tran = new Tran();
+        tran.setId(id);
+        tran.setVersion(version);
+        if (debitStmtId != null) {
+            tran.setDebitStmt(new Stmt());
+            tran.getDebitStmt().setId(debitStmtId);
+        }
+        if (creditStmtId != null) {
+            tran.setCreditStmt(new Stmt());
+            tran.getCreditStmt().setId(creditStmtId);
+        }
+        if (catId != null) {
+            tran.setCat(new Cat());
+            tran.getCat().setId(catId);
+        }
+        tran.setPostDate(postDate);
+        tran.setAmount(amount);
+        tran.setCheckNumber(checkNumber);
+        tran.setName(name);
+        tran.setMemo(memo);
+        return tran;
     }
 
     public BalanceType getType() {
@@ -71,6 +108,22 @@ public class StmtReconcileRow {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Long getDebitStmtId() {
+        return debitStmtId;
+    }
+
+    public void setDebitStmtId(Long debitStmtId) {
+        this.debitStmtId = debitStmtId;
+    }
+
+    public Long getCreditStmtId() {
+        return creditStmtId;
+    }
+
+    public void setCreditStmtId(Long creditStmtId) {
+        this.creditStmtId = creditStmtId;
     }
 
     public Long getCatId() {

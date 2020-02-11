@@ -93,11 +93,11 @@
                 <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.id}"></a></td>
                 <td th:text="${row.name}"></td>
                 <td th:text="${row.type}"></td>
-                <td th:text="${row.creditLimit}"></td>
+                <td th:text="${#numbers.formatDecimal(row.creditLimit,1,'DEFAULT',2,'DEFAULT')}"></td>
                 <td th:text="${row.number}"></td>
-                <td th:text="${row.effDate}"></td>
-                <td th:text="${row.balance}"></td>
-                <td th:text="${row.lastTranDate}"></td>
+                <td th:text="${#dates.format(row.effDate,'M/d/yyyy')}"></td>
+                <td th:text="${#numbers.formatDecimal(row.balance,1,'DEFAULT',2,'DEFAULT')}"></td>
+                <td th:text="${#dates.format(row.lastTranDate,'M/d/yyyy')}"></td>
             </tr>
             </tbody>
         </table>
