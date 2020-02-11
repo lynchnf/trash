@@ -71,7 +71,11 @@ public class StmtReconcileRow {
             tran.getCat().setId(catId);
         }
         tran.setPostDate(postDate);
-        tran.setAmount(amount);
+        if (type == BalanceType.DEBIT_TRAN) {
+            tran.setAmount(amount.negate());
+        } else {
+            tran.setAmount(amount);
+        }
         tran.setCheckNumber(checkNumber);
         tran.setName(name);
         tran.setMemo(memo);

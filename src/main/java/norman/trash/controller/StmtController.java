@@ -1,5 +1,6 @@
 package norman.trash.controller;
 
+import norman.trash.MultipleOptimisticLockingException;
 import norman.trash.NotFoundException;
 import norman.trash.controller.view.StmtReconcileForm;
 import norman.trash.controller.view.StmtView;
@@ -28,6 +29,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
+
+import static norman.trash.MessagesConstants.MULTIPLE_SUCCESSFULLY_UPDATED;
 
 @Controller
 public class StmtController {
@@ -91,12 +95,22 @@ public class StmtController {
 
     @PostMapping("/stmtReconcile")
     public String processStmtReconcile(@Valid StmtReconcileForm stmtReconcileForm, BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) throws NotFoundException {
+            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "stmtReconcile";
         }
-
-        return "redirect:/acctList";
+        Long acctId = stmtReconcileForm.getAcctId();
+        List<Stmt> stmts = stmtReconcileForm.toStmts();
+        try {
+            stmtService.saveAll(stmts);
+            String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Statements");
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            redirectAttributes.addAttribute("id", acctId);
+            return "redirect:/acct?id={id}";
+        } catch (MultipleOptimisticLockingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/acctList";
+        }
     }
 
     @ModelAttribute("allCats")

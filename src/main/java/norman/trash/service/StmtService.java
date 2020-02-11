@@ -1,5 +1,6 @@
 package norman.trash.service;
 
+import norman.trash.MultipleOptimisticLockingException;
 import norman.trash.NotFoundException;
 import norman.trash.domain.Stmt;
 import norman.trash.domain.repository.StmtRepository;
@@ -8,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,5 +31,13 @@ public class StmtService {
             throw new NotFoundException(LOGGER, "Statement", id);
         }
         return optional.get();
+    }
+
+    public void saveAll(List<Stmt> stmts) throws MultipleOptimisticLockingException {
+        try {
+            repository.saveAll(stmts);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new MultipleOptimisticLockingException(LOGGER, "Statements", e);
+        }
     }
 }

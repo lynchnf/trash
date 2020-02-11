@@ -22,6 +22,17 @@ public class PatternForm {
         }
     }
 
+    public List<Pattern> toPatterns() {
+        List<Pattern> patterns = new ArrayList<>();
+        for (int i = 0; i < patternRows.size(); i++) {
+            PatternRow patternRow = patternRows.get(i);
+            Pattern pattern = patternRow.toPattern();
+            pattern.setSeq(i + 1);
+            patterns.add(pattern);
+        }
+        return patterns;
+    }
+
     public List<PatternRow> getPatternRows() {
         return patternRows;
     }

@@ -33,13 +33,13 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Post Date</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.postDate}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.postDate,'M/d/yyyy')}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Amount</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.amount}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.amount)}"></p>
         </div>
     </div>
     <div class="form-group row">

@@ -1,10 +1,8 @@
 package norman.trash.controller;
 
 import norman.trash.MultipleOptimisticLockingException;
-import norman.trash.NotFoundException;
 import norman.trash.controller.view.PatternForm;
 import norman.trash.controller.view.PatternListForm;
-import norman.trash.controller.view.PatternRow;
 import norman.trash.domain.Cat;
 import norman.trash.domain.Pattern;
 import norman.trash.service.CatService;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,25 +83,14 @@ public class PatternController {
             return "patternEdit";
         }
 
+        List<Pattern> patterns = patternForm.toPatterns();
+
         try {
-            List<Pattern> patterns = new ArrayList<>();
-            for (int i = 0; i < patternForm.getPatternRows().size(); i++) {
-                PatternRow patternRow = patternForm.getPatternRows().get(i);
-                Pattern pattern = new Pattern();
-                pattern.setId(patternRow.getId());
-                pattern.setVersion(patternRow.getVersion());
-                pattern.setRegex(patternRow.getRegex());
-                Long catId = patternRow.getCatId();
-                Cat cat = catService.findById(catId);
-                pattern.setCat(cat);
-                pattern.setSeq(i + 1);
-                patterns.add(pattern);
-            }
             patternService.saveAll(patterns, patternForm.getIdList());
             String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Patterns");
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/patternList";
-        } catch (NotFoundException | MultipleOptimisticLockingException e) {
+        } catch (MultipleOptimisticLockingException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/patternList";
         }

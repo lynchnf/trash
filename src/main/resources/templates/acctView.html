@@ -69,7 +69,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Credit Limit</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.creditLimit}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -87,7 +87,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Balance</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.balance}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -183,13 +183,13 @@
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
                 <td th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></td>
-                <td th:text="${row.openBalance}"></td>
-                <td th:text="${row.debits}"></td>
-                <td th:text="${row.credits}"></td>
-                <td th:text="${row.fees}"></td>
-                <td th:text="${row.interest}"></td>
-                <td th:text="${row.closeBalance}"></td>
-                <td th:text="${row.minimumDue}"></td>
+                <td th:text="${#numbers.formatCurrency(row.openBalance)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.debits)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.credits)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.fees)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.interest)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.closeBalance)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.minimumDue)}"></td>
                 <td th:text="${#dates.format(row.dueDate,'M/d/yyyy')}"></td>
             </tbody>
         </table>

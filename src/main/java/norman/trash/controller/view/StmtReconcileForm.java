@@ -1,5 +1,6 @@
 package norman.trash.controller.view;
 
+import norman.trash.TrashUtils;
 import norman.trash.controller.view.validation.NotNullIfCondition;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
@@ -79,18 +80,6 @@ public class StmtReconcileForm {
         cc = type == CC;
         billOrCc = type == BILL || type == CC;
 
-/*
-        openBalance = stmt.getOpenBalance();
-        debits = stmt.getDebits();
-        credits = stmt.getCredits();
-        fees = stmt.getFees();
-        interest = stmt.getInterest();
-        closeBalance = stmt.getCloseBalance();
-        minimumDue = stmt.getMinimumDue();
-        dueDate = stmt.getDueDate();
-        closeDate = stmt.getCloseDate();
-*/
-
         for (Tran tran : stmt.getDebitTrans()) {
             stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.DEBIT_TRAN));
         }
@@ -107,22 +96,52 @@ public class StmtReconcileForm {
         stmtReconcileRows.sort(comparator);
     }
 
-    public Stmt toStmt() {
-        Stmt stmt = new Stmt();
-        stmt.setId(id);
-        stmt.setVersion(version);
-        stmt.setAcct(new Acct());
-        stmt.getAcct().setId(acctId);
-        stmt.setOpenBalance(openBalance);
-        stmt.setDebits(debits);
-        stmt.setCredits(credits);
-        stmt.setFees(fees);
-        stmt.setInterest(interest);
-        stmt.setCloseBalance(closeBalance);
-        stmt.setMinimumDue(minimumDue);
-        stmt.setDueDate(dueDate);
-        stmt.setCloseDate(closeDate);
-        return stmt;
+    public List<Stmt> toStmts() {
+        List<Stmt> stmts = new ArrayList<>();
+        Stmt reconciledStmt = new Stmt();
+        reconciledStmt.setId(id);
+        reconciledStmt.setVersion(version);
+        reconciledStmt.setAcct(new Acct());
+        reconciledStmt.getAcct().setId(acctId);
+        reconciledStmt.setOpenBalance(openBalance);
+        reconciledStmt.setDebits(debits);
+        reconciledStmt.setCredits(credits);
+        reconciledStmt.setFees(fees);
+        reconciledStmt.setInterest(interest);
+        reconciledStmt.setCloseBalance(closeBalance);
+        reconciledStmt.setMinimumDue(minimumDue);
+        reconciledStmt.setDueDate(dueDate);
+        reconciledStmt.setCloseDate(closeDate);
+        stmts.add(reconciledStmt);
+
+        // Current period statement.
+        Stmt currentStmt = new Stmt();
+        currentStmt.setAcct(new Acct());
+        currentStmt.getAcct().setId(acctId);
+        currentStmt.setCloseDate(TrashUtils.getEndOfTime());
+        stmts.add(currentStmt);
+
+        for (StmtReconcileRow stmtReconcileRow : stmtReconcileRows) {
+            Tran tran = stmtReconcileRow.toTran();
+            if (stmtReconcileRow.isSelected()) {
+                if (stmtReconcileRow.getType() == BalanceType.DEBIT_TRAN) {
+                    tran.setDebitStmt(reconciledStmt);
+                    reconciledStmt.getDebitTrans().add(tran);
+                } else {
+                    tran.setCreditStmt(reconciledStmt);
+                    reconciledStmt.getCreditTrans().add(tran);
+                }
+            } else {
+                if (stmtReconcileRow.getType() == BalanceType.DEBIT_TRAN) {
+                    tran.setDebitStmt(currentStmt);
+                    currentStmt.getDebitTrans().add(tran);
+                } else {
+                    tran.setCreditStmt(currentStmt);
+                    currentStmt.getCreditTrans().add(tran);
+                }
+            }
+        }
+        return stmts;
     }
 
     public Long getId() {

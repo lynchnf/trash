@@ -1,6 +1,7 @@
 package norman.trash.controller.view;
 
 import norman.trash.controller.view.validation.RegexPattern;
+import norman.trash.domain.Cat;
 import norman.trash.domain.Pattern;
 
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,18 @@ public class PatternRow {
         version = pattern.getVersion();
         catId = pattern.getCat().getId();
         regex = pattern.getRegex();
+    }
+
+    public Pattern toPattern() {
+        Pattern pattern = new Pattern();
+        if (id != null) {
+            pattern.setId(id);
+        }
+        pattern.setVersion(version);
+        pattern.setCat(new Cat());
+        pattern.getCat().setId(catId);
+        pattern.setRegex(regex);
+        return pattern;
     }
 
     public Long getId() {

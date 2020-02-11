@@ -1,12 +1,16 @@
 # Things To Do
 
-* Reconcile account.
 * Edit transaction.
 * Upload OFX files.
 * Reminders.
 * Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
-* Create toPattern and toStmt methods in view objects.
+* Back links from stmtView.html, tranView.html, acct balance.
+* Select all/none checkbox for stmt reconcile.
+* Date picker.
+* Links to stmts and trans on acct balance. 
+* Custom convert failed messages.
+* Custom converter for Date and BigDecimal.
 
 ## Things done
 
@@ -15,6 +19,8 @@
 * Update transactions with check number, name, and memo.
 * Handle optimistic lock error.
 * Production profile.
+* Reconcile account.
+* Create toPattern and toStmt methods in view objects.
 
 ## Things rejected
 

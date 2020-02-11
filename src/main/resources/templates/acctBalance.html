@@ -27,7 +27,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Credit Limit</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.creditLimit}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -45,7 +45,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Balance</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.balance}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -79,8 +79,8 @@
             <td th:text="${row.name}"></td>
             <td th:text="${row.memo}"></td>
             <td th:text="${row.catName}"></td>
-            <td th:text="${row.amount}"></td>
-            <td th:text="${row.balance}"></td>
+            <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
+            <td th:text="${#numbers.formatCurrency(row.balance)}"></td>
         </tr>
         </tbody>
     </table>
