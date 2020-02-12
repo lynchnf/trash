@@ -15,7 +15,8 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.acctName}"></p>
+            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.acctId})}" th:text="${view.acctName}"></a>
+            </p>
         </div>
     </div>
     <div class="form-group row">

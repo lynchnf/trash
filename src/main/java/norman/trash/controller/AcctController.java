@@ -27,7 +27,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static norman.trash.MessagesConstants.*;
-import static norman.trash.controller.view.BalanceType.*;
+import static norman.trash.controller.view.BalanceType.CREDIT_TRAN;
+import static norman.trash.controller.view.BalanceType.DEBIT_TRAN;
 
 @Controller
 public class AcctController {
@@ -210,9 +211,6 @@ public class AcctController {
             // Load rows.
             List<BalanceView> rows = new ArrayList<>();
             for (Stmt stmt : acct.getStmts()) {
-                BalanceView stmtRow = new BalanceView(stmt);
-                rows.add(stmtRow);
-
                 for (Tran tran : stmt.getDebitTrans()) {
                     BalanceView debitRow = new BalanceView(tran, DEBIT_TRAN);
                     rows.add(debitRow);
@@ -230,12 +228,6 @@ public class AcctController {
                     if (dateCompare != 0) {
                         return dateCompare;
                     }
-                    if (bal1.getType() == STMT && (bal2.getType() == DEBIT_TRAN || bal2.getType() == CREDIT_TRAN)) {
-                        return 1;
-                    } else if ((bal1.getType() == DEBIT_TRAN || bal1.getType() == CREDIT_TRAN) &&
-                            bal2.getType() == STMT) {
-                        return -1;
-                    }
                     return bal1.getId().compareTo(bal2.getId());
                 }
             };
@@ -244,9 +236,7 @@ public class AcctController {
             // Update balance of rows.
             BigDecimal balance = BigDecimal.ZERO;
             for (BalanceView row : rows) {
-                if (row.getType() != STMT) {
-                    balance = balance.add(row.getAmount());
-                }
+                balance = balance.add(row.getAmount());
                 row.setBalance(balance);
             }
 

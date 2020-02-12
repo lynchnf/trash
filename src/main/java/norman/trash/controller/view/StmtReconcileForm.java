@@ -1,7 +1,10 @@
 package norman.trash.controller.view;
 
 import norman.trash.TrashUtils;
+import norman.trash.controller.view.validation.CloseBalance;
+import norman.trash.controller.view.validation.CreditsAndDebits;
 import norman.trash.controller.view.validation.NotNullIfCondition;
+import norman.trash.controller.view.validation.OpenBalance;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.domain.Stmt;
@@ -29,6 +32,9 @@ import static norman.trash.domain.AcctType.CC;
         @NotNullIfCondition(fieldName = "interest", conditionField = "cc", message = "If Credit Card, Interest Charged may not be blank."),
         @NotNullIfCondition(fieldName = "minimumDue", conditionField = "cc", message = "If Credit Card, Minimum Payment may not be blank."),
         @NotNullIfCondition(fieldName = "dueDate", conditionField = "billOrCc", message = "If Bill or Credit Card, Payment Due Date may not be blank.")})
+@OpenBalance
+@CreditsAndDebits
+@CloseBalance
 // @formatter:on
 public class StmtReconcileForm {
     private Long id;

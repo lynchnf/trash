@@ -15,19 +15,25 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Debit Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.debitAcctName}"></p>
+            <p th:if="${view.debitAcctId}!=null" class="form-control-plaintext"><a
+                    th:href="@{/acct(id=${view.debitAcctId})}"
+                    th:text="${view.debitAcctName}"></a></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Credit Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.creditAcctName}"></p>
+            <p th:if="${view.creditAcctId}!=null" class="form-control-plaintext"><a
+                    th:href="@{/acct(id=${view.creditAcctId})}"
+                    th:text="${view.creditAcctName}"></a></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Category</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.catName}"></p>
+            <p th:if="${view.catId}!=null" class="form-control-plaintext"><a
+                    th:href="@{/cat(id=${view.catId})}"
+                    th:text="${view.catName}"></a></p>
         </div>
     </div>
     <div class="form-group row">

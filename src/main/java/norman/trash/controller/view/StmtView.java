@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class StmtView {
     private Long id;
+    private Long acctId;
     private String acctName;
     private Date closeDate;
     private BigDecimal openBalance;
@@ -20,6 +21,7 @@ public class StmtView {
 
     public StmtView(Stmt stmt) {
         id = stmt.getId();
+        acctId = stmt.getAcct().getId();
         acctName = stmt.getAcct().getName();
         closeDate = stmt.getCloseDate();
         openBalance = stmt.getOpenBalance();
@@ -34,6 +36,10 @@ public class StmtView {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getAcctId() {
+        return acctId;
     }
 
     public String getAcctName() {

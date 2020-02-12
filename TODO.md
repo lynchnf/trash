@@ -5,10 +5,8 @@
 * Reminders.
 * Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
-* Back links from stmtView.html, tranView.html, acct balance.
 * Select all/none checkbox for stmt reconcile.
 * Date picker.
-* Links to stmts and trans on acct balance. 
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
 
@@ -21,6 +19,8 @@
 * Production profile.
 * Reconcile account.
 * Create toPattern and toStmt methods in view objects.
+* Back links from stmtView.html, tranView.html, acct balance.
+* Links to stmts and trans on acct balance. 
 
 ## Things rejected
 

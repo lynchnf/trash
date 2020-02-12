@@ -5,12 +5,28 @@ import norman.trash.domain.Pattern;
 
 public class PatternView {
     private Long id;
+    private Long catId;
     private String catName;
     private Integer seq;
     private String regex;
 
+    public PatternView(Pattern pattern) {
+        id = pattern.getId();
+        Cat cat = pattern.getCat();
+        if (cat != null) {
+            catId = cat.getId();
+            catName = cat.getName();
+        }
+        seq = pattern.getSeq();
+        regex = pattern.getRegex();
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public Long getCatId() {
+        return catId;
     }
 
     public String getCatName() {
@@ -23,15 +39,5 @@ public class PatternView {
 
     public String getRegex() {
         return regex;
-    }
-
-    public PatternView(Pattern pattern) {
-        id = pattern.getId();
-        Cat cat = pattern.getCat();
-        if (cat != null) {
-            catName = cat.getName();
-        }
-        seq = pattern.getSeq();
-        regex = pattern.getRegex();
     }
 }

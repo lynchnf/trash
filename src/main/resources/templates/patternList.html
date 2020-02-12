@@ -82,7 +82,7 @@
                 <td th:text="${row.id}"></td>
                 <td th:text="${row.seq}"></td>
                 <td th:text="${row.regex}"></td>
-                <td th:text="${row.catName}"></td>
+                <td><a th:if="${row.catId}!=null" th:href="@{/cat(id=${row.catId})}" th:text="${row.catName}"></a></td>
             </tr>
             </tbody>
         </table>

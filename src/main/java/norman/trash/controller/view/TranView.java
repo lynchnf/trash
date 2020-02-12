@@ -10,10 +10,13 @@ import java.util.Date;
 public class TranView {
     private Long viewingAcctId;
     private Long id;
+    private Long debitAcctId;
     private String debitAcctName;
+    private Long creditAcctId;
     private String creditAcctName;
     private String viewingAcctName;
     private String otherAcctName;
+    private Long catId;
     private String catName;
     private Date postDate;
     private BigDecimal amount;
@@ -26,10 +29,12 @@ public class TranView {
         id = tran.getId();
         Stmt debitStmt = tran.getDebitStmt();
         if (debitStmt != null) {
+            debitAcctId = debitStmt.getAcct().getId();
             debitAcctName = debitStmt.getAcct().getName();
         }
         Stmt creditStmt = tran.getCreditStmt();
         if (creditStmt != null) {
+            creditAcctId = creditStmt.getAcct().getId();
             creditAcctName = creditStmt.getAcct().getName();
         }
         amount = tran.getAmount();
@@ -45,6 +50,7 @@ public class TranView {
         }
         Cat cat = tran.getCat();
         if (cat != null) {
+            catId = cat.getId();
             catName = cat.getName();
         }
         postDate = tran.getPostDate();
@@ -61,8 +67,16 @@ public class TranView {
         return id;
     }
 
+    public Long getDebitAcctId() {
+        return debitAcctId;
+    }
+
     public String getDebitAcctName() {
         return debitAcctName;
+    }
+
+    public Long getCreditAcctId() {
+        return creditAcctId;
     }
 
     public String getCreditAcctName() {
@@ -75,6 +89,10 @@ public class TranView {
 
     public String getOtherAcctName() {
         return otherAcctName;
+    }
+
+    public Long getCatId() {
+        return catId;
     }
 
     public String getCatName() {
