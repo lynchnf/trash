@@ -3,6 +3,7 @@ package norman.trash.service;
 import norman.trash.NotFoundException;
 import norman.trash.OptimisticLockingException;
 import norman.trash.domain.Cat;
+import norman.trash.domain.Pattern;
 import norman.trash.domain.repository.CatRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class CatService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatService.class);
     @Autowired
     private CatRepository repository;
+    @Autowired
+    private PatternService patternService;
 
     public Page<Cat> findByName(String name, Pageable pageable) {
         return repository.findByNameContainingIgnoreCase(name, pageable);
@@ -47,5 +50,18 @@ public class CatService {
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new OptimisticLockingException(LOGGER, "Category", cat.getId(), e);
         }
+    }
+
+    public Cat findByPattern(String name) {
+        Iterable<Pattern> patterns = patternService.findAll();
+        Cat cat = null;
+        for (Pattern pattern : patterns) {
+            boolean matches = java.util.regex.Pattern.matches(pattern.getRegex(), name);
+            if (matches) {
+                cat = pattern.getCat();
+                break;
+            }
+        }
+        return cat;
     }
 }

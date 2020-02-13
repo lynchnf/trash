@@ -1,14 +1,16 @@
 # Things To Do
 
-* Edit transaction.
 * Upload OFX files.
 * Reminders.
-* Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
 * Select all/none checkbox for stmt reconcile.
 * Date picker.
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
+* Version.
+* War.
+* Styling - #85bb65 (also known as Dollar bill)
+* Charts.
 
 ## Things done
 
@@ -21,6 +23,8 @@
 * Create toPattern and toStmt methods in view objects.
 * Back links from stmtView.html, tranView.html, acct balance.
 * Links to stmts and trans on acct balance. 
+* Edit transaction.
+* Automatically assign categories to transactions.
 
 ## Things rejected
 

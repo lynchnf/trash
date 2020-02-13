@@ -7,7 +7,6 @@ public class MessagesConstants {
     public static final String BEGINNING_BALANCE = "beginning balance";
     public static final String SUCCESSFULLY_ADDED = "%s successfully added, id=%d.";
     public static final String SUCCESSFULLY_UPDATED = "%s successfully updated, id=%d.";
-    public static final String SUCCESSFULLY_RECONCILED = "Account successfully reconciled, id=%d.";
     public static final String MULTIPLE_SUCCESSFULLY_UPDATED = "Successfully updated multiple %s.";
 
     private MessagesConstants() {

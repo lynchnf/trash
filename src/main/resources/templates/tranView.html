@@ -66,6 +66,7 @@
             <p class="form-control-plaintext" th:text="${view.memo}"></p>
         </div>
     </div>
+    <a class="btn btn-primary" th:href="@{/tranEdit(id=${view.id})}">Edit</a>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
 </body>

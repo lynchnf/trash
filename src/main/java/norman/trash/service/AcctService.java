@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,10 @@ public class AcctService {
 
     public Page<Acct> findAll(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    public Iterable<Acct> findAll() {
+        return repository.findAll(Sort.by("name"));
     }
 
     public Acct findById(Long id) throws NotFoundException {

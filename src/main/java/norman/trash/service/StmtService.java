@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,12 @@ public class StmtService {
             throw new NotFoundException(LOGGER, "Statement", id);
         }
         return optional.get();
+    }
+
+    public Stmt findByAcctIdAndCloseDate(Long acctId, Date closeDate) {
+        Iterable<Stmt> stmts = repository.findByAcct_IdAndCloseDate(acctId, closeDate);
+        // There should always be exactly one.
+        return stmts.iterator().next();
     }
 
     public void saveAll(List<Stmt> stmts) throws MultipleOptimisticLockingException {

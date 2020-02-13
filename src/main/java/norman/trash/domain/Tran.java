@@ -27,7 +27,7 @@ public class Tran {
     private BigDecimal amount;
     @Column(length = 10)
     private String checkNumber;
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String name;
     @Column(length = 100)
     private String memo;

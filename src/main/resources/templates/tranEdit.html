@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/header::header"></header>
+<main class="container">
+    <h1>Transaction Edit</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+    <form th:action="@{/tranEdit}" th:object="${tranForm}" method="post">
+        <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
+            <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{version}"/>
+
+        <div th:if="${tranForm.id}!=null" class="form-group row">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-9">
+                <p class="form-control-plaintext" th:text="${tranForm.id}"></p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Debit Account</label>
+            <div class="col-sm-9">
+                <select class="form-control" th:field="*{debitAcctId}" th:errorclass="is-invalid">
+                    <option value="">select</option>
+                    <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Credit Account</label>
+            <div class="col-sm-9">
+                <select class="form-control" th:field="*{creditAcctId}" th:errorclass="is-invalid">
+                    <option value="">select</option>
+                    <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Category</label>
+            <div class="col-sm-9">
+                <select class="form-control" th:field="*{catId}" th:errorclass="is-invalid">
+                    <option value="">select</option>
+                    <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Post Date (M/d/yyyy)</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" th:field="*{postDate}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Amount</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" th:field="*{amount}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Check Number</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" th:field="*{checkNumber}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Name</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Memo</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" th:field="*{memo}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>

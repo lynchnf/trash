@@ -41,7 +41,7 @@ public class AcctForm {
     private String zipCode;
     @Size(max = 20, message = "Phone Number may not be over {max} characters long.")
     private String phoneNumber;
-    @Min(value = 0, message = "Credit Limit may not be negative.")
+    @PositiveOrZero(message = "Credit Limit may not be negative.")
     @Digits(integer = 7, fraction = 2,
             message = "Credit Limit value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal creditLimit;
