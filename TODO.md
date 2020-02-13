@@ -6,7 +6,6 @@
 * Date picker.
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
-* Version.
 * War.
 * Styling - #85bb65 (also known as Dollar bill)
 * Charts.
@@ -25,6 +24,7 @@
 * Edit transaction.
 * Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
+* Version.
 
 ## Things rejected
 

@@ -34,12 +34,14 @@
                     </div>
                 </li>
                 <li class="d-md-none">
-                    <span th:replace="fragments/version::version"></span>
+                    <small class="text-light">Version:</small>
+                    <small class="text-light" th:text="#{trash.version}"></small>
                 </li>
             </ul>
         </div>
         <div class="d-none d-md-block">
-            <span th:replace="fragments/version::version"></span>
+            <small class="text-light">Version:</small>
+            <small class="text-light" th:text="#{trash.version}"></small>
         </div>
     </nav>
 </header>
