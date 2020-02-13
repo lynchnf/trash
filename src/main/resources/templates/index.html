@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head::head"></head>
 <body>
-<header th:replace="fragments/header::header"></header>
+<header th:replace="fragments/menu::menu"></header>
 <main class="container-fluid">
     <div th:replace="fragments/alerts::alerts"></div>
     <div class="row">
@@ -16,6 +16,9 @@
                 </tr>
             </table>
         </div>
+    </div>
+    <div class="col-md-12">
+        <span th:text="#{trash.version}"/>
     </div>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>

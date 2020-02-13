@@ -2,7 +2,6 @@
 
 * Upload OFX files.
 * Reminders.
-* Rename header fragment to menu or navbar.
 * Select all/none checkbox for stmt reconcile.
 * Date picker.
 * Custom convert failed messages.
@@ -25,6 +24,7 @@
 * Links to stmts and trans on acct balance. 
 * Edit transaction.
 * Automatically assign categories to transactions.
+* Rename header fragment to menu or navbar.
 
 ## Things rejected
 
