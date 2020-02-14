@@ -6,7 +6,29 @@
 <main class="container-fluid">
     <div th:replace="fragments/alerts::alerts"></div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-5">
+            <table class="table table-sm table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Credit Limit</th>
+                    <th>Balance</th>
+                    <th>Last Tran</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="acctRow:${acctRows}">
+                    <td><a th:href="@{/acct(id=${acctRow.id})}" th:text="${acctRow.name}"></a></td>
+                    <td th:text="${acctRow.type}"></td>
+                    <td th:text="${#numbers.formatCurrency(acctRow.creditLimit)}"></td>
+                    <td th:text="${#numbers.formatCurrency(acctRow.balance)}"></td>
+                    <td th:text="${#dates.format(acctRow.lastTranDate,'M/d/yyyy')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-7">
             <table class="table table-sm table-striped">
                 <tr>
                     <th>Some Text</th>

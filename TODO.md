@@ -6,9 +6,10 @@
 * Date picker.
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
-* War.
-* Styling - #85bb65 (also known as Dollar bill)
+* Styling - #85bb65 (also known as Dollar bill), https://paletton.com
 * Charts.
+* Budget.
+* Remove id's, maybe.
 
 ## Things done
 
@@ -25,6 +26,9 @@
 * Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
 * Version.
+* War.
+* Account list Dashboard.
+* Production profile when run from war file.
 
 ## Things rejected
 
