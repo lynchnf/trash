@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/menu::menu"></header>
+<main class="container">
+    <h1>Data Files</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+    <form id="listForm" action="#" method="get" th:action="@{/dataFileList}">
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereOriginalFilename}"/>
+        <input type="hidden" th:field="${listForm.whereStatus}"/>
+
+        <span th:if="${listForm.hasPrevious()}">
+            <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
+            &nbsp;
+            <a class="goToPreviousPage" data-list-form="listForm" href="#"><i class="fas fa-angle-left"></i></a>
+            &nbsp;
+        </span>
+
+        page <span th:text="${listForm.number}+1"></span> of <span th:text="${listForm.totalPages}"></span>
+
+        <span th:if="${listForm.hasNext()}">
+            &nbsp;
+            <a class="goToNextPage" data-list-form="listForm" href="#"><i class="fas fa-angle-right"></i></a>
+            &nbsp;
+            <a class="goToLastPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-right"></i></a>
+        </span>
+
+        &nbsp;&nbsp;&nbsp;
+        page size
+        <select class="changePageSize" data-list-form="listForm">
+            <option value="5" th:selected="${listForm.size}==5">5</option>
+            <option value="10" th:selected="${listForm.size}==10">10</option>
+            <option value="20" th:selected="${listForm.size}==20">20</option>
+            <option value="50" th:selected="${listForm.size}==50">50</option>
+        </select>
+
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="originalFilename" href="#">
+                        Original Filename
+                        <span th:if="${listForm.sortColumn=='originalFilename'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="status" href="#">
+                        Status
+                        <span th:if="${listForm.sortColumn=='status'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="contentType" href="#">
+                        Content Type
+                        <span th:if="${listForm.sortColumn=='contentType'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
+                <th>Size</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="uploadTimestamp" href="#">
+                        Upload Timestamp
+                        <span th:if="${listForm.sortColumn=='uploadTimestamp'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" id="filterDataFileList" class="btn btn-primary btn-sm"
+                            data-list-form="listForm">Filter
+                    </button>
+                </td>
+                <td>
+                    <input type="text" id="newWhereOriginalFilename" placeholder="contains"
+                           th:value="${listForm.whereOriginalFilename}"/>
+                </td>
+                <td>
+                    <select id="newWhereStatus">
+                        <option value="">select</option>
+                        <option th:each="dataFileStatus:${T(norman.trash.domain.DataFileStatus).values()}"
+                                th:value="${dataFileStatus}" th:text="${dataFileStatus}"
+                                th:selected="${listForm.whereStatus}==${dataFileStatus}"></option>
+                    </select>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row:${listForm.rows}">
+                <td><a th:href="@{/dataFile(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td th:text="${row.originalFilename}"></td>
+                <td th:text="${row.status}"></td>
+                <td th:text="${row.contentType}"></td>
+                <td th:text="${#numbers.formatInteger(row.size,1,'DEFAULT')}"></td>
+                <td th:text="${#dates.format(row.uploadTimestamp,'M/d/yyyy H:m:s')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+<script src="js/dataFileList.js"></script>
+</body>
+</html>

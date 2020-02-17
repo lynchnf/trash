@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static norman.trash.MessagesConstants.BEGINNING_BALANCE;
@@ -15,6 +17,7 @@ public class FakeDataUtil {
     private static final Random RANDOM = new Random();
     private static final int NBR_OF_ACCTS = 12;
     private static final int NBR_OF_TRANS = 1728;
+    private static final int NBR_OF_DATA_FILES = 12;
     private static final String[] WORDS =
             {"Abominable", "Bulimic", "Cosmic", "Desperate", "Evil", "Funky", "Ginormous", "Hungry", "Inconceivable",
                     "Jurassic", "Kick-ass", "Ludicrous", "Malevolent", "Nuclear", "Obsequious", "Pedantic", "Quiescent",
@@ -25,6 +28,7 @@ public class FakeDataUtil {
     private static final String[] CC_NAMES = {"Credit Card", "Plastic Credit", "Gold Card", "Platinum Card"};
     private static final String[] BILL_NAMES =
             {"Cable TV", "Gas", "Gym", "Insurance", "Lawn Service", "Power", "Water and Sewer"};
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Date today;
     private static Date endOfTime;
     private static Date beginningOfTime;
@@ -57,9 +61,11 @@ public class FakeDataUtil {
         long acctNbrId = 1;
         long stmtId = 1;
         long tranId = 1;
+        long dataFileId = 1;
         Map<String, Cat> catMap = new LinkedHashMap<>();
         Map<String, Acct> acctMap = new LinkedHashMap<>();
         List<Tran> tranList = new ArrayList<>();
+        List<DataFile> dataFileList = new ArrayList<>();
 
         for (String name : CAT_NAMES) {
             Cat cat = buildCat(catId++, name);
@@ -90,6 +96,11 @@ public class FakeDataUtil {
         for (int i = 0; i < NBR_OF_TRANS; i++) {
             Tran tran = buildTran(tranId++, acctMap, catMap);
             tranList.add(tran);
+        }
+
+        for (int i = 0; i < NBR_OF_DATA_FILES; i++) {
+            DataFile dataFile = buildDataFile(dataFileId++);
+            dataFileList.add(dataFile);
         }
 
         // Update statements.
@@ -127,6 +138,9 @@ public class FakeDataUtil {
         }
         for (Tran tran : tranList) {
             printInsertTran(tran);
+        }
+        for (DataFile dataFile : dataFileList) {
+            printInsertDataFile(dataFile);
         }
     }
 
@@ -259,6 +273,7 @@ public class FakeDataUtil {
         // Also add the first transaction to set beginning balance.
         if (firstStmt) {
             Tran tran = new Tran();
+            tran.setId(tranId);
             tran.setPostDate(closeDate);
             BigDecimal amount = BigDecimal.valueOf(RANDOM.nextInt(200000) - 100000, 2);
 
@@ -390,6 +405,20 @@ public class FakeDataUtil {
         stmt.setDueDate(cal.getTime());
     }
 
+    private static DataFile buildDataFile(long id) {
+        DataFile dataFile = new DataFile();
+        dataFile.setOriginalFilename(
+                WORDS[RANDOM.nextInt(WORDS.length)].toLowerCase() + "-" + RANDOM.nextInt(10000) + ".ofx");
+        dataFile.setContentType("application/octet-stream");
+        dataFile.setSize(RANDOM.nextInt(30000) + 800);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today);
+        cal.set(Calendar.SECOND, -1 * RANDOM.nextInt(30000000));
+        dataFile.setUploadTimestamp(cal.getTime());
+        dataFile.setStatus(DataFileStatus.UPLOADED);
+        return dataFile;
+    }
+
     private static void printInsertCat(Cat cat) {
         String insertIntoCat = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
         System.out.printf(insertIntoCat, cat.getName());
@@ -478,5 +507,14 @@ public class FakeDataUtil {
                         " VALUES (%.2f,%s,%s,'%s','%tF',0,%s,%s,%s);%n";
         System.out.printf(insertIntoTran, tran.getAmount(), checkNumber, memo, tran.getName(), tran.getPostDate(), cat,
                 creditStmt, debitStmt);
+    }
+
+    private static void printInsertDataFile(DataFile dataFile) {
+        String uploadTimestamp = DATE_FORMAT.format(dataFile.getUploadTimestamp());
+        String insertIntoDataFile =
+                "INSERT INTO `data_file` (`content_type`,`original_filename`,`size`,`status`,`upload_timestamp`,`version`)" +
+                        " VALUES ('%s','%s',%d,'%s','%s',0);%n";
+        System.out.printf(insertIntoDataFile, dataFile.getContentType(), dataFile.getOriginalFilename(),
+                dataFile.getSize(), dataFile.getStatus(), uploadTimestamp);
     }
 }

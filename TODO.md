@@ -33,3 +33,8 @@
 ## Things rejected
 
 * Put opening balance and closing balance in statement.
+
+## Review Things
+
+* All ListForms and Views should have not have a no argument constructor.
+* All ListForms and Views should have not have a no setters.

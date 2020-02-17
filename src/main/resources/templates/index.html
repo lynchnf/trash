@@ -27,7 +27,16 @@
                 </tr>
                 </tbody>
             </table>
+
+            <form class="form-inline" th:action="@{/dataFileUpload}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="multipartFile">File to upload</label>
+                    <input type="file" class="form-control-file" id="multipartFile" name="multipartFile"/></td>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
         </div>
+
         <div class="col-md-7">
             <table class="table table-sm table-striped">
                 <tr>

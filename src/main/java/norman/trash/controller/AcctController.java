@@ -71,7 +71,8 @@ public class AcctController {
         } else {
             page = acctService.findAll(pageable);
         }
-        model.addAttribute("listForm", new AcctListForm(page, whereName, whereType));
+        AcctListForm listForm = new AcctListForm(page, whereName, whereType);
+        model.addAttribute("listForm", listForm);
         return "acctList";
     }
 
