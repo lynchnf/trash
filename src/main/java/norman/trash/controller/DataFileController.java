@@ -1,7 +1,9 @@
 package norman.trash.controller;
 
+import norman.trash.NotFoundException;
 import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.DataFileListForm;
+import norman.trash.controller.view.DataFileView;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
 import norman.trash.domain.DataLine;
@@ -72,6 +74,25 @@ public class DataFileController {
         DataFileListForm dataFileListForm = new DataFileListForm(page, whereOriginalFilename, whereStatus);
         model.addAttribute("listForm", dataFileListForm);
         return "dataFileList";
+    }
+
+    @GetMapping("/dataFile")
+    // @formatter:off
+    public String loadDataFileView(@RequestParam("id") Long id,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        // @formatter:on
+
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+            DataFileView view = new DataFileView(dataFile);
+            model.addAttribute("view", view);
+
+            return "dataFileView";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
     }
 
     @PostMapping("/dataFileUpload")

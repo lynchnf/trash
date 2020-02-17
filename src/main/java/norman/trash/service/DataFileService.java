@@ -1,5 +1,6 @@
 package norman.trash.service;
 
+import norman.trash.NotFoundException;
 import norman.trash.OptimisticLockingException;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class DataFileService {
@@ -34,6 +37,14 @@ public class DataFileService {
 
     public Page<DataFile> findAll(PageRequest pageable) {
         return repository.findAll(pageable);
+    }
+
+    public DataFile findById(Long id) throws NotFoundException {
+        Optional<DataFile> optional = repository.findById(id);
+        if (!optional.isPresent()) {
+            throw new NotFoundException(LOGGER, "Data File", id);
+        }
+        return optional.get();
     }
 
     public DataFile save(DataFile dataFile) throws OptimisticLockingException {

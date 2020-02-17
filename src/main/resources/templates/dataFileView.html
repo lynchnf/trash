@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/menu::menu"></header>
+<main class="container">
+    <h1>Data File</h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Original Filename</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.originalFilename}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Status</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.status}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Content Type</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.contentType}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Size</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#numbers.formatInteger(view.size,1,'DEFAULT')}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Upload Timestamp</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#dates.format(view.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" th:href="@{/dataFileEdit(id=${view.id})}">Edit</a>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>
