@@ -4,10 +4,12 @@ import norman.trash.NotFoundException;
 import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.DataFileListForm;
 import norman.trash.controller.view.DataFileView;
+import norman.trash.controller.view.DataLineListForm;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
 import norman.trash.domain.DataLine;
 import norman.trash.service.DataFileService;
+import norman.trash.service.DataLineService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +39,15 @@ public class DataFileController {
     private static final String defaultSortColumn = "id";
     private static final String[] dataFileSortableColumns =
             {"originalFilename", "contentType", "uploadTimestamp", "status"};
+    private static final String[] dataLineSortableColumns = {"seq"};
     @Autowired
     private DataFileService dataFileService;
+    @Autowired
+    private DataLineService dataLineService;
 
     @GetMapping("/dataFileList")
     // @formatter:off
-    public String loadDataFileList( @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+    public String loadDataFileList(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "sortColumn", required = false, defaultValue = "uploadTimestamp") String sortColumn,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
@@ -61,7 +66,6 @@ public class DataFileController {
         // Get a page of records.
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
         Page<DataFile> page = null;
-
         if (trimmedOriginalFilename != null && whereStatus != null) {
             page = dataFileService.findByOriginalFilenameAndStatus(trimmedOriginalFilename, whereStatus, pageable);
         } else if (trimmedOriginalFilename != null && whereStatus == null) {
@@ -79,6 +83,10 @@ public class DataFileController {
     @GetMapping("/dataFile")
     // @formatter:off
     public String loadDataFileView(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "seq") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
             Model model,
             RedirectAttributes redirectAttributes) {
         // @formatter:on
@@ -88,6 +96,17 @@ public class DataFileController {
             DataFileView view = new DataFileView(dataFile);
             model.addAttribute("view", view);
 
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(dataLineSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            }
+
+            // Get a page of records.
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<DataLine> page = dataLineService.findByDataFileId(id, pageable);
+            DataLineListForm listForm = new DataLineListForm(page);
+            model.addAttribute("listForm", listForm);
             return "dataFileView";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

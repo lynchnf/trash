@@ -17,7 +17,8 @@ public class FakeDataUtil {
     private static final Random RANDOM = new Random();
     private static final int NBR_OF_ACCTS = 12;
     private static final int NBR_OF_TRANS = 1728;
-    private static final int NBR_OF_DATA_FILES = 12;
+    private static final int NBR_OF_DATA_FILES = 6;
+    private static final int NBR_OF_DATA_LINES = 12;
     private static final String[] WORDS =
             {"Abominable", "Bulimic", "Cosmic", "Desperate", "Evil", "Funky", "Ginormous", "Hungry", "Inconceivable",
                     "Jurassic", "Kick-ass", "Ludicrous", "Malevolent", "Nuclear", "Obsequious", "Pedantic", "Quiescent",
@@ -62,6 +63,7 @@ public class FakeDataUtil {
         long stmtId = 1;
         long tranId = 1;
         long dataFileId = 1;
+        long dataLineId = 1;
         Map<String, Cat> catMap = new LinkedHashMap<>();
         Map<String, Acct> acctMap = new LinkedHashMap<>();
         List<Tran> tranList = new ArrayList<>();
@@ -101,6 +103,10 @@ public class FakeDataUtil {
         for (int i = 0; i < NBR_OF_DATA_FILES; i++) {
             DataFile dataFile = buildDataFile(dataFileId++);
             dataFileList.add(dataFile);
+
+            for (int j = 0; j < NBR_OF_DATA_LINES; j++) {
+                DataLine dataLine = buildDataLine(dataLineId++, j, dataFile);
+            }
         }
 
         // Update statements.
@@ -141,6 +147,9 @@ public class FakeDataUtil {
         }
         for (DataFile dataFile : dataFileList) {
             printInsertDataFile(dataFile);
+            for (DataLine dataLine : dataFile.getDataLines()) {
+                printInsertDataLine(dataLine);
+            }
         }
     }
 
@@ -419,6 +428,16 @@ public class FakeDataUtil {
         return dataFile;
     }
 
+    private static DataLine buildDataLine(long id, int idx, DataFile dataFile) {
+        DataLine dataLine = new DataLine();
+        dataLine.setId(id);
+        dataLine.setDataFile(dataFile);
+        dataFile.getDataLines().add(dataLine);
+        dataLine.setSeq(idx + 1);
+        dataLine.setText(RandomStringUtils.randomAlphanumeric(100));
+        return dataLine;
+    }
+
     private static void printInsertCat(Cat cat) {
         String insertIntoCat = "INSERT INTO `cat` (`name`,`version`) VALUES ('%s',0);%n";
         System.out.printf(insertIntoCat, cat.getName());
@@ -516,5 +535,12 @@ public class FakeDataUtil {
                         " VALUES ('%s','%s',%d,'%s','%s',0);%n";
         System.out.printf(insertIntoDataFile, dataFile.getContentType(), dataFile.getOriginalFilename(),
                 dataFile.getSize(), dataFile.getStatus(), uploadTimestamp);
+    }
+
+    private static void printInsertDataLine(DataLine dataLine) {
+        String insertIntoDataLine = "INSERT INTO `data_line` (`data_file_id`,`seq`,`text`,`version`)" +
+                " VALUES ((SELECT `id` FROM `data_file` WHERE `original_filename`='%s'),%d,'%s',0);%n";
+        System.out.printf(insertIntoDataLine, dataLine.getDataFile().getOriginalFilename(), dataLine.getSeq(),
+                dataLine.getText());
     }
 }
