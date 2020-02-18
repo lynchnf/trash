@@ -22,7 +22,6 @@ public class DashboardController {
     @GetMapping("/")
     public String loadDashboard(Model model) {
         Iterable<Acct> accts = acctService.findAll();
-        LOGGER.debug("accts.size=" + accts);
         List<AcctView> acctRows = new ArrayList<>();
         for (Acct acct : accts) {
             AcctView acctRow = new AcctView(acct);

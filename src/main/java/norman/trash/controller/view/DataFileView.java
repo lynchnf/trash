@@ -1,5 +1,6 @@
 package norman.trash.controller.view;
 
+import norman.trash.domain.AcctType;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
 
@@ -12,6 +13,11 @@ public class DataFileView {
     private Long size;
     private Date uploadTimestamp;
     private DataFileStatus status;
+    private String organization;
+    private String fid;
+    private String bankId;
+    private String acctId;
+    private AcctType type;
 
     public DataFileView(DataFile dataFile) {
         id = dataFile.getId();
@@ -20,6 +26,11 @@ public class DataFileView {
         size = dataFile.getSize();
         uploadTimestamp = dataFile.getUploadTimestamp();
         status = dataFile.getStatus();
+        organization = dataFile.getOrganization();
+        fid = dataFile.getFid();
+        bankId = dataFile.getBankId();
+        acctId = dataFile.getAcctId();
+        type = dataFile.getType();
     }
 
     public Long getId() {
@@ -44,5 +55,25 @@ public class DataFileView {
 
     public DataFileStatus getStatus() {
         return status;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public String getFid() {
+        return fid;
+    }
+
+    public String getBankId() {
+        return bankId;
+    }
+
+    public String getAcctId() {
+        return acctId;
+    }
+
+    public AcctType getType() {
+        return type;
     }
 }

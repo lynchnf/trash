@@ -9,6 +9,7 @@
 * Charts.
 * Budget.
 * Remove id's, maybe.
+* processDataParse should be a post.
 
 ## Things done
 

@@ -22,14 +22,21 @@ public class DataFile {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private DataFileStatus status;
+    @Column(length = 50)
+    private String organization;
+    @Column(length = 10)
+    private String fid;
+    @Column(length = 10)
+    private String bankId;
+    @Column(length = 20)
+    private String acctId;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private AcctType type;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
     private List<DataLine> dataLines = new ArrayList<>();
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
-    private OfxAcct ofxAcct;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
-    private OfxInst ofxInst;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
-    private List<OfxStmtTran> ofxStmtTrans = new ArrayList<>();
+    private List<DataTran> dataTrans = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -87,6 +94,46 @@ public class DataFile {
         this.status = status;
     }
 
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getFid() {
+        return fid;
+    }
+
+    public void setFid(String fid) {
+        this.fid = fid;
+    }
+
+    public String getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
+    }
+
+    public String getAcctId() {
+        return acctId;
+    }
+
+    public void setAcctId(String acctId) {
+        this.acctId = acctId;
+    }
+
+    public AcctType getType() {
+        return type;
+    }
+
+    public void setType(AcctType type) {
+        this.type = type;
+    }
+
     public List<DataLine> getDataLines() {
         return dataLines;
     }
@@ -95,27 +142,11 @@ public class DataFile {
         this.dataLines = dataLines;
     }
 
-    public OfxAcct getOfxAcct() {
-        return ofxAcct;
+    public List<DataTran> getDataTrans() {
+        return dataTrans;
     }
 
-    public void setOfxAcct(OfxAcct ofxAcct) {
-        this.ofxAcct = ofxAcct;
-    }
-
-    public OfxInst getOfxInst() {
-        return ofxInst;
-    }
-
-    public void setOfxInst(OfxInst ofxInst) {
-        this.ofxInst = ofxInst;
-    }
-
-    public List<OfxStmtTran> getOfxStmtTrans() {
-        return ofxStmtTrans;
-    }
-
-    public void setOfxStmtTrans(List<OfxStmtTran> ofxStmtTrans) {
-        this.ofxStmtTrans = ofxStmtTrans;
+    public void setDataTrans(List<DataTran> dataTrans) {
+        this.dataTrans = dataTrans;
     }
 }

@@ -1,69 +1,24 @@
-package norman.trash.domain;
+package norman.trash.service.response;
 
-import javax.persistence.*;
+import norman.trash.domain.CorrectAction;
+import norman.trash.domain.TranType;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Entity
 public class OfxStmtTran {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Version
-    private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "data_file_id")
-    private DataFile dataFile;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
     private TranType type;
-    @Temporal(TemporalType.DATE)
     private Date postDate;
-    @Temporal(TemporalType.DATE)
     private Date userDate;
-    @Column(precision = 9, scale = 2)
     private BigDecimal amount;
-    @Column(length = 50)
     private String fitId;
-    @Column(length = 10)
     private String sic;
-    @Column(length = 10)
     private String checkNumber;
-    @Column(length = 10)
     private String correctFitId;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
     private CorrectAction correctAction;
-    @Column(length = 100)
     private String name;
-    @Column(length = 10)
     private String category;
-    @Column(length = 100)
     private String memo;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
-    }
 
     public TranType getType() {
         return type;

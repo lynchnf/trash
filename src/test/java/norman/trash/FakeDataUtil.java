@@ -17,7 +17,7 @@ public class FakeDataUtil {
     private static final Random RANDOM = new Random();
     private static final int NBR_OF_ACCTS = 12;
     private static final int NBR_OF_TRANS = 1728;
-    private static final int NBR_OF_DATA_FILES = 6;
+    private static final int NBR_OF_DATA_FILES = 0;
     private static final int NBR_OF_DATA_LINES = 12;
     private static final String[] WORDS =
             {"Abominable", "Bulimic", "Cosmic", "Desperate", "Evil", "Funky", "Ginormous", "Hungry", "Inconceivable",

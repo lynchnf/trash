@@ -3,14 +3,22 @@ package norman.trash.controller;
 import norman.trash.controller.view.DataFileListForm;
 import norman.trash.controller.view.DataFileView;
 import norman.trash.controller.view.DataLineListForm;
-import norman.trash.domain.*;
+import norman.trash.controller.view.DataTranView;
+import norman.trash.domain.DataFile;
+import norman.trash.domain.DataFileStatus;
+import norman.trash.domain.DataLine;
+import norman.trash.domain.DataTran;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OfxParseException;
 import norman.trash.exception.OptimisticLockingException;
 import norman.trash.service.DataFileService;
 import norman.trash.service.DataLineService;
-import norman.trash.service.OfxParseResponse;
+import norman.trash.service.DataTranService;
 import norman.trash.service.OfxService;
+import norman.trash.service.response.OfxAcct;
+import norman.trash.service.response.OfxInst;
+import norman.trash.service.response.OfxParseResponse;
+import norman.trash.service.response.OfxStmtTran;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +37,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static norman.trash.MessagesConstants.*;
 
@@ -45,6 +55,8 @@ public class DataFileController {
     private DataFileService dataFileService;
     @Autowired
     private DataLineService dataLineService;
+    @Autowired
+    private DataTranService dataTranService;
     @Autowired
     private OfxService ofxService;
 
@@ -83,45 +95,9 @@ public class DataFileController {
         return "dataFileList";
     }
 
-    @GetMapping("/dataFile")
-    // @formatter:off
-    public String loadDataFileView(@RequestParam("id") Long id,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "sortColumn", required = false, defaultValue = "seq") String sortColumn,
-            @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
-            Model model,
+    @PostMapping("/dataUpload")
+    public String processDataUpload(@RequestParam(value = "multipartFile") MultipartFile multipartFile, Model model,
             RedirectAttributes redirectAttributes) {
-        // @formatter:on
-
-        try {
-            DataFile dataFile = dataFileService.findById(id);
-            DataFileView view = new DataFileView(dataFile);
-            model.addAttribute("view", view);
-
-            // Convert sort column from string to an array of strings.
-            String[] sortColumns = {defaultSortColumn};
-            if (Arrays.asList(dataLineSortableColumns).contains(sortColumn)) {
-                sortColumns = new String[]{sortColumn, defaultSortColumn};
-            }
-
-            // Get a page of records.
-            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<DataLine> page = dataLineService.findByDataFileId(id, pageable);
-            DataLineListForm listForm = new DataLineListForm(page);
-            model.addAttribute("listForm", listForm);
-            return "dataFileView";
-        } catch (NotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/dataFileList";
-        }
-    }
-
-    @PostMapping("/dataFileUpload")
-    public String processUpload(@RequestParam(value = "multipartFile") MultipartFile multipartFile, Model model,
-            RedirectAttributes redirectAttributes) {
-
-        // Part 1: Upload a file, read it, and save it in a data file database entity.
         if (multipartFile.isEmpty()) {
             // No need to log this. I press UPLOAD without selecting a file all the time.
             redirectAttributes.addFlashAttribute("errorMessage", UPLOADED_FILE_NOT_FOUND_ERROR);
@@ -156,7 +132,7 @@ public class DataFileController {
             String successMessage = String.format(SUCCESSFULLY_ADDED, "Data File", save.getId());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/dataFile?id={id}";
+            return "redirect:/dataUploaded?id={id}";
         } catch (IOException e) {
             LOGGER.error(UPLOADED_FILE_NOT_READ_ERROR, e);
             redirectAttributes.addFlashAttribute("errorMessage", UPLOADED_FILE_NOT_READ_ERROR);
@@ -175,24 +151,71 @@ public class DataFileController {
         }
     }
 
-    @GetMapping("/dataFileParse")
-    public String processDataFileParse(@RequestParam("id") Long id, Model model,
+    @GetMapping("/dataUploaded")
+    // @formatter:off
+    public String loadDataUploaded(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "seq") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
+            Model model,
             RedirectAttributes redirectAttributes) {
+        // @formatter:on
+
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+            DataFileView view = new DataFileView(dataFile);
+            model.addAttribute("view", view);
+
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(dataLineSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            }
+
+            // Get a page of records.
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<DataLine> page = dataLineService.findByDataFileId(id, pageable);
+            DataLineListForm listForm = new DataLineListForm(page);
+            model.addAttribute("listForm", listForm);
+            return "dataUploaded";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
+    }
+
+    @GetMapping("/dataParse")
+    public String processDataParse(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             DataFile dataFile = dataFileService.findById(id);
             OfxParseResponse response = ofxService.parseDataFile(dataFile);
 
-            OfxAcct ofxAcct = response.getOfxAcct();
-            ofxAcct.setDataFile(dataFile);
-            dataFile.setOfxAcct(ofxAcct);
-
             OfxInst ofxInst = response.getOfxInst();
-            ofxInst.setDataFile(dataFile);
-            dataFile.setOfxInst(ofxInst);
+            dataFile.setOrganization(ofxInst.getOrganization());
+            dataFile.setFid(ofxInst.getFid());
+
+            OfxAcct ofxAcct = response.getOfxAcct();
+            dataFile.setBankId(ofxAcct.getBankId());
+            dataFile.setAcctId(ofxAcct.getAcctId());
+            dataFile.setType(ofxAcct.getType());
 
             for (OfxStmtTran ofxStmtTran : response.getOfxStmtTrans()) {
-                ofxStmtTran.setDataFile(dataFile);
-                dataFile.getOfxStmtTrans().add(ofxStmtTran);
+                DataTran dataTran = new DataTran();
+                dataTran.setType(ofxStmtTran.getType());
+                dataTran.setPostDate(ofxStmtTran.getPostDate());
+                dataTran.setUserDate(ofxStmtTran.getUserDate());
+                dataTran.setAmount(ofxStmtTran.getAmount());
+                dataTran.setFitId(ofxStmtTran.getFitId());
+                dataTran.setSic(ofxStmtTran.getSic());
+                dataTran.setCheckNumber(ofxStmtTran.getCheckNumber());
+                dataTran.setCorrectFitId(ofxStmtTran.getCorrectFitId());
+                dataTran.setCorrectAction(ofxStmtTran.getCorrectAction());
+                dataTran.setName(ofxStmtTran.getName());
+                dataTran.setCategory(ofxStmtTran.getCategory());
+                dataTran.setMemo(ofxStmtTran.getMemo());
+                dataTran.setDataFile(dataFile);
+                dataFile.getDataTrans().add(dataTran);
             }
 
             dataFile.setStatus(DataFileStatus.PARSED);
@@ -201,8 +224,30 @@ public class DataFileController {
             String successMessage = String.format(SUCCESSFULLY_UPDATED, "Data File", save.getId());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/dataFile?id={id}";
+            return "redirect:/dataParsed?id={id}";
         } catch (NotFoundException | OptimisticLockingException | OfxParseException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
+    }
+
+    @GetMapping("/dataParsed")
+    public String loadDataParsed(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+            DataFileView view = new DataFileView(dataFile);
+            model.addAttribute("view", view);
+
+            Iterable<DataTran> dataTrans = dataTranService.findAll();
+            List<DataTranView> rows = new ArrayList<>();
+            for (DataTran dataTran : dataTrans) {
+                DataTranView row = new DataTranView(dataTran);
+                rows.add(row);
+            }
+            model.addAttribute("rows", rows);
+
+            return "dataParsed";
+        } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }

@@ -1,8 +1,4 @@
-package norman.trash.service;
-
-import norman.trash.domain.OfxAcct;
-import norman.trash.domain.OfxInst;
-import norman.trash.domain.OfxStmtTran;
+package norman.trash.service.response;
 
 import java.util.ArrayList;
 import java.util.List;
