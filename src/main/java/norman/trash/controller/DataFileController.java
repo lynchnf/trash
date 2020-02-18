@@ -114,6 +114,11 @@ public class DataFileController {
         }
     }
 
+    @GetMapping("/dataFileParse")
+    public String loadDataFileView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        return "dataFileParse";
+    }
+
     @PostMapping("/dataFileUpload")
     public String processUpload(@RequestParam(value = "multipartFile") MultipartFile multipartFile, Model model,
             RedirectAttributes redirectAttributes) {
