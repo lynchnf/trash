@@ -1,9 +1,9 @@
 package norman.trash.service;
 
-import norman.trash.NotFoundException;
-import norman.trash.OptimisticLockingException;
 import norman.trash.domain.Tran;
 import norman.trash.domain.repository.TranRepository;
+import norman.trash.exception.NotFoundException;
+import norman.trash.exception.OptimisticLockingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

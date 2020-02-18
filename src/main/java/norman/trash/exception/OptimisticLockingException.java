@@ -1,4 +1,4 @@
-package norman.trash;
+package norman.trash.exception;
 
 import org.slf4j.Logger;
 

@@ -1,7 +1,5 @@
 package norman.trash.controller;
 
-import norman.trash.NotFoundException;
-import norman.trash.OptimisticLockingException;
 import norman.trash.TrashUtils;
 import norman.trash.controller.view.TranForm;
 import norman.trash.controller.view.TranView;
@@ -9,6 +7,8 @@ import norman.trash.domain.Acct;
 import norman.trash.domain.Cat;
 import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
+import norman.trash.exception.NotFoundException;
+import norman.trash.exception.OptimisticLockingException;
 import norman.trash.service.AcctService;
 import norman.trash.service.CatService;
 import norman.trash.service.StmtService;

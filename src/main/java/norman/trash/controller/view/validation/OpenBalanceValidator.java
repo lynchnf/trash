@@ -1,11 +1,11 @@
 package norman.trash.controller.view.validation;
 
-import norman.trash.NotFoundException;
 import norman.trash.TrashUtils;
 import norman.trash.controller.view.StmtReconcileForm;
 import norman.trash.domain.Acct;
 import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
+import norman.trash.exception.NotFoundException;
 import norman.trash.service.AcctService;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -24,6 +24,12 @@ public class DataFile {
     private DataFileStatus status;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
     private List<DataLine> dataLines = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
+    private OfxAcct ofxAcct;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
+    private OfxInst ofxInst;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
+    private List<OfxStmtTran> ofxStmtTrans = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -57,11 +63,11 @@ public class DataFile {
         this.contentType = contentType;
     }
 
-    public long getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
@@ -87,5 +93,29 @@ public class DataFile {
 
     public void setDataLines(List<DataLine> dataLines) {
         this.dataLines = dataLines;
+    }
+
+    public OfxAcct getOfxAcct() {
+        return ofxAcct;
+    }
+
+    public void setOfxAcct(OfxAcct ofxAcct) {
+        this.ofxAcct = ofxAcct;
+    }
+
+    public OfxInst getOfxInst() {
+        return ofxInst;
+    }
+
+    public void setOfxInst(OfxInst ofxInst) {
+        this.ofxInst = ofxInst;
+    }
+
+    public List<OfxStmtTran> getOfxStmtTrans() {
+        return ofxStmtTrans;
+    }
+
+    public void setOfxStmtTrans(List<OfxStmtTran> ofxStmtTrans) {
+        this.ofxStmtTrans = ofxStmtTrans;
     }
 }

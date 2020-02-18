@@ -1,8 +1,8 @@
 package norman.trash.service;
 
-import norman.trash.MultipleOptimisticLockingException;
 import norman.trash.domain.Pattern;
 import norman.trash.domain.repository.PatternRepository;
+import norman.trash.exception.MultipleOptimisticLockingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

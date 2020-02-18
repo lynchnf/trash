@@ -44,7 +44,8 @@
         </div>
     </div>
 
-    <a class="btn btn-primary" th:href="@{/dataFileEdit(id=${view.id})}">Edit</a>
+    <a class="btn btn-primary" th:if="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
+       th:href="@{/dataFileParse(id=${view.id})}">Parse</a>
 
     <h2>Data Lines</h2>
     <form id="listForm" action="#" method="get" th:action="@{/dataFile}">

@@ -1,10 +1,10 @@
 package norman.trash.controller;
 
-import norman.trash.MultipleOptimisticLockingException;
 import norman.trash.controller.view.PatternForm;
 import norman.trash.controller.view.PatternListForm;
 import norman.trash.domain.Cat;
 import norman.trash.domain.Pattern;
+import norman.trash.exception.MultipleOptimisticLockingException;
 import norman.trash.service.CatService;
 import norman.trash.service.PatternService;
 import org.apache.commons.lang3.StringUtils;

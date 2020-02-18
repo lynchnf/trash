@@ -419,7 +419,7 @@ public class FakeDataUtil {
         dataFile.setOriginalFilename(
                 WORDS[RANDOM.nextInt(WORDS.length)].toLowerCase() + "-" + RANDOM.nextInt(10000) + ".ofx");
         dataFile.setContentType("application/octet-stream");
-        dataFile.setSize(RANDOM.nextInt(30000) + 800);
+        dataFile.setSize(RANDOM.nextInt(30000) + 800L);
         Calendar cal = Calendar.getInstance();
         cal.setTime(today);
         cal.set(Calendar.SECOND, -1 * RANDOM.nextInt(30000000));

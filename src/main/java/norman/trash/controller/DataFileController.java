@@ -1,15 +1,16 @@
 package norman.trash.controller;
 
-import norman.trash.NotFoundException;
-import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.DataFileListForm;
 import norman.trash.controller.view.DataFileView;
 import norman.trash.controller.view.DataLineListForm;
-import norman.trash.domain.DataFile;
-import norman.trash.domain.DataFileStatus;
-import norman.trash.domain.DataLine;
+import norman.trash.domain.*;
+import norman.trash.exception.NotFoundException;
+import norman.trash.exception.OfxParseException;
+import norman.trash.exception.OptimisticLockingException;
 import norman.trash.service.DataFileService;
 import norman.trash.service.DataLineService;
+import norman.trash.service.OfxParseResponse;
+import norman.trash.service.OfxService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,8 @@ public class DataFileController {
     private DataFileService dataFileService;
     @Autowired
     private DataLineService dataLineService;
+    @Autowired
+    private OfxService ofxService;
 
     @GetMapping("/dataFileList")
     // @formatter:off
@@ -114,11 +117,6 @@ public class DataFileController {
         }
     }
 
-    @GetMapping("/dataFileParse")
-    public String loadDataFileView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        return "dataFileParse";
-    }
-
     @PostMapping("/dataFileUpload")
     public String processUpload(@RequestParam(value = "multipartFile") MultipartFile multipartFile, Model model,
             RedirectAttributes redirectAttributes) {
@@ -174,6 +172,39 @@ public class DataFileController {
                     LOGGER.warn(UPLOADED_FILE_NOT_CLOSED_IGNORED, ignored);
                 }
             }
+        }
+    }
+
+    @GetMapping("/dataFileParse")
+    public String processDataFileParse(@RequestParam("id") Long id, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+            OfxParseResponse response = ofxService.parseDataFile(dataFile);
+
+            OfxAcct ofxAcct = response.getOfxAcct();
+            ofxAcct.setDataFile(dataFile);
+            dataFile.setOfxAcct(ofxAcct);
+
+            OfxInst ofxInst = response.getOfxInst();
+            ofxInst.setDataFile(dataFile);
+            dataFile.setOfxInst(ofxInst);
+
+            for (OfxStmtTran ofxStmtTran : response.getOfxStmtTrans()) {
+                ofxStmtTran.setDataFile(dataFile);
+                dataFile.getOfxStmtTrans().add(ofxStmtTran);
+            }
+
+            dataFile.setStatus(DataFileStatus.PARSED);
+
+            DataFile save = dataFileService.save(dataFile);
+            String successMessage = String.format(SUCCESSFULLY_UPDATED, "Data File", save.getId());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            redirectAttributes.addAttribute("id", save.getId());
+            return "redirect:/dataFile?id={id}";
+        } catch (NotFoundException | OptimisticLockingException | OfxParseException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
         }
     }
 }

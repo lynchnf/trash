@@ -1,11 +1,11 @@
 package norman.trash.controller;
 
-import norman.trash.NotFoundException;
-import norman.trash.OptimisticLockingException;
 import norman.trash.controller.view.CatForm;
 import norman.trash.controller.view.CatListForm;
 import norman.trash.controller.view.CatView;
 import norman.trash.domain.Cat;
+import norman.trash.exception.NotFoundException;
+import norman.trash.exception.OptimisticLockingException;
 import norman.trash.service.CatService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

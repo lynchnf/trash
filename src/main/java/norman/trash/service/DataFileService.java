@@ -1,10 +1,10 @@
 package norman.trash.service;
 
-import norman.trash.NotFoundException;
-import norman.trash.OptimisticLockingException;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
 import norman.trash.domain.repository.DataFileRepository;
+import norman.trash.exception.NotFoundException;
+import norman.trash.exception.OptimisticLockingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
