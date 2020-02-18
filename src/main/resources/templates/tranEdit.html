@@ -23,7 +23,7 @@
             <label class="col-sm-3 col-form-label">Debit Account</label>
             <div class="col-sm-9">
                 <select class="form-control" th:field="*{debitAcctId}" th:errorclass="is-invalid">
-                    <option value="">select</option>
+                    <option class="placeholder" value="">select</option>
                     <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
                 </select>
             </div>
@@ -32,7 +32,7 @@
             <label class="col-sm-3 col-form-label">Credit Account</label>
             <div class="col-sm-9">
                 <select class="form-control" th:field="*{creditAcctId}" th:errorclass="is-invalid">
-                    <option value="">select</option>
+                    <option class="placeholder" value="">select</option>
                     <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
                 </select>
             </div>
@@ -41,7 +41,7 @@
             <label class="col-sm-3 col-form-label">Category</label>
             <div class="col-sm-9">
                 <select class="form-control" th:field="*{catId}" th:errorclass="is-invalid">
-                    <option value="">select</option>
+                    <option class="placeholder" value="">select</option>
                     <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
                 </select>
             </div>

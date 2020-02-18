@@ -1,0 +1,28 @@
+.bg-dark {
+    background-color: #3C751A !important;
+}
+
+a:hover {
+    color: #3C751A;
+}
+
+a {
+    color: #5D983A;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Days One', sans-serif;
+}
+
+.nav-link {
+    font-family: 'Days One', sans-serif;
+}
+
+body {
+    background-color: #85BB65;
+    font-family: 'Roboto', sans-serif;
+}
+
+main {
+    background-color: #D3ECC4;
+}

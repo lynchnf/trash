@@ -95,7 +95,7 @@
                 </td>
                 <td>
                     <select id="newWhereStatus">
-                        <option value="">select</option>
+                        <option class="placeholder" value="">select</option>
                         <option th:each="dataFileStatus:${T(norman.trash.domain.DataFileStatus).values()}"
                                 th:value="${dataFileStatus}" th:text="${dataFileStatus}"
                                 th:selected="${listForm.whereStatus}==${dataFileStatus}"></option>

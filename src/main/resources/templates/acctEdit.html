@@ -32,7 +32,7 @@
             <label class="col-sm-3 col-form-label">Type</label>
             <div class="col-sm-9">
                 <select class="form-control" th:field="*{type}" th:errorclass="is-invalid">
-                    <option value="">select</option>
+                    <option class="placeholder" value="">select</option>
                     <option th:each="acctType:${T(norman.trash.domain.AcctType).values()}" th:value="${acctType}"
                             th:text="${acctType}" th:selected="*{type} == ${acctType}"></option>
 

@@ -108,7 +108,7 @@
                 <td>
                     <select class="form-control" th:field="*{stmtReconcileRows[__${iterStat.index}__].catId}"
                             th:errorclass="is-invalid">
-                        <option value="">select</option>
+                        <option class="placeholder" value="">select</option>
                         <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
                     </select>
                 </td>
