@@ -3,7 +3,7 @@ package norman.trash.controller;
 import norman.trash.controller.view.DataFileListForm;
 import norman.trash.controller.view.DataFileView;
 import norman.trash.controller.view.DataLineListForm;
-import norman.trash.controller.view.DataTranView;
+import norman.trash.controller.view.DataTranListForm;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
 import norman.trash.domain.DataLine;
@@ -37,10 +37,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import static norman.trash.MessagesConstants.*;
 
@@ -51,6 +49,7 @@ public class DataFileController {
     private static final String[] dataFileSortableColumns =
             {"originalFilename", "contentType", "uploadTimestamp", "status"};
     private static final String[] dataLineSortableColumns = {"seq"};
+    private static final String[] dataTranSortableColumns = {"type", "postDate", "amount", "checkNumber", "name"};
     @Autowired
     private DataFileService dataFileService;
     @Autowired
@@ -232,20 +231,31 @@ public class DataFileController {
     }
 
     @GetMapping("/dataParsed")
-    public String loadDataParsed(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    // @formatter:off
+    public String loadDataParsed(@RequestParam("id") Long id,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        // @formatter:on
         try {
             DataFile dataFile = dataFileService.findById(id);
             DataFileView view = new DataFileView(dataFile);
             model.addAttribute("view", view);
 
-            Iterable<DataTran> dataTrans = dataTranService.findAll();
-            List<DataTranView> rows = new ArrayList<>();
-            for (DataTran dataTran : dataTrans) {
-                DataTranView row = new DataTranView(dataTran);
-                rows.add(row);
+            // Convert sort column from string to an array of strings.
+            String[] sortColumns = {defaultSortColumn};
+            if (Arrays.asList(dataTranSortableColumns).contains(sortColumn)) {
+                sortColumns = new String[]{sortColumn, defaultSortColumn};
             }
-            model.addAttribute("rows", rows);
 
+            // Get a page of records.
+            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
+            Page<DataTran> page = dataTranService.findByDataFileId(id, pageable);
+            DataTranListForm listForm = new DataTranListForm(page);
+            model.addAttribute("listForm", listForm);
             return "dataParsed";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

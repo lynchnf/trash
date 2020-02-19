@@ -10,6 +10,7 @@
 * Budget.
 * Remove id's, maybe.
 * processDataParse should be a post.
+* Require cat for stmt reconcile.
 
 ## Things done
 

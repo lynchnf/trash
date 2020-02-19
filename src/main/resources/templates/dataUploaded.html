@@ -4,8 +4,8 @@
 <body>
 <header th:replace="fragments/menu::menu"></header>
 <main class="container">
-    <h1>Data
-        <small class="text-muted">uploaded</small>
+    <h1>Data File
+        <small class="text-muted">(uploaded)</small>
     </h1>
     <div th:replace="fragments/alerts::alerts"></div>
 
@@ -48,6 +48,8 @@
 
     <a class="btn btn-primary" th:if="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
        th:href="@{/dataParse(id=${view.id})}">Parse</a>
+    <a class="btn btn-secondary" th:unless="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
+       th:href="@{/dataParsed(id=${view.id})}">Parsed</a>
 
     <h2>Data Lines</h2>
     <form id="listForm" action="#" method="get" th:action="@{/dataUploaded}">

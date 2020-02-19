@@ -5,6 +5,8 @@ import norman.trash.domain.repository.DataTranRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +15,7 @@ public class DataTranService {
     @Autowired
     private DataTranRepository repository;
 
-    public Iterable<DataTran> findAll() {
-        return repository.findAll();
+    public Page<DataTran> findByDataFileId(Long dataFileId, Pageable pageable) {
+        return repository.findByDataFile_Id(dataFileId, pageable);
     }
 }
