@@ -64,6 +64,11 @@
         </div>
     </div>
 
+    <p>Data has been uploaded and it cannot be determined unambiguously which account it belongs to.</p>
+    <p>Maybe one of the following accounts has changed it's account number. If so, please select that account.</p>
+    <p>Maybe it one of the following accounts which have no FID. If so, please select that account.</p>
+    <p>Maybe it's a completely new account. If so, please click here.</p>
+
     <a class="btn btn-primary" th:if="${view.status==T(norman.trash.domain.DataFileStatus).PARSED}"
        th:href="@{/dataAcctMatch(id=${view.id})}">Match Account</a>
     <a class="btn btn-secondary" th:unless="${view.status==T(norman.trash.domain.DataFileStatus).PARSED}"
@@ -160,8 +165,8 @@
             <tr th:each="row:${listForm.rows}">
                 <td th:text="${row.id}"></td>
                 <td th:text="${row.ofxType}"></td>
-                <td th:text="${row.ofxPostDate}"></td>
-                <td th:text="${row.ofxAmount}"></td>
+                <td th:text="${#dates.format(row.ofxPostDate,'M/d/yyyy')}"></td>
+                <td th:text="${#numbers.formatCurrency(row.ofxAmount)}"></td>
                 <td th:text="${row.ofxCheckNumber}"></td>
                 <td th:text="${row.ofxName}"></td>
                 <td th:text="${row.ofxMemo}"></td>

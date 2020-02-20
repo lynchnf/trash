@@ -5,6 +5,7 @@ import norman.trash.controller.view.validation.NotNullIfCondition;
 import norman.trash.domain.Acct;
 import norman.trash.domain.AcctNbr;
 import norman.trash.domain.AcctType;
+import norman.trash.domain.DataFile;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -57,38 +58,57 @@ public class AcctForm {
     @Digits(integer = 7, fraction = 2,
             message = "Beginning Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal beginningBalance;
+    private Long dataFileId;
+    private String ofxOrganization;
+    private String ofxFid;
+    private String ofxBankId;
 
     public AcctForm() {
     }
 
-    public AcctForm(Acct acct) {
-        id = acct.getId();
-        newEntity = acct.getId() == null;
-        version = acct.getVersion();
-        name = acct.getName();
-        type = acct.getType();
-        addressName = acct.getAddressName();
-        address1 = acct.getAddress1();
-        address2 = acct.getAddress2();
-        city = acct.getCity();
-        state = acct.getState();
-        zipCode = acct.getZipCode();
-        phoneNumber = acct.getPhoneNumber();
-        creditLimit = acct.getCreditLimit();
+    public AcctForm(Acct acct, DataFile dataFile) {
+        if (acct != null) {
+            id = acct.getId();
+            newEntity = acct.getId() == null;
+            version = acct.getVersion();
+            name = acct.getName();
+            type = acct.getType();
+            addressName = acct.getAddressName();
+            address1 = acct.getAddress1();
+            address2 = acct.getAddress2();
+            city = acct.getCity();
+            state = acct.getState();
+            zipCode = acct.getZipCode();
+            phoneNumber = acct.getPhoneNumber();
+            creditLimit = acct.getCreditLimit();
+            ofxOrganization = acct.getOfxOrganization();
+            ofxFid = acct.getOfxFid();
+            ofxBankId = acct.getOfxBankId();
 
-        // Get the account number and effective date from the latest acctNbr.
-        List<AcctNbr> acctNbrs = acct.getAcctNbrs();
-        Comparator<AcctNbr> comparator = new Comparator<AcctNbr>() {
-            public int compare(AcctNbr acctNbr1, AcctNbr acctNbr2) {
-                return acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate());
+            // Get the account number and effective date from the latest acctNbr.
+            List<AcctNbr> acctNbrs = acct.getAcctNbrs();
+            Comparator<AcctNbr> comparator = new Comparator<AcctNbr>() {
+                public int compare(AcctNbr acctNbr1, AcctNbr acctNbr2) {
+                    return acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate());
+                }
+            };
+            acctNbrs.sort(comparator);
+            AcctNbr acctNbr = acctNbrs.iterator().next();
+            number = acctNbr.getNumber();
+            oldNumber = acctNbr.getNumber();
+            effDate = acctNbr.getEffDate();
+            oldEffDate = acctNbr.getEffDate();
+        }
+        if (dataFile != null) {
+            dataFileId = dataFile.getId();
+            ofxOrganization = dataFile.getOfxOrganization();
+            ofxFid = dataFile.getOfxFid();
+            ofxBankId = dataFile.getOfxBankId();
+            number = dataFile.getOfxAcctId();
+            if (dataFile.getOfxType() != null) {
+                type = dataFile.getOfxType();
             }
-        };
-        acctNbrs.sort(comparator);
-        AcctNbr acctNbr = acctNbrs.iterator().next();
-        number = acctNbr.getNumber();
-        oldNumber = acctNbr.getNumber();
-        effDate = acctNbr.getEffDate();
-        oldEffDate = acctNbr.getEffDate();
+        }
     }
 
     public Acct toAcct() {
@@ -108,6 +128,9 @@ public class AcctForm {
         acct.setZipCode(StringUtils.trimToNull(zipCode));
         acct.setPhoneNumber(StringUtils.trimToNull(phoneNumber));
         acct.setCreditLimit(creditLimit);
+        acct.setOfxOrganization(StringUtils.trimToNull(ofxOrganization));
+        acct.setOfxFid(StringUtils.trimToNull(ofxFid));
+        acct.setOfxBankId(StringUtils.trimToNull(ofxBankId));
         return acct;
     }
 
@@ -260,5 +283,37 @@ public class AcctForm {
 
     public void setBeginningBalance(BigDecimal beginningBalance) {
         this.beginningBalance = beginningBalance;
+    }
+
+    public Long getDataFileId() {
+        return dataFileId;
+    }
+
+    public void setDataFileId(Long dataFileId) {
+        this.dataFileId = dataFileId;
+    }
+
+    public String getOfxOrganization() {
+        return ofxOrganization;
+    }
+
+    public void setOfxOrganization(String ofxOrganization) {
+        this.ofxOrganization = ofxOrganization;
+    }
+
+    public String getOfxFid() {
+        return ofxFid;
+    }
+
+    public void setOfxFid(String ofxFid) {
+        this.ofxFid = ofxFid;
+    }
+
+    public String getOfxBankId() {
+        return ofxBankId;
+    }
+
+    public void setOfxBankId(String ofxBankId) {
+        this.ofxBankId = ofxBankId;
     }
 }

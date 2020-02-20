@@ -1,5 +1,5 @@
 package norman.trash.domain;
 
 public enum DataFileStatus {
-    UPLOADED, PARSED
+    UPLOADED, PARSED, AC_MATCHED
 }

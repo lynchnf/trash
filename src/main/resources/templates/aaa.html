@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head::head"></head>
+<body>
+<header th:replace="fragments/menu::menu"></header>
+<main class="container">
+    <h1>Data File
+        <small class="text-muted">(parsed)</small>
+    </h1>
+    <div th:replace="fragments/alerts::alerts"></div>
+
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Original Filename</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.originalFilename}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Upload Timestamp</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#dates.format(aaaForm.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Status</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.status}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Organization</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.ofxOrganization}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">FID</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.ofxFid}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Bank Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.ofxBankId}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Account Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.ofxAcctId}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Account Type</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${aaaForm.ofxType}"></p>
+        </div>
+    </div>
+
+    <p>Data has been uploaded and it cannot be determined unambiguously which account it belongs to.</p>
+
+    <div th:unless="${aaaForm.sameFidAccts.isEmpty()}">
+        <p>Maybe one of the following accounts has changed it's account number. If so, please select that account.</p>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Eff Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sameFidAcct:${aaaForm.sameFidAccts}">
+                <td><a th:href="@{/acctEdit(id=${sameFidAcct.id},dataFileId=${aaaForm.id})}"
+                       th:text="${sameFidAcct.id}"></a></td>
+                <td th:text="${sameFidAcct.ofxName}"></td>
+                <td th:text="${sameFidAcct.ofxType}"></td>
+                <td th:text="${sameFidAcct.number}"></td>
+                <td th:text="${#dates.format(sameFidAcct.effDate,'M/d/yyyy')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:unless="${aaaForm.noFidAccts.isEmpty()}">
+        <p>Maybe it one of the following accounts which have no FID. If so, please select that account.</p>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Eff Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="noFidAcct:${aaaForm.noFidAccts}">
+                <td><a th:href="@{/acctEdit(id=${noFidAcct.id},dataFileId=${aaaForm.id})}"
+                       th:text="${noFidAcct.id}"></a></td>
+                <td th:text="${noFidAcct.ofxName}"></td>
+                <td th:text="${noFidAcct.ofxType}"></td>
+                <td th:text="${noFidAcct.number}"></td>
+                <td th:text="${#dates.format(noFidAcct.effDate,'M/d/yyyy')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>Maybe it's a completely new account. If so, please click <a
+            th:href="@{/acctEdit(dataFileId=${aaaForm.id})}">here</a>.</p>
+    </form>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>

@@ -1,20 +1,14 @@
 package norman.trash.controller;
 
+import norman.trash.controller.view.AaaForm;
 import norman.trash.controller.view.DataFileListForm;
 import norman.trash.controller.view.DataFileView;
 import norman.trash.controller.view.DataLineListForm;
-import norman.trash.controller.view.DataTranListForm;
-import norman.trash.domain.DataFile;
-import norman.trash.domain.DataFileStatus;
-import norman.trash.domain.DataLine;
-import norman.trash.domain.DataTran;
+import norman.trash.domain.*;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OfxParseException;
 import norman.trash.exception.OptimisticLockingException;
-import norman.trash.service.DataFileService;
-import norman.trash.service.DataLineService;
-import norman.trash.service.DataTranService;
-import norman.trash.service.OfxService;
+import norman.trash.service.*;
 import norman.trash.service.response.OfxAcct;
 import norman.trash.service.response.OfxInst;
 import norman.trash.service.response.OfxParseResponse;
@@ -37,8 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 import static norman.trash.MessagesConstants.*;
 
@@ -58,6 +51,10 @@ public class DataFileController {
     private DataTranService dataTranService;
     @Autowired
     private OfxService ofxService;
+    @Autowired
+    private AcctService acctService;
+    @Autowired
+    private AcctNbrService acctNbrService;
 
     @GetMapping("/dataFileList")
     // @formatter:off
@@ -131,7 +128,7 @@ public class DataFileController {
             String successMessage = String.format(SUCCESSFULLY_ADDED, "Data File", save.getId());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/dataUploaded?id={id}";
+            return "redirect:/dataParse?id={id}";
         } catch (IOException e) {
             LOGGER.error(UPLOADED_FILE_NOT_READ_ERROR, e);
             redirectAttributes.addFlashAttribute("errorMessage", UPLOADED_FILE_NOT_READ_ERROR);
@@ -150,9 +147,9 @@ public class DataFileController {
         }
     }
 
-    @GetMapping("/dataUploaded")
+    @GetMapping("/dataParse")
     // @formatter:off
-    public String loadDataUploaded(@RequestParam("id") Long id,
+    public String loadDataParse(@RequestParam("id") Long id,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "sortColumn", required = false, defaultValue = "seq") String sortColumn,
@@ -177,42 +174,42 @@ public class DataFileController {
             Page<DataLine> page = dataLineService.findByDataFileId(id, pageable);
             DataLineListForm listForm = new DataLineListForm(page);
             model.addAttribute("listForm", listForm);
-            return "dataUploaded";
+            return "dataParse";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }
     }
 
-    @GetMapping("/dataParse")
+    @PostMapping("/dataParse")
     public String processDataParse(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             DataFile dataFile = dataFileService.findById(id);
             OfxParseResponse response = ofxService.parseDataFile(dataFile);
 
             OfxInst ofxInst = response.getOfxInst();
-            dataFile.setOrganization(ofxInst.getOrganization());
-            dataFile.setFid(ofxInst.getFid());
+            dataFile.setOfxOrganization(ofxInst.getOrganization());
+            dataFile.setOfxFid(ofxInst.getFid());
 
             OfxAcct ofxAcct = response.getOfxAcct();
-            dataFile.setBankId(ofxAcct.getBankId());
-            dataFile.setAcctId(ofxAcct.getAcctId());
-            dataFile.setType(ofxAcct.getType());
+            dataFile.setOfxBankId(ofxAcct.getBankId());
+            dataFile.setOfxAcctId(ofxAcct.getAcctId());
+            dataFile.setOfxType(ofxAcct.getType());
 
             for (OfxStmtTran ofxStmtTran : response.getOfxStmtTrans()) {
                 DataTran dataTran = new DataTran();
-                dataTran.setType(ofxStmtTran.getType());
-                dataTran.setPostDate(ofxStmtTran.getPostDate());
-                dataTran.setUserDate(ofxStmtTran.getUserDate());
-                dataTran.setAmount(ofxStmtTran.getAmount());
-                dataTran.setFitId(ofxStmtTran.getFitId());
-                dataTran.setSic(ofxStmtTran.getSic());
-                dataTran.setCheckNumber(ofxStmtTran.getCheckNumber());
-                dataTran.setCorrectFitId(ofxStmtTran.getCorrectFitId());
-                dataTran.setCorrectAction(ofxStmtTran.getCorrectAction());
-                dataTran.setName(ofxStmtTran.getName());
-                dataTran.setCategory(ofxStmtTran.getCategory());
-                dataTran.setMemo(ofxStmtTran.getMemo());
+                dataTran.setOfxType(ofxStmtTran.getType());
+                dataTran.setOfxPostDate(ofxStmtTran.getPostDate());
+                dataTran.setOfxUserDate(ofxStmtTran.getUserDate());
+                dataTran.setOfxAmount(ofxStmtTran.getAmount());
+                dataTran.setOfxFitId(ofxStmtTran.getFitId());
+                dataTran.setOfxSic(ofxStmtTran.getSic());
+                dataTran.setOfxCheckNumber(ofxStmtTran.getCheckNumber());
+                dataTran.setOfxCorrectFitId(ofxStmtTran.getCorrectFitId());
+                dataTran.setOfxCorrectAction(ofxStmtTran.getCorrectAction());
+                dataTran.setOfxName(ofxStmtTran.getName());
+                dataTran.setOfxCategory(ofxStmtTran.getCategory());
+                dataTran.setOfxMemo(ofxStmtTran.getMemo());
                 dataTran.setDataFile(dataFile);
                 dataFile.getDataTrans().add(dataTran);
             }
@@ -223,40 +220,75 @@ public class DataFileController {
             String successMessage = String.format(SUCCESSFULLY_UPDATED, "Data File", save.getId());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/dataParsed?id={id}";
+            return "redirect:/aaa?id={id}";
         } catch (NotFoundException | OptimisticLockingException | OfxParseException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }
     }
 
-    @GetMapping("/dataParsed")
-    // @formatter:off
-    public String loadDataParsed(@RequestParam("id") Long id,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
-            @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") Sort.Direction sortDirection,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        // @formatter:on
+    @GetMapping("/aaa")
+    public String loadAaa(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             DataFile dataFile = dataFileService.findById(id);
-            DataFileView view = new DataFileView(dataFile);
-            model.addAttribute("view", view);
 
-            // Convert sort column from string to an array of strings.
-            String[] sortColumns = {defaultSortColumn};
-            if (Arrays.asList(dataTranSortableColumns).contains(sortColumn)) {
-                sortColumns = new String[]{sortColumn, defaultSortColumn};
+            // Does this account already exist? Do multiple accounts exist? Try to find out using financial institution
+            // id (which identifies the bank) and the account id (which is the account number).
+            String ofxFid = dataFile.getOfxFid();
+            String ofxAcctId = dataFile.getOfxAcctId();
+            List<AcctNbr> acctNbrs = acctNbrService.findByAcctOfxFidAndNumber(ofxFid, ofxAcctId);
+            Map<Long, Acct> acctMap = new HashMap<>();
+            for (AcctNbr acctNbr : acctNbrs) {
+                Acct acct = acctNbr.getAcct();
+                acctMap.put(acct.getId(), acct);
             }
 
-            // Get a page of records.
-            PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<DataTran> page = dataTranService.findByDataFileId(id, pageable);
-            DataTranListForm listForm = new DataTranListForm(page);
-            model.addAttribute("listForm", listForm);
-            return "dataParsed";
+            // If we found exactly one account, we have found the matching account.
+            if (acctMap.size() == 1) {
+                Acct acct = acctMap.values().iterator().next();
+                // FIXME Do something clever here.
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        String.format("Matching Account found: %d %s", acct.getId(), acct.getName()));
+                return "redirect:/";
+            }
+
+            // Otherwise, we found no accounts (or possibly many accounts). Now we  need to go to an account
+            // disambiguation page to get input from the user.
+
+            // Get accounts that have the same financial institution id.
+            List<Acct> sameFidAccts = acctService.findByOfxFid(ofxFid);
+
+            // Get accounts that have no financial institution id.
+            List<Acct> noFidAccts = acctService.findByOfxFidNull();
+
+            AaaForm aaaForm = new AaaForm(dataFile, sameFidAccts, noFidAccts);
+            model.addAttribute("aaaForm", aaaForm);
+
+            return "aaa";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
+    }
+
+    @GetMapping("/dataAcctMatch")
+    public String processDataAcctMatch(@RequestParam("id") Long id, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+
+            return "redirect:/dataAcctMatched?id={id}";
+        } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
+    }
+
+    @GetMapping("/dataAcctMatched")
+    public String loadDataAcctMatched(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            DataFile dataFile = dataFileService.findById(id);
+            return "dataAcctMatched";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";

@@ -33,10 +33,18 @@ public class Acct {
     private String phoneNumber;
     @Column(precision = 9, scale = 2)
     private BigDecimal creditLimit;
+    @Column(length = 50)
+    private String ofxOrganization;
+    @Column(length = 10)
+    private String ofxFid;
+    @Column(length = 10)
+    private String ofxBankId;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
     private List<AcctNbr> acctNbrs = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
     private List<Stmt> stmts = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "acct")
+    private List<DataFile> dataFiles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -134,6 +142,30 @@ public class Acct {
         this.creditLimit = creditLimit;
     }
 
+    public String getOfxOrganization() {
+        return ofxOrganization;
+    }
+
+    public void setOfxOrganization(String ofxOrganization) {
+        this.ofxOrganization = ofxOrganization;
+    }
+
+    public String getOfxFid() {
+        return ofxFid;
+    }
+
+    public void setOfxFid(String ofxFid) {
+        this.ofxFid = ofxFid;
+    }
+
+    public String getOfxBankId() {
+        return ofxBankId;
+    }
+
+    public void setOfxBankId(String ofxBankId) {
+        this.ofxBankId = ofxBankId;
+    }
+
     public List<AcctNbr> getAcctNbrs() {
         return acctNbrs;
     }
@@ -148,5 +180,13 @@ public class Acct {
 
     public void setStmts(List<Stmt> stmts) {
         this.stmts = stmts;
+    }
+
+    public List<DataFile> getDataFiles() {
+        return dataFiles;
+    }
+
+    public void setDataFiles(List<DataFile> dataFiles) {
+        this.dataFiles = dataFiles;
     }
 }

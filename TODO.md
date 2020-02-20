@@ -11,12 +11,14 @@
 * Remove id's, maybe.
 * processDataParse should be a post.
 * Require cat for stmt reconcile.
+* Handle unparsable data file, i.e. empty, no tokens, etc.
+* Rename all ofx fields with a ofx prefix.
 
 ## Things done
 
 * Lose statement open date and make close date not null.
 * Categories.
-* Update transactions with check number, name, and memo.
+* Update transactions with check number, ofxName, and ofxMemo.
 * Handle optimistic lock error.
 * Production profile.
 * Reconcile account.
@@ -39,4 +41,4 @@
 ## Review Things
 
 * All ListForms and Views should have not have a no argument constructor.
-* All ListForms and Views should have not have a no setters.
+* All ListForms and Views should have no setters.

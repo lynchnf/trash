@@ -16,30 +16,30 @@ public class DataTran {
     private DataFile dataFile;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
-    private TranType type;
+    private TranType ofxType;
     @Temporal(TemporalType.DATE)
-    private Date postDate;
+    private Date ofxPostDate;
     @Temporal(TemporalType.DATE)
-    private Date userDate;
+    private Date ofxUserDate;
     @Column(precision = 9, scale = 2)
-    private BigDecimal amount;
+    private BigDecimal ofxAmount;
     @Column(length = 50)
-    private String fitId;
+    private String ofxFitId;
     @Column(length = 10)
-    private String sic;
+    private String ofxSic;
     @Column(length = 10)
-    private String checkNumber;
+    private String ofxCheckNumber;
     @Column(length = 10)
-    private String correctFitId;
+    private String ofxCorrectFitId;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
-    private CorrectAction correctAction;
+    private CorrectAction ofxCorrectAction;
     @Column(length = 100)
-    private String name;
+    private String ofxName;
     @Column(length = 10)
-    private String category;
+    private String ofxCategory;
     @Column(length = 100)
-    private String memo;
+    private String ofxMemo;
 
     public Long getId() {
         return id;
@@ -65,99 +65,99 @@ public class DataTran {
         this.dataFile = dataFile;
     }
 
-    public TranType getType() {
-        return type;
+    public TranType getOfxType() {
+        return ofxType;
     }
 
-    public void setType(TranType type) {
-        this.type = type;
+    public void setOfxType(TranType ofxType) {
+        this.ofxType = ofxType;
     }
 
-    public Date getPostDate() {
-        return postDate;
+    public Date getOfxPostDate() {
+        return ofxPostDate;
     }
 
-    public void setPostDate(Date postDate) {
-        this.postDate = postDate;
+    public void setOfxPostDate(Date ofxPostDate) {
+        this.ofxPostDate = ofxPostDate;
     }
 
-    public Date getUserDate() {
-        return userDate;
+    public Date getOfxUserDate() {
+        return ofxUserDate;
     }
 
-    public void setUserDate(Date userDate) {
-        this.userDate = userDate;
+    public void setOfxUserDate(Date ofxUserDate) {
+        this.ofxUserDate = ofxUserDate;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getOfxAmount() {
+        return ofxAmount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setOfxAmount(BigDecimal ofxAmount) {
+        this.ofxAmount = ofxAmount;
     }
 
-    public String getFitId() {
-        return fitId;
+    public String getOfxFitId() {
+        return ofxFitId;
     }
 
-    public void setFitId(String fitId) {
-        this.fitId = fitId;
+    public void setOfxFitId(String ofxFitId) {
+        this.ofxFitId = ofxFitId;
     }
 
-    public String getSic() {
-        return sic;
+    public String getOfxSic() {
+        return ofxSic;
     }
 
-    public void setSic(String sic) {
-        this.sic = sic;
+    public void setOfxSic(String ofxSic) {
+        this.ofxSic = ofxSic;
     }
 
-    public String getCheckNumber() {
-        return checkNumber;
+    public String getOfxCheckNumber() {
+        return ofxCheckNumber;
     }
 
-    public void setCheckNumber(String checkNumber) {
-        this.checkNumber = checkNumber;
+    public void setOfxCheckNumber(String ofxCheckNumber) {
+        this.ofxCheckNumber = ofxCheckNumber;
     }
 
-    public String getCorrectFitId() {
-        return correctFitId;
+    public String getOfxCorrectFitId() {
+        return ofxCorrectFitId;
     }
 
-    public void setCorrectFitId(String correctFitId) {
-        this.correctFitId = correctFitId;
+    public void setOfxCorrectFitId(String ofxCorrectFitId) {
+        this.ofxCorrectFitId = ofxCorrectFitId;
     }
 
-    public CorrectAction getCorrectAction() {
-        return correctAction;
+    public CorrectAction getOfxCorrectAction() {
+        return ofxCorrectAction;
     }
 
-    public void setCorrectAction(CorrectAction correctAction) {
-        this.correctAction = correctAction;
+    public void setOfxCorrectAction(CorrectAction ofxCorrectAction) {
+        this.ofxCorrectAction = ofxCorrectAction;
     }
 
-    public String getName() {
-        return name;
+    public String getOfxName() {
+        return ofxName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOfxName(String ofxName) {
+        this.ofxName = ofxName;
     }
 
-    public String getCategory() {
-        return category;
+    public String getOfxCategory() {
+        return ofxCategory;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setOfxCategory(String ofxCategory) {
+        this.ofxCategory = ofxCategory;
     }
 
-    public String getMemo() {
-        return memo;
+    public String getOfxMemo() {
+        return ofxMemo;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setOfxMemo(String ofxMemo) {
+        this.ofxMemo = ofxMemo;
     }
 }

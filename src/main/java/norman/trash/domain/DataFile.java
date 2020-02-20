@@ -12,6 +12,9 @@ public class DataFile {
     private Long id;
     @Version
     private Integer version = 0;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acct_id")
+    private Acct acct;
     @Column(length = 100)
     private String originalFilename;
     @Column(length = 100)
@@ -23,16 +26,16 @@ public class DataFile {
     @Column(length = 10)
     private DataFileStatus status;
     @Column(length = 50)
-    private String organization;
+    private String ofxOrganization;
     @Column(length = 10)
-    private String fid;
+    private String ofxFid;
     @Column(length = 10)
-    private String bankId;
+    private String ofxBankId;
     @Column(length = 20)
-    private String acctId;
+    private String ofxAcctId;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
-    private AcctType type;
+    private AcctType ofxType;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
     private List<DataLine> dataLines = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
@@ -52,6 +55,14 @@ public class DataFile {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Acct getAcct() {
+        return acct;
+    }
+
+    public void setAcct(Acct acct) {
+        this.acct = acct;
     }
 
     public String getOriginalFilename() {
@@ -94,44 +105,44 @@ public class DataFile {
         this.status = status;
     }
 
-    public String getOrganization() {
-        return organization;
+    public String getOfxOrganization() {
+        return ofxOrganization;
     }
 
-    public void setOrganization(String organization) {
-        this.organization = organization;
+    public void setOfxOrganization(String ofxOrganization) {
+        this.ofxOrganization = ofxOrganization;
     }
 
-    public String getFid() {
-        return fid;
+    public String getOfxFid() {
+        return ofxFid;
     }
 
-    public void setFid(String fid) {
-        this.fid = fid;
+    public void setOfxFid(String ofxFid) {
+        this.ofxFid = ofxFid;
     }
 
-    public String getBankId() {
-        return bankId;
+    public String getOfxBankId() {
+        return ofxBankId;
     }
 
-    public void setBankId(String bankId) {
-        this.bankId = bankId;
+    public void setOfxBankId(String ofxBankId) {
+        this.ofxBankId = ofxBankId;
     }
 
-    public String getAcctId() {
-        return acctId;
+    public String getOfxAcctId() {
+        return ofxAcctId;
     }
 
-    public void setAcctId(String acctId) {
-        this.acctId = acctId;
+    public void setOfxAcctId(String ofxAcctId) {
+        this.ofxAcctId = ofxAcctId;
     }
 
-    public AcctType getType() {
-        return type;
+    public AcctType getOfxType() {
+        return ofxType;
     }
 
-    public void setType(AcctType type) {
-        this.type = type;
+    public void setOfxType(AcctType ofxType) {
+        this.ofxType = ofxType;
     }
 
     public List<DataLine> getDataLines() {

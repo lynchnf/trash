@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,5 +57,13 @@ public class AcctService {
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new OptimisticLockingException(LOGGER, "Account", acct.getId(), e);
         }
+    }
+
+    public List<Acct> findByOfxFid(String ofxFid) {
+        return repository.findByOfxFidOrderByName(ofxFid);
+    }
+
+    public List<Acct> findByOfxFidNull() {
+        return repository.findByOfxFidNullOrderByName();
     }
 }

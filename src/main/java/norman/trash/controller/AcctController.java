@@ -6,6 +6,7 @@ import norman.trash.domain.*;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OptimisticLockingException;
 import norman.trash.service.AcctService;
+import norman.trash.service.DataFileService;
 import norman.trash.service.StmtService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class AcctController {
     private AcctService acctService;
     @Autowired
     private StmtService stmtService;
+    @Autowired
+    private DataFileService dataFileService;
 
     @GetMapping("/acctList")
     // @formatter:off
@@ -109,19 +112,24 @@ public class AcctController {
     }
 
     @GetMapping("/acctEdit")
-    public String loadAcctEdit(@RequestParam(value = "id", required = false) Long id, Model model,
+    // @formatter:off
+    public String loadAcctEdit(@RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "dataFileId", required = false) Long dataFileId,
+            Model model,
             RedirectAttributes redirectAttributes) {
+        // @formatter:on
 
-        // If no acct id, new acct.
-        if (id == null) {
-            model.addAttribute("acctForm", new AcctForm());
-            return "acctEdit";
-        }
-
-        // Otherwise, edit existing acct.
+        Acct acct = null;
+        DataFile dataFile = null;
         try {
-            Acct acct = acctService.findById(id);
-            AcctForm acctForm = new AcctForm(acct);
+            if (id != null) {
+                acct = acctService.findById(id);
+            }
+            if (dataFileId != null) {
+                dataFile = dataFileService.findById(dataFileId);
+            }
+
+            AcctForm acctForm = new AcctForm(acct, dataFile);
             model.addAttribute("acctForm", acctForm);
             return "acctEdit";
         } catch (NotFoundException e) {
@@ -139,6 +147,7 @@ public class AcctController {
 
         // Convert form to entity.
         Long acctId = acctForm.getId();
+        Long dataFileId = acctForm.getDataFileId();
         Acct acct = acctForm.toAcct();
 
         // If this is a new acct, we also need an acct number, a current period statement and a beginning statement and
@@ -185,8 +194,16 @@ public class AcctController {
             acct.getAcctNbrs().add(acctNbr);
         }
 
-        // Save entity.
         try {
+            // If this came from an uploaded data file, link it to the account.
+            if (dataFileId != null) {
+                DataFile dataFile = dataFileService.findById(dataFileId);
+                dataFile.setStatus(DataFileStatus.AC_MATCHED);
+                dataFile.setAcct(acct);
+                acct.getDataFiles().add(dataFile);
+            }
+
+            // Save entity.
             Acct save = acctService.save(acct);
             String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
             if (acctId != null) {
@@ -195,7 +212,7 @@ public class AcctController {
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
             return "redirect:/acct?id={id}";
-        } catch (OptimisticLockingException e) {
+        } catch (NotFoundException | OptimisticLockingException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/acctList";
         }

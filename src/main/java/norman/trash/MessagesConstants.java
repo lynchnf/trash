@@ -11,6 +11,10 @@ public class MessagesConstants {
     public static final String UPLOADED_FILE_NOT_FOUND_ERROR = "Upload file is empty or missing.";
     public static final String UPLOADED_FILE_NOT_READ_ERROR = "Error while opening or reading uploaded file.";
     public static final String UPLOADED_FILE_NOT_CLOSED_IGNORED = "Error ignored while closing uploaded file.";
+    public static final String PARSE_ERROR = "Error parsing %s in line=\"%s\".";
+    public static final String PARSE_BAD_STATE_ERROR = "Invalid state=\"%s\".";
+    public static final String PARSE_BAD_TOKEN_ERROR = "Invalid token found: state=\"%s\", line=\"%s\".";
+    public static final String PARSE_MISSING_TOKEN_ERROR = "No valid token found: state=\"%s\", line=\"%s\".";
 
     private MessagesConstants() {
     }

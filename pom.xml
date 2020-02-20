@@ -13,7 +13,7 @@
         <version>2.2.2.RELEASE</version>
     </parent>
 
-    <name>Trash</name>
+    <ofxName>Trash</ofxName>
 
     <properties>
         <java.version>1.8</java.version>
@@ -22,7 +22,7 @@
     <developers>
         <developer>
             <id>LYNCHNF</id>
-            <name>Norman Lynch</name>
+            <ofxName>Norman Lynch</ofxName>
             <email>lynchnf@gmail.com</email>
         </developer>
     </developers>

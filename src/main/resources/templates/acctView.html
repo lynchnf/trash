@@ -15,13 +15,13 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Type</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.type}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxType}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -70,6 +70,24 @@
         <label class="col-sm-3 col-form-label">Credit Limit</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Organization</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxOrganization}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">FID</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxFid}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Bank Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxBankId}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -123,13 +141,13 @@
 
     <h2>Statements</h2>
     <form id="listForm" action="#" method="get" th:action="@{/acct}">
-        <input type="hidden" name="id" th:value="${view.id}"/>
-        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
-        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
-        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input ofxType="hidden" ofxName="id" th:value="${view.id}"/>
+        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
+        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
+        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>

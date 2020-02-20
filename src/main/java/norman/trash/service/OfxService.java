@@ -1,7 +1,6 @@
 package norman.trash.service;
 
 import norman.trash.domain.*;
-import norman.trash.domain.repository.OfxParseState;
 import norman.trash.exception.OfxParseBadStateException;
 import norman.trash.exception.OfxParseBadTokenException;
 import norman.trash.exception.OfxParseException;

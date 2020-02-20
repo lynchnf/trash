@@ -39,31 +39,31 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Post Date</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.postDate,'M/d/yyyy')}"></p>
+            <p class="form-control-plaintext" th:text="${#dates.format(view.ofxPostDate,'M/d/yyyy')}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Amount</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.amount)}"></p>
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.ofxAmount)}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Check Number</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.checkNumber}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxCheckNumber}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.name}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Memo</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.memo}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxMemo}"></p>
         </div>
     </div>
     <a class="btn btn-primary" th:href="@{/tranEdit(id=${view.id})}">Edit</a>

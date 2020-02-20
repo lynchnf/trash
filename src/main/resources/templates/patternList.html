@@ -7,13 +7,13 @@
     <h1>Patterns</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <form id="listForm" action="#" method="get" th:action="@{/patternList}">
-        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
-        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
-        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
-        <input type="hidden" th:field="${listForm.whereRegex}"/>
+        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
+        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
+        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input ofxType="hidden" th:field="${listForm.whereRegex}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
@@ -56,7 +56,7 @@
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="regex" href="#">
                         Regular Expression
-                        <span th:if="${listForm.sortColumn=='name'}">
+                        <span th:if="${listForm.sortColumn=='ofxName'}">
                             <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
                             <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
                         </span>
@@ -66,14 +66,14 @@
             </tr>
             <tr>
                 <td>
-                    <button type="button" id="filterPatternList" class="btn btn-primary btn-sm"
+                    <button ofxType="button" id="filterPatternList" class="btn btn-primary btn-sm"
                             data-list-form="listForm">Filter
                     </button>
                     <a class="btn btn-secondary btn-sm" th:href="@{/patternEdit}">Edit</a>
                 </td>
                 <td></td>
                 <td>
-                    <input type="text" id="newWhereRegex" placeholder="contains" th:value="${listForm.whereRegex}"/>
+                    <input ofxType="text" id="newWhereRegex" placeholder="contains" th:value="${listForm.whereRegex}"/>
                 </td>
             </tr>
             </thead>
