@@ -55,9 +55,9 @@
                     </a>
                 </th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="ofxType" href="#">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="type" href="#">
                         Type
-                        <span th:if="${listForm.sortColumn=='ofxType'}">
+                        <span th:if="${listForm.sortColumn=='type'}">
                             <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
                             <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
                         </span>
@@ -92,7 +92,7 @@
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.id}"></a></td>
                 <td th:text="${row.name}"></td>
-                <td th:text="${row.ofxType}"></td>
+                <td th:text="${row.type}"></td>
                 <td th:text="${#numbers.formatCurrency(row.creditLimit)}"></td>
                 <td th:text="${row.number}"></td>
                 <td th:text="${#dates.format(row.effDate,'M/d/yyyy')}"></td>

@@ -15,13 +15,13 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.name}"></p>
+            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.id})}" th:text="${view.name}"></a></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Type</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.ofxType}"></p>
+            <p class="form-control-plaintext" th:text="${view.type}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -74,15 +74,15 @@
         <tbody>
         <tr th:each="row:${rows}">
             <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
-            <td th:text="${row.ofxType}"></td>
-            <td th:text="${#dates.format(row.ofxPostDate,'M/d/yyyy')}"></td>
+            <td th:text="${row.type}"></td>
+            <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
             <td><a th:href="@{/stmt(id=${row.stmtId})}" th:text="${#dates.format(row.stmtCloseDate,'M/d/yyyy')}"></a>
             </td>
-            <td th:text="${row.ofxCheckNumber}"></td>
+            <td th:text="${row.checkNumber}"></td>
             <td th:text="${row.name}"></td>
-            <td th:text="${row.ofxMemo}"></td>
+            <td th:text="${row.memo}"></td>
             <td><a th:if="${row.catId}!=null" th:href="@{/cat(id=${row.catId})}" th:text="${row.catName}"></a></td>
-            <td th:text="${#numbers.formatCurrency(row.ofxAmount)}"></td>
+            <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
             <td th:text="${#numbers.formatCurrency(row.balance)}"></td>
         </tr>
         </tbody>

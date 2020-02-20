@@ -15,8 +15,7 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.ofxAcctId})}"
-                                                 th:text="${view.acctName}"></a>
+            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.acctId})}" th:text="${view.acctName}"></a>
             </p>
         </div>
     </div>
@@ -117,9 +116,9 @@
                 <th>Transfer Account</th>
                 <th>Category</th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="ofxPostDate" href="#">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">
                         Post Date
-                        <span th:if="${listForm.sortColumn=='ofxPostDate'}">
+                        <span th:if="${listForm.sortColumn=='postDate'}">
                             <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
                             <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
                         </span>
@@ -135,9 +134,9 @@
                 <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
                 <td th:text="${row.otherAcctName}"></td>
                 <td th:text="${row.catName}"></td>
-                <td th:text="${#dates.format(row.ofxPostDate,'M/d/yyyy')}"></td>
-                <td th:text="${#numbers.formatCurrency(row.ofxAmount)}"></td>
-                <td th:text="${row.ofxCheckNumber}"></td>
+                <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
+                <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
+                <td th:text="${row.checkNumber}"></td>
                 <td th:text="${row.name}"></td>
             </tbody>
         </table>

@@ -67,7 +67,7 @@
     <p>Data has been uploaded and it cannot be determined unambiguously which account it belongs to.</p>
 
     <div th:unless="${aaaForm.sameFidAccts.isEmpty()}">
-        <p>Maybe one of the following accounts has changed it's account number. If so, please select that account.</p>
+        <p>Maybe one of the following accounts has changed its account number. If so, please select that account.</p>
         <table class="table table-sm table-striped">
             <thead>
             <tr>
@@ -83,7 +83,7 @@
                 <td><a th:href="@{/acctEdit(id=${sameFidAcct.id},dataFileId=${aaaForm.id})}"
                        th:text="${sameFidAcct.id}"></a></td>
                 <td th:text="${sameFidAcct.name}"></td>
-                <td th:text="${sameFidAcct.ofxType}"></td>
+                <td th:text="${sameFidAcct.type}"></td>
                 <td th:text="${sameFidAcct.number}"></td>
                 <td th:text="${#dates.format(sameFidAcct.effDate,'M/d/yyyy')}"></td>
             </tr>
@@ -92,7 +92,7 @@
     </div>
 
     <div th:unless="${aaaForm.noFidAccts.isEmpty()}">
-        <p>Maybe it one of the following accounts which have no FID. If so, please select that account.</p>
+        <p>Maybe it's one of the following accounts which have no FID. If so, please select that account.</p>
         <table class="table table-sm table-striped">
             <thead>
             <tr>
@@ -108,7 +108,7 @@
                 <td><a th:href="@{/acctEdit(id=${noFidAcct.id},dataFileId=${aaaForm.id})}"
                        th:text="${noFidAcct.id}"></a></td>
                 <td th:text="${noFidAcct.name}"></td>
-                <td th:text="${noFidAcct.ofxType}"></td>
+                <td th:text="${noFidAcct.type}"></td>
                 <td th:text="${noFidAcct.number}"></td>
                 <td th:text="${#dates.format(noFidAcct.effDate,'M/d/yyyy')}"></td>
             </tr>

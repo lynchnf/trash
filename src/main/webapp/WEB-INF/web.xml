@@ -3,10 +3,10 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-    <display-ofxName>Trash</display-ofxName>
+    <display-name>Trash</display-name>
 
     <context-param>
-        <param-ofxName>spring.profiles.active</param-ofxName>
+        <param-name>spring.profiles.active</param-name>
         <param-value>prod</param-value>
     </context-param>
 </web-app>

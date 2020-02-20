@@ -12,9 +12,9 @@
         </ul>
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{version}"/>
-        <input type="hidden" th:field="*{ofxAcctId}"/>
+        <input type="hidden" th:field="*{acctId}"/>
         <input type="hidden" th:field="*{name}"/>
-        <input type="hidden" th:field="*{ofxType}"/>
+        <input type="hidden" th:field="*{type}"/>
         <input type="hidden" th:field="*{cc}"/>
         <input type="hidden" th:field="*{billOrCc}"/>
 
@@ -90,16 +90,16 @@
             <tbody>
             <tr th:each="stmtReconcileRow,iterStat:*{stmtReconcileRows}">
                 <td>
-                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].ofxType}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].type}"/>
                     <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].id}"/>
                     <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].version}"/>
                     <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].debitStmtId}"/>
                     <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].creditStmtId}"/>
-                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].ofxPostDate}"/>
-                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].ofxAmount}"/>
-                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].ofxCheckNumber}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].postDate}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].amount}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].checkNumber}"/>
                     <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].name}"/>
-                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].ofxMemo}"/>
+                    <input type="hidden" th:field="*{stmtReconcileRows[__${iterStat.index}__].memo}"/>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input"
                                th:field="*{stmtReconcileRows[__${iterStat.index}__].selected}"/>
@@ -112,11 +112,11 @@
                         <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
                     </select>
                 </td>
-                <td th:text="${#dates.format(stmtReconcileRow.ofxPostDate,'M/d/yyyy')}"></td>
-                <td th:text="${stmtReconcileRow.ofxAmount}"></td>
-                <td th:text="${stmtReconcileRow.ofxCheckNumber}"></td>
+                <td th:text="${#dates.format(stmtReconcileRow.postDate,'M/d/yyyy')}"></td>
+                <td th:text="${stmtReconcileRow.amount}"></td>
+                <td th:text="${stmtReconcileRow.checkNumber}"></td>
                 <td th:text="${stmtReconcileRow.name}"></td>
-                <td th:text="${stmtReconcileRow.ofxMemo}"></td>
+                <td th:text="${stmtReconcileRow.memo}"></td>
             </tr>
             </tbody>
         </table>
