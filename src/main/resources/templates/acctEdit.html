@@ -10,15 +10,15 @@
         <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
             <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
         </ul>
-        <input ofxType="hidden" th:field="*{id}"/>
-        <input ofxType="hidden" th:field="*{version}"/>
-        <input ofxType="hidden" th:field="*{oldNumber}"/>
-        <input ofxType="hidden" th:field="*{oldEffDate}"/>
-        <input ofxType="hidden" th:field="*{newEntity}"/>
-        <input ofxType="hidden" th:field="*{dataFileId}"/>
-        <input ofxType="hidden" th:field="*{ofxOrganization}"/>
-        <input ofxType="hidden" th:field="*{ofxFid}"/>
-        <input ofxType="hidden" th:field="*{ofxBankId}"/>
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{version}"/>
+        <input type="hidden" th:field="*{oldNumber}"/>
+        <input type="hidden" th:field="*{oldEffDate}"/>
+        <input type="hidden" th:field="*{newEntity}"/>
+        <input type="hidden" th:field="*{dataFileId}"/>
+        <input type="hidden" th:field="*{ofxOrganization}"/>
+        <input type="hidden" th:field="*{ofxFid}"/>
+        <input type="hidden" th:field="*{ofxBankId}"/>
 
         <div th:if="${acctForm.id}!=null" class="form-group row">
             <label class="col-sm-3 col-form-label">Id</label>
@@ -29,7 +29,7 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Name</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{ofxName}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
@@ -46,67 +46,67 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Address Name</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{addressName}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{addressName}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Address Line 1</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{address1}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{address1}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Address Line 2</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{address2}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{address2}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">City</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{city}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{city}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">State</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{state}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{state}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Zip Code</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{zipCode}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{zipCode}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Phone Number</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{phoneNumber}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{phoneNumber}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Credit Limit</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{creditLimit}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{creditLimit}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Account Number</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{number}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{number}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Effective Date (M/d/yyyy)</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{effDate}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{effDate}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div th:if="${acctForm.id}==null" class="form-group row">
             <label class="col-sm-3 col-form-label">Beginning Balance</label>
             <div class="col-sm-9">
-                <input ofxType="text" class="form-control" th:field="*{beginningBalance}" th:errorclass="is-invalid"/>
+                <input type="text" class="form-control" th:field="*{beginningBalance}" th:errorclass="is-invalid"/>
             </div>
         </div>
         <div class="form-group row">
@@ -127,7 +127,7 @@
                 <p class="form-control-plaintext" th:text="${acctForm.ofxBankId}"></p>
             </div>
         </div>
-        <button ofxType="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>

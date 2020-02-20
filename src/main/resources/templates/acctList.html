@@ -7,14 +7,14 @@
     <h1>Accounts</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <form id="listForm" action="#" method="get" th:action="@{/acctList}">
-        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
-        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
-        <input ofxType="hidden" th:field="${listForm.whereName}"/>
-        <input ofxType="hidden" th:field="${listForm.whereType}"/>
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereName}"/>
+        <input type="hidden" th:field="${listForm.whereType}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
@@ -46,9 +46,9 @@
             <tr>
                 <th>Id</th>
                 <th>
-                    <a class="changeSort" data-list-form="listForm" data-sort-column="ofxName" href="#">
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">
                         Name
-                        <span th:if="${listForm.sortColumn=='ofxName'}">
+                        <span th:if="${listForm.sortColumn=='name'}">
                             <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
                             <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
                         </span>
@@ -71,12 +71,12 @@
             </tr>
             <tr>
                 <td>
-                    <button ofxType="button" id="filterAcctList" class="btn btn-primary btn-sm"
+                    <button type="button" id="filterAcctList" class="btn btn-primary btn-sm"
                             data-list-form="listForm">Filter
                     </button>
                 </td>
                 <td>
-                    <input ofxType="text" id="newWhereName" placeholder="contains"
+                    <input type="text" id="newWhereName" placeholder="contains"
                            th:value="${listForm.whereName}"/>
                 </td>
                 <td>
@@ -91,7 +91,7 @@
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${row.ofxName}"></td>
+                <td th:text="${row.name}"></td>
                 <td th:text="${row.ofxType}"></td>
                 <td th:text="${#numbers.formatCurrency(row.creditLimit)}"></td>
                 <td th:text="${row.number}"></td>

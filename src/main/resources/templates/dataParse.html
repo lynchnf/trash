@@ -48,21 +48,21 @@
 
     <form action="#" method="post" th:if="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
           th:action="@{/dataParse}">
-        <input ofxType="hidden" ofxName="id" th:value="${view.id}"/>
-        <button ofxType="submit" class="btn btn-primary">Parse</button>
+        <input type="hidden" name="id" th:value="${view.id}"/>
+        <button type="submit" class="btn btn-primary">Parse</button>
     </form>
     <a class="btn btn-secondary" th:unless="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
        th:href="@{/aaa(id=${view.id})}">Parsed</a>
 
     <h2>Data Lines</h2>
     <form id="listForm" action="#" method="get" th:action="@{/dataParse}">
-        <input ofxType="hidden" ofxName="id" th:value="${view.id}"/>
-        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
-        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" name="id" th:value="${view.id}"/>
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>

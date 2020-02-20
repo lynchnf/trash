@@ -7,14 +7,14 @@
     <h1>Data Files</h1>
     <div th:replace="fragments/alerts::alerts"></div>
     <form id="listForm" action="#" method="get" th:action="@{/dataFileList}">
-        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
-        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
-        <input ofxType="hidden" th:field="${listForm.whereOriginalFilename}"/>
-        <input ofxType="hidden" th:field="${listForm.whereStatus}"/>
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereOriginalFilename}"/>
+        <input type="hidden" th:field="${listForm.whereStatus}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
@@ -85,12 +85,12 @@
             </tr>
             <tr>
                 <td>
-                    <button ofxType="button" id="filterDataFileList" class="btn btn-primary btn-sm"
+                    <button type="button" id="filterDataFileList" class="btn btn-primary btn-sm"
                             data-list-form="listForm">Filter
                     </button>
                 </td>
                 <td>
-                    <input ofxType="text" id="newWhereOriginalFilename" placeholder="contains"
+                    <input type="text" id="newWhereOriginalFilename" placeholder="contains"
                            th:value="${listForm.whereOriginalFilename}"/>
                 </td>
                 <td>

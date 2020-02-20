@@ -77,13 +77,13 @@
 
     <h2>Transactions</h2>
     <form id="listForm" action="#" method="get" th:action="@{/stmt}">
-        <input ofxType="hidden" ofxName="id" th:value="${view.id}"/>
-        <input ofxType="hidden" class="pageNumber" ofxName="pageNumber" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="pageSize" ofxName="pageSize" th:value="${listForm.size}"/>
-        <input ofxType="hidden" class="sortColumn" ofxName="sortColumn" th:value="${listForm.sortColumn}"/>
-        <input ofxType="hidden" class="sortDirection" ofxName="sortDirection" th:value="${listForm.sortDirection}"/>
-        <input ofxType="hidden" class="currentPage" th:value="${listForm.number}"/>
-        <input ofxType="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" name="id" th:value="${view.id}"/>
+        <input type="hidden" class="pageNumber" name="pageNumber" th:value="${listForm.number}"/>
+        <input type="hidden" class="pageSize" name="pageSize" th:value="${listForm.size}"/>
+        <input type="hidden" class="sortColumn" name="sortColumn" th:value="${listForm.sortColumn}"/>
+        <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
+        <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
+        <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
@@ -138,7 +138,7 @@
                 <td th:text="${#dates.format(row.ofxPostDate,'M/d/yyyy')}"></td>
                 <td th:text="${#numbers.formatCurrency(row.ofxAmount)}"></td>
                 <td th:text="${row.ofxCheckNumber}"></td>
-                <td th:text="${row.ofxName}"></td>
+                <td th:text="${row.name}"></td>
             </tbody>
         </table>
     </form>

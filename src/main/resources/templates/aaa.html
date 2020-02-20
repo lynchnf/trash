@@ -82,7 +82,7 @@
             <tr th:each="sameFidAcct:${aaaForm.sameFidAccts}">
                 <td><a th:href="@{/acctEdit(id=${sameFidAcct.id},dataFileId=${aaaForm.id})}"
                        th:text="${sameFidAcct.id}"></a></td>
-                <td th:text="${sameFidAcct.ofxName}"></td>
+                <td th:text="${sameFidAcct.name}"></td>
                 <td th:text="${sameFidAcct.ofxType}"></td>
                 <td th:text="${sameFidAcct.number}"></td>
                 <td th:text="${#dates.format(sameFidAcct.effDate,'M/d/yyyy')}"></td>
@@ -107,7 +107,7 @@
             <tr th:each="noFidAcct:${aaaForm.noFidAccts}">
                 <td><a th:href="@{/acctEdit(id=${noFidAcct.id},dataFileId=${aaaForm.id})}"
                        th:text="${noFidAcct.id}"></a></td>
-                <td th:text="${noFidAcct.ofxName}"></td>
+                <td th:text="${noFidAcct.name}"></td>
                 <td th:text="${noFidAcct.ofxType}"></td>
                 <td th:text="${noFidAcct.number}"></td>
                 <td th:text="${#dates.format(noFidAcct.effDate,'M/d/yyyy')}"></td>
