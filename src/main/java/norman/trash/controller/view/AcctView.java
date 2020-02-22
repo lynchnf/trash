@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AcctView {
+    // Acct
     private Long id;
     private String name;
     private AcctType type;
@@ -21,15 +22,18 @@ public class AcctView {
     private String zipCode;
     private String phoneNumber;
     private BigDecimal creditLimit;
-    private String number;
-    private Date effDate;
-    private BigDecimal balance;
-    private Date lastTranDate;
-    private List<AcctNbr> oldAcctNbrs = new ArrayList<>();
-    private Long currentStmtId;
     private String ofxOrganization;
     private String ofxFid;
     private String ofxBankId;
+    // AcctNbr
+    private String number;
+    private Date effDate;
+    private List<AcctNbr> oldAcctNbrs = new ArrayList<>();
+    // Stmt
+    private Long currentStmtId;
+    // Tran
+    private Date lastTranDate;
+    private BigDecimal balance;
 
     public AcctView(Acct acct) {
         id = acct.getId();
@@ -137,30 +141,6 @@ public class AcctView {
         return creditLimit;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public Date getEffDate() {
-        return effDate;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public Date getLastTranDate() {
-        return lastTranDate;
-    }
-
-    public List<AcctNbr> getOldAcctNbrs() {
-        return oldAcctNbrs;
-    }
-
-    public Long getCurrentStmtId() {
-        return currentStmtId;
-    }
-
     public String getOfxOrganization() {
         return ofxOrganization;
     }
@@ -171,5 +151,29 @@ public class AcctView {
 
     public String getOfxBankId() {
         return ofxBankId;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public Date getEffDate() {
+        return effDate;
+    }
+
+    public List<AcctNbr> getOldAcctNbrs() {
+        return oldAcctNbrs;
+    }
+
+    public Long getCurrentStmtId() {
+        return currentStmtId;
+    }
+
+    public Date getLastTranDate() {
+        return lastTranDate;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
     }
 }

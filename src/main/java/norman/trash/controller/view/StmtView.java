@@ -6,10 +6,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class StmtView {
+    // Stmt
     private Long id;
-    private Long acctId;
-    private String acctName;
-    private Date closeDate;
     private BigDecimal openBalance;
     private BigDecimal debits;
     private BigDecimal credits;
@@ -18,12 +16,13 @@ public class StmtView {
     private BigDecimal closeBalance;
     private BigDecimal minimumDue;
     private Date dueDate;
+    private Date closeDate;
+    // Acct
+    private Long acctId;
+    private String acctName;
 
     public StmtView(Stmt stmt) {
         id = stmt.getId();
-        acctId = stmt.getAcct().getId();
-        acctName = stmt.getAcct().getName();
-        closeDate = stmt.getCloseDate();
         openBalance = stmt.getOpenBalance();
         debits = stmt.getDebits();
         credits = stmt.getCredits();
@@ -32,22 +31,13 @@ public class StmtView {
         closeBalance = stmt.getCloseBalance();
         minimumDue = stmt.getMinimumDue();
         dueDate = stmt.getDueDate();
+        closeDate = stmt.getCloseDate();
+        acctId = stmt.getAcct().getId();
+        acctName = stmt.getAcct().getName();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getAcctId() {
-        return acctId;
-    }
-
-    public String getAcctName() {
-        return acctName;
-    }
-
-    public Date getCloseDate() {
-        return closeDate;
     }
 
     public BigDecimal getOpenBalance() {
@@ -80,5 +70,17 @@ public class StmtView {
 
     public Date getDueDate() {
         return dueDate;
+    }
+
+    public Date getCloseDate() {
+        return closeDate;
+    }
+
+    public Long getAcctId() {
+        return acctId;
+    }
+
+    public String getAcctName() {
+        return acctName;
     }
 }

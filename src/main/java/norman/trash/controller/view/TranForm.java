@@ -16,6 +16,7 @@ import java.util.Date;
 @NotBothNull(fieldName1 = "debitAcctId", fieldName2 = "creditAcctId",
         message = "Must select a Debit or Credit Account (or both).")
 public class TranForm {
+    // Tran
     private Long id;
     @Version
     private Integer version = 0;

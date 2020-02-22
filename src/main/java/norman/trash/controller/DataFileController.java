@@ -1,9 +1,6 @@
 package norman.trash.controller;
 
-import norman.trash.controller.view.AaaForm;
-import norman.trash.controller.view.DataFileListForm;
-import norman.trash.controller.view.DataFileView;
-import norman.trash.controller.view.DataLineListForm;
+import norman.trash.controller.view.*;
 import norman.trash.domain.*;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OfxParseException;
@@ -230,7 +227,13 @@ public class DataFileController {
     @GetMapping("/aaa")
     public String loadAaa(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
+            // If we've already matched an account to this data file, we need to match transactions.
             DataFile dataFile = dataFileService.findById(id);
+            if (dataFile.getAcct() != null) {
+                redirectAttributes.addAttribute("id", id);
+                redirectAttributes.addAttribute("acctId", dataFile.getAcct().getId());
+                return "redirect:/bbb?id={id}&acctId={acctId}";
+            }
 
             // Does this account already exist? Do multiple accounts exist? Try to find out using financial institution
             // id (which identifies the bank) and the account id (which is the account number).
@@ -243,13 +246,12 @@ public class DataFileController {
                 acctMap.put(acct.getId(), acct);
             }
 
-            // If we found exactly one account, we have found the matching account.
+            // If we found exactly one account, we have found the matching account. Now we need to match transactions.
             if (acctMap.size() == 1) {
                 Acct acct = acctMap.values().iterator().next();
-                // FIXME Do something clever here.
-                redirectAttributes.addFlashAttribute("errorMessage",
-                        String.format("Matching Account found: %d %s", acct.getId(), acct.getName()));
-                return "redirect:/";
+                redirectAttributes.addAttribute("id", id);
+                redirectAttributes.addAttribute("acctId", acct.getId());
+                return "redirect:/bbb?id={id}&acctId={acctId}";
             }
 
             // Otherwise, we found no accounts (or possibly many accounts). Now we  need to go to an account
@@ -271,24 +273,18 @@ public class DataFileController {
         }
     }
 
-    @GetMapping("/dataAcctMatch")
-    public String processDataAcctMatch(@RequestParam("id") Long id, Model model,
+    @GetMapping("/bbb")
+    // @formatter:off
+    public String loadBbb(@RequestParam("id") Long id,
+            @RequestParam("acctId") Long acctId,
+            Model model,
             RedirectAttributes redirectAttributes) {
+        // @formatter:on
         try {
             DataFile dataFile = dataFileService.findById(id);
-
-            return "redirect:/dataAcctMatched?id={id}";
-        } catch (NotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/dataFileList";
-        }
-    }
-
-    @GetMapping("/dataAcctMatched")
-    public String loadDataAcctMatched(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            DataFile dataFile = dataFileService.findById(id);
-            return "dataAcctMatched";
+            Acct acct = acctService.findById(acctId);
+            BbbForm bbbForm = new BbbForm(dataFile, acct);
+            return "bbb";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";

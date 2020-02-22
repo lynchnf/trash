@@ -37,13 +37,9 @@ import static norman.trash.domain.AcctType.CC;
 @CloseBalance
 // @formatter:on
 public class StmtReconcileForm {
+    // Stmt
     private Long id;
     private Integer version = 0;
-    private Long acctId;
-    private String name;
-    private AcctType type;
-    private boolean cc;
-    private boolean billOrCc;
     @Digits(integer = 7, fraction = 2,
             message = "Opening Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal openBalance;
@@ -71,6 +67,12 @@ public class StmtReconcileForm {
     @DateTimeFormat(pattern = "M/d/yyyy")
     @NotNull(message = "Statement Closing Date may not be blank.")
     private Date closeDate;
+    // Acct
+    private Long acctId;
+    private String name;
+    private AcctType type;
+    private boolean cc;
+    private boolean billOrCc;
     @Valid
     private List<StmtReconcileRow> stmtReconcileRows = new ArrayList<>();
 
@@ -166,46 +168,6 @@ public class StmtReconcileForm {
         this.version = version;
     }
 
-    public Long getAcctId() {
-        return acctId;
-    }
-
-    public void setAcctId(Long acctId) {
-        this.acctId = acctId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AcctType getType() {
-        return type;
-    }
-
-    public void setType(AcctType type) {
-        this.type = type;
-    }
-
-    public boolean isCc() {
-        return cc;
-    }
-
-    public void setCc(boolean cc) {
-        this.cc = cc;
-    }
-
-    public boolean isBillOrCc() {
-        return billOrCc;
-    }
-
-    public void setBillOrCc(boolean billOrCc) {
-        this.billOrCc = billOrCc;
-    }
-
     public BigDecimal getOpenBalance() {
         return openBalance;
     }
@@ -276,6 +238,46 @@ public class StmtReconcileForm {
 
     public void setCloseDate(Date closeDate) {
         this.closeDate = closeDate;
+    }
+
+    public Long getAcctId() {
+        return acctId;
+    }
+
+    public void setAcctId(Long acctId) {
+        this.acctId = acctId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public AcctType getType() {
+        return type;
+    }
+
+    public void setType(AcctType type) {
+        this.type = type;
+    }
+
+    public boolean isCc() {
+        return cc;
+    }
+
+    public void setCc(boolean cc) {
+        this.cc = cc;
+    }
+
+    public boolean isBillOrCc() {
+        return billOrCc;
+    }
+
+    public void setBillOrCc(boolean billOrCc) {
+        this.billOrCc = billOrCc;
     }
 
     public List<StmtReconcileRow> getStmtReconcileRows() {

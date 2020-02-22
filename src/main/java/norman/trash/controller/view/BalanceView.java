@@ -7,18 +7,21 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class BalanceView {
-    private BalanceType type;
+    // Tran
     private Long id;
-    private Long stmtId;
-    private Date stmtCloseDate;
     private Date postDate;
+    private BigDecimal amount;
     private String checkNumber;
     private String name;
     private String memo;
+    private BigDecimal balance;
+    private BalanceType type;
+    // Stmt
+    private Long stmtId;
+    private Date stmtCloseDate;
+    // Cat
     private Long catId;
     private String catName;
-    private BigDecimal amount;
-    private BigDecimal balance;
 
     public BalanceView(Tran tran, BalanceType type) {
         this.type = type;
@@ -43,24 +46,16 @@ public class BalanceView {
         }
     }
 
-    public BalanceType getType() {
-        return type;
-    }
-
     public Long getId() {
         return id;
     }
 
-    public Long getStmtId() {
-        return stmtId;
-    }
-
-    public Date getStmtCloseDate() {
-        return stmtCloseDate;
-    }
-
     public Date getPostDate() {
         return postDate;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
     }
 
     public String getCheckNumber() {
@@ -75,23 +70,31 @@ public class BalanceView {
         return memo;
     }
 
-    public Long getCatId() {
-        return catId;
-    }
-
-    public String getCatName() {
-        return catName;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
     public BigDecimal getBalance() {
         return balance;
     }
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public BalanceType getType() {
+        return type;
+    }
+
+    public Long getStmtId() {
+        return stmtId;
+    }
+
+    public Date getStmtCloseDate() {
+        return stmtCloseDate;
+    }
+
+    public Long getCatId() {
+        return catId;
+    }
+
+    public String getCatName() {
+        return catName;
     }
 }

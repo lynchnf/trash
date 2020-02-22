@@ -20,8 +20,8 @@ import java.util.List;
 @NotNullIfCondition(fieldName = "beginningBalance", conditionField = "newEntity",
         message = "If new Account, Beginning Balance may not be blank.")
 public class AcctForm {
+    // Acct
     private Long id;
-    private boolean newEntity = true;
     private Integer version = 0;
     @NotBlank(message = "Account Name may not be blank.")
     @Size(max = 50, message = "Account Name may not be over {max} characters long.")
@@ -46,22 +46,26 @@ public class AcctForm {
     @Digits(integer = 7, fraction = 2,
             message = "Credit Limit value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal creditLimit;
-    @NotBlank(message = "Account Number may not be blank.")
-    @Size(max = 50, message = "Account Number may not be over {max} characters long.")
-    private String number;
-    @NotNull(message = "Effective Date may not be blank.")
-    @DateTimeFormat(pattern = "M/d/yyyy")
-    private Date effDate;
-    private String oldNumber;
-    @DateTimeFormat(pattern = "M/d/yyyy")
-    private Date oldEffDate;
-    @Digits(integer = 7, fraction = 2,
-            message = "Beginning Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal beginningBalance;
-    private Long dataFileId;
     private String ofxOrganization;
     private String ofxFid;
     private String ofxBankId;
+    private boolean newEntity = true;
+    // AcctNbr
+    @NotBlank(message = "Account Number may not be blank.")
+    @Size(max = 50, message = "Account Number may not be over {max} characters long.")
+    private String number;
+    private String oldNumber;
+    @NotNull(message = "Effective Date may not be blank.")
+    @DateTimeFormat(pattern = "M/d/yyyy")
+    private Date effDate;
+    @DateTimeFormat(pattern = "M/d/yyyy")
+    private Date oldEffDate;
+    // Tran
+    @Digits(integer = 7, fraction = 2,
+            message = "Beginning Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    private BigDecimal beginningBalance;
+    // DataFile
+    private Long dataFileId;
 
     public AcctForm() {
     }
@@ -69,7 +73,6 @@ public class AcctForm {
     public AcctForm(Acct acct, DataFile dataFile) {
         if (acct != null) {
             id = acct.getId();
-            newEntity = acct.getId() == null;
             version = acct.getVersion();
             name = acct.getName();
             type = acct.getType();
@@ -84,6 +87,7 @@ public class AcctForm {
             ofxOrganization = acct.getOfxOrganization();
             ofxFid = acct.getOfxFid();
             ofxBankId = acct.getOfxBankId();
+            newEntity = acct.getId() == null;
 
             // Get the account number and effective date from the latest acctNbr.
             List<AcctNbr> acctNbrs = acct.getAcctNbrs();
@@ -147,14 +151,6 @@ public class AcctForm {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public boolean isNewEntity() {
-        return newEntity;
-    }
-
-    public void setNewEntity(boolean newEntity) {
-        this.newEntity = newEntity;
     }
 
     public Integer getVersion() {
@@ -245,6 +241,38 @@ public class AcctForm {
         this.creditLimit = creditLimit;
     }
 
+    public String getOfxOrganization() {
+        return ofxOrganization;
+    }
+
+    public void setOfxOrganization(String ofxOrganization) {
+        this.ofxOrganization = ofxOrganization;
+    }
+
+    public String getOfxFid() {
+        return ofxFid;
+    }
+
+    public void setOfxFid(String ofxFid) {
+        this.ofxFid = ofxFid;
+    }
+
+    public String getOfxBankId() {
+        return ofxBankId;
+    }
+
+    public void setOfxBankId(String ofxBankId) {
+        this.ofxBankId = ofxBankId;
+    }
+
+    public boolean isNewEntity() {
+        return newEntity;
+    }
+
+    public void setNewEntity(boolean newEntity) {
+        this.newEntity = newEntity;
+    }
+
     public String getNumber() {
         return number;
     }
@@ -253,20 +281,20 @@ public class AcctForm {
         this.number = number;
     }
 
-    public Date getEffDate() {
-        return effDate;
-    }
-
-    public void setEffDate(Date effDate) {
-        this.effDate = effDate;
-    }
-
     public String getOldNumber() {
         return oldNumber;
     }
 
     public void setOldNumber(String oldNumber) {
         this.oldNumber = oldNumber;
+    }
+
+    public Date getEffDate() {
+        return effDate;
+    }
+
+    public void setEffDate(Date effDate) {
+        this.effDate = effDate;
     }
 
     public Date getOldEffDate() {
@@ -291,29 +319,5 @@ public class AcctForm {
 
     public void setDataFileId(Long dataFileId) {
         this.dataFileId = dataFileId;
-    }
-
-    public String getOfxOrganization() {
-        return ofxOrganization;
-    }
-
-    public void setOfxOrganization(String ofxOrganization) {
-        this.ofxOrganization = ofxOrganization;
-    }
-
-    public String getOfxFid() {
-        return ofxFid;
-    }
-
-    public void setOfxFid(String ofxFid) {
-        this.ofxFid = ofxFid;
-    }
-
-    public String getOfxBankId() {
-        return ofxBankId;
-    }
-
-    public void setOfxBankId(String ofxBankId) {
-        this.ofxBankId = ofxBankId;
     }
 }

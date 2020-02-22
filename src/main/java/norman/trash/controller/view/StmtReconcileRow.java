@@ -11,6 +11,7 @@ import java.util.Date;
 public class StmtReconcileRow {
     private BalanceType type;
     private boolean selected;
+    // Tran
     private Long id;
     private Integer version = 0;
     private Long debitStmtId;
