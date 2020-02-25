@@ -217,22 +217,22 @@ public class DataFileController {
             String successMessage = String.format(SUCCESSFULLY_UPDATED, "Data File", save.getId());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/aaa?id={id}";
+            return "redirect:/dataAcctMatch?id={id}";
         } catch (NotFoundException | OptimisticLockingException | OfxParseException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }
     }
 
-    @GetMapping("/aaa")
-    public String loadAaa(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/dataAcctMatch")
+    public String loadDataAcctMatch(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             // If we've already matched an account to this data file, we need to match transactions.
             DataFile dataFile = dataFileService.findById(id);
             if (dataFile.getAcct() != null) {
                 redirectAttributes.addAttribute("id", id);
                 redirectAttributes.addAttribute("acctId", dataFile.getAcct().getId());
-                return "redirect:/bbb?id={id}&acctId={acctId}";
+                return "redirect:/dataTranMatch?id={id}&acctId={acctId}";
             }
 
             // Does this account already exist? Do multiple accounts exist? Try to find out using financial institution
@@ -251,7 +251,7 @@ public class DataFileController {
                 Acct acct = acctMap.values().iterator().next();
                 redirectAttributes.addAttribute("id", id);
                 redirectAttributes.addAttribute("acctId", acct.getId());
-                return "redirect:/bbb?id={id}&acctId={acctId}";
+                return "redirect:/dataTranMatch?id={id}&acctId={acctId}";
             }
 
             // Otherwise, we found no accounts (or possibly many accounts). Now we  need to go to an account
@@ -263,19 +263,19 @@ public class DataFileController {
             // Get accounts that have no financial institution id.
             List<Acct> noFidAccts = acctService.findByOfxFidNull();
 
-            AaaForm aaaForm = new AaaForm(dataFile, sameFidAccts, noFidAccts);
-            model.addAttribute("aaaForm", aaaForm);
+            DataAcctMatchView dataAcctMatchView = new DataAcctMatchView(dataFile, sameFidAccts, noFidAccts);
+            model.addAttribute("dataAcctMatchView", dataAcctMatchView);
 
-            return "aaa";
+            return "dataAcctMatch";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }
     }
 
-    @GetMapping("/bbb")
+    @GetMapping("/dataTranMatch")
     // @formatter:off
-    public String loadBbb(@RequestParam("id") Long id,
+    public String loadDataTranMatch(@RequestParam("id") Long id,
             @RequestParam("acctId") Long acctId,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -283,8 +283,8 @@ public class DataFileController {
         try {
             DataFile dataFile = dataFileService.findById(id);
             Acct acct = acctService.findById(acctId);
-            BbbForm bbbForm = new BbbForm(dataFile, acct);
-            return "bbb";
+            DataTranMatchForm dataTranMatchForm = new DataTranMatchForm(dataFile, acct);
+            return "dataTranMatch";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";

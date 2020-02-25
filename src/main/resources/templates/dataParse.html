@@ -52,7 +52,7 @@
         <button type="submit" class="btn btn-primary">Parse</button>
     </form>
     <a class="btn btn-secondary" th:unless="${view.status==T(norman.trash.domain.DataFileStatus).UPLOADED}"
-       th:href="@{/aaa(id=${view.id})}">Parsed</a>
+       th:href="@{/dataAcctMatch(id=${view.id})}">Parsed</a>
 
     <h2>Data Lines</h2>
     <form id="listForm" action="#" method="get" th:action="@{/dataParse}">

@@ -6,17 +6,17 @@ import norman.trash.domain.DataFileStatus;
 
 import java.util.Date;
 
-public class BbbForm {
+public class DataTranMatchForm {
     private Long id;
     private Integer version = 0;
     private String originalFilename;
     private Date uploadTimestamp;
     private DataFileStatus status;
 
-    public BbbForm() {
+    public DataTranMatchForm() {
     }
 
-    public BbbForm(DataFile dataFile, Acct acct) {
+    public DataTranMatchForm(DataFile dataFile, Acct acct) {
 
     }
 }

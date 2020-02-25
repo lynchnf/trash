@@ -7,7 +7,7 @@ import norman.trash.domain.TranType;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class BbbRow {
+public class DataTranMatchRow {
     // DataTran
     private Long id;
     private Integer version = 0;
@@ -24,10 +24,10 @@ public class BbbRow {
     private String ofxCategory;
     private String ofxMemo;
 
-    public BbbRow() {
+    public DataTranMatchRow() {
     }
 
-    public BbbRow(DataTran dataTran) {
+    public DataTranMatchRow(DataTran dataTran) {
         id = dataTran.getId();
         ofxType = dataTran.getOfxType();
         ofxPostDate = dataTran.getOfxPostDate();

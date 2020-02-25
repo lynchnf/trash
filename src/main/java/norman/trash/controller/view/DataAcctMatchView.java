@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AaaForm {
+public class DataAcctMatchView {
     private Long id;
     private String originalFilename;
     private Date uploadTimestamp;
@@ -22,7 +22,7 @@ public class AaaForm {
     private List<AcctView> sameFidAccts = new ArrayList<>();
     private List<AcctView> noFidAccts = new ArrayList<>();
 
-    public AaaForm(DataFile dataFile, List<Acct> sameFidAccts, List<Acct> noFidAccts) {
+    public DataAcctMatchView(DataFile dataFile, List<Acct> sameFidAccts, List<Acct> noFidAccts) {
         id = dataFile.getId();
         originalFilename = dataFile.getOriginalFilename();
         uploadTimestamp = dataFile.getUploadTimestamp();
