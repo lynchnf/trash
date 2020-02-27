@@ -1,21 +1,32 @@
 # Things To Do
 
-* Upload OFX files.
-* Reminders.
+## Now Things
+
+* Match trans to OFX file. 
+* First prod release.
+
+## Soon Things
+
+* Require cat for stmt reconcile.
+* Automatically assign categories to transactions.
+* Transfers.
+* Serve Google font.
+* Drag and drop pattern edit.
+* Allow multiple success and error messages.
 * Select all/none checkbox for stmt reconcile.
 * Date picker.
+
+## Later Things
+
+* Reminders.
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
 * Charts.
 * Budget.
 * Remove id's, maybe.
-* Require cat for stmt reconcile.
 * Handle unparsable data file, i.e. empty, no tokens, etc.
 * Put a little padding in the footer.
-* Allow multiple success and error messages.
-* Automatically assign categories to transactions.
 * Unit test.
-* Transfers.
 
 ## Things Done
 
@@ -37,12 +48,6 @@
 * Styling - #85bb65 (also known as Dollar bill), https://paletton.com
 * processDataParse should be a post.
 * Rename all ofx fields with a ofx prefix.
-
-## Things Rejected
-
-* Put opening balance and closing balance in statement.
-
-## Things to Review
-
-* All ListForms and Views should have not have a no argument constructor.
-* All ListForms and Views should have no setters.
+* Upload OFX file.
+* Parse OFX file.
+* Match acct to OFX file.

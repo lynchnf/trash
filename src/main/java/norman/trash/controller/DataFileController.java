@@ -283,30 +283,10 @@ public class DataFileController {
         // @formatter:on
         try {
             DataFile dataFile = dataFileService.findById(id);
-            DataFileView view = new DataFileView(dataFile);
-            model.addAttribute("view", view);
-
             Date endOfTime = TrashUtils.getEndOfTime();
             Stmt stmt = stmtService.findByAcctIdAndCloseDate(acctId, endOfTime);
-            List<String> alreadyMatchedFitIds = new ArrayList<>();
-            List<Tran> unmatchedTrans = new ArrayList<>();
-            for (Tran tran : stmt.getTrans()) {
-                String ofxFitId = tran.getOfxFitId();
-                if (ofxFitId != null) {
-                    alreadyMatchedFitIds.add(ofxFitId);
-                } else {
-                    unmatchedTrans.add(tran);
-                }
-            }
 
-            List<DataTranMatchRow> rows = new ArrayList<>();
-            for (DataTran dataTran : dataFile.getDataTrans()) {
-                if (!alreadyMatchedFitIds.contains(dataTran.getOfxFitId())) {
-                    DataTranMatchRow row = new DataTranMatchRow(dataTran, unmatchedTrans);
-                    rows.add(row);
-                }
-            }
-            DataTranMatchForm dataTranMatchForm = new DataTranMatchForm(rows);
+            DataTranMatchForm dataTranMatchForm = new DataTranMatchForm(dataFile, stmt);
             model.addAttribute("dataTranMatchForm", dataTranMatchForm);
 
             return "dataTranMatch";

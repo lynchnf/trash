@@ -12,59 +12,136 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.id}"></p>
+            <p class="form-control-plaintext" th:text="${dataTranMatchForm.dataFileId}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Original Filename</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.originalFilename}"></p>
+            <p class="form-control-plaintext" th:text="${dataTranMatchForm.originalFilename}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Upload Timestamp</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext"
-               th:text="${#dates.format(view.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
+               th:text="${#dates.format(dataTranMatchForm.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Status</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.status}"></p>
+            <p class="form-control-plaintext" th:text="${dataTranMatchForm.status}"></p>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Account Id</label>
+        <label class="col-sm-3 col-form-label">Account Name</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.ofxAcctId}"></p>
+            <p class="form-control-plaintext" th:text="${dataTranMatchForm.acctName}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account Type</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.ofxType}"></p>
+            <p class="form-control-plaintext" th:text="${dataTranMatchForm.acctType}"></p>
         </div>
     </div>
 
-    <form>
+    <form th:action="@{/dataTranMatch}" th:object="${dataTranMatchForm}" method="post">
+        <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
+            <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+        <input type="hidden" th:field="*{dataFileId}"/>
+        <input type="hidden" th:field="*{originalFilename}"/>
+        <input type="hidden" th:field="*{uploadTimestamp}"/>
+        <input type="hidden" th:field="*{status}"/>
+        <input type="hidden" th:field="*{acctId}"/>
+        <input type="hidden" th:field="*{acctName}"/>
+        <input type="hidden" th:field="*{acctType}"/>
+        <input type="hidden" th:field="*{stmtId}"/>
+
         <table class="table table-sm table-striped">
             <thead>
             <tr>
-                <th>Foo</th>
+                <th></th>
+                <th>Post Date</th>
+                <th>Amount</th>
+                <th>Check Number</th>
+                <th>Name</th>
+                <th>Memo</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>foo</td>
+            <tr th:each="dataTranMatchTarget,tragStat:*{dataTranMatchTargets}"
+            >
+                <td>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxPostDate}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxAmount}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxFitId}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxCheckNumber}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxName}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].ofxMemo}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].tranId}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].tranVersion}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].postDate}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].amount}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].checkNumber}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].name}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].memo}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].stmtId}"/>
+                    <input type="hidden" th:field="*{dataTranMatchTargets[__${tragStat.index}__].catId}"/>
+                    <a><i th:id="${'target' + tragStat.index}" class="fas fa-bullseye" title="Drop here"
+                          ondrop="drop(event)" ondragover="allowDrop(event)"></i></a>
+                    <a><i class="fas fa-times"></i></a>
+                </td>
+                <td th:text="${#dates.format(dataTranMatchTarget.postDate,'M/d/yyyy')}"></td>
+                <td th:text="${#numbers.formatCurrency(dataTranMatchTarget.amount)}"></td>
+                <td th:text="${dataTranMatchTarget.checkNumber}"></td>
+                <td th:text="${dataTranMatchTarget.name}"></td>
+                <td th:text="${dataTranMatchTarget.memo}"></td>
             </tr>
             </tbody>
         </table>
 
+        <button type="submit" class="btn btn-primary">Save Matched Transactions</button>
+
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Post Date</th>
+                <th>Amount</th>
+                <th>Check Number</th>
+                <th>Name</th>
+                <th>Memo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tranMatchPayload,paylStat:*{tranMatchPayloads}">
+                <td>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].id}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].version}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].postDate}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].amount}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].checkNumber}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].name}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].memo}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].stmtId}"/>
+                    <input type="hidden" th:field="*{tranMatchPayloads[__${paylStat.index}__].catId}"/>
+                    <a><i th:id="${'payload' + paylStat.index}" class="fas fa-location-arrow" title="Drag from here"
+                          draggable="true" ondragstart="drag(event)"></i></a>
+                </td>
+                <td th:text="${#dates.format(tranMatchPayload.postDate,'M/d/yyyy')}"></td>
+                <td th:text="${#numbers.formatCurrency(tranMatchPayload.amount)}"></td>
+                <td th:text="${tranMatchPayload.checkNumber}"></td>
+                <td th:text="${tranMatchPayload.name}"></td>
+                <td th:text="${tranMatchPayload.memo}"></td>
+            </tr>
+            </tbody>
+        </table>
     </form>
-
-
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
+<script src="js/dataTranMatch.js"></script>
 </body>
 </html>
