@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.List;
 @NotNullIfCondition(fieldName = "beginningBalance", conditionField = "newEntity",
         message = "If new Account, Beginning Balance may not be blank.")
 public class AcctForm {
-    // Acct
     private Long id;
     private Integer version = 0;
     @NotBlank(message = "Account Name may not be blank.")
@@ -50,7 +50,7 @@ public class AcctForm {
     private String ofxFid;
     private String ofxBankId;
     private boolean newEntity = true;
-    // AcctNbr
+    //
     @NotBlank(message = "Account Number may not be blank.")
     @Size(max = 50, message = "Account Number may not be over {max} characters long.")
     private String number;
@@ -60,11 +60,11 @@ public class AcctForm {
     private Date effDate;
     @DateTimeFormat(pattern = "M/d/yyyy")
     private Date oldEffDate;
-    // Tran
+    //
     @Digits(integer = 7, fraction = 2,
             message = "Beginning Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal beginningBalance;
-    // DataFile
+    //
     private Long dataFileId;
 
     public AcctForm() {
@@ -87,31 +87,29 @@ public class AcctForm {
             ofxOrganization = acct.getOfxOrganization();
             ofxFid = acct.getOfxFid();
             ofxBankId = acct.getOfxBankId();
-            newEntity = acct.getId() == null;
+            newEntity = false;
 
-            // Get the account number and effective date from the latest acctNbr.
+            // Get current account number and effective date.
             List<AcctNbr> acctNbrs = acct.getAcctNbrs();
-            Comparator<AcctNbr> comparator = new Comparator<AcctNbr>() {
-                public int compare(AcctNbr acctNbr1, AcctNbr acctNbr2) {
-                    return acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate());
-                }
-            };
-            acctNbrs.sort(comparator);
-            AcctNbr acctNbr = acctNbrs.iterator().next();
-            number = acctNbr.getNumber();
-            oldNumber = acctNbr.getNumber();
-            effDate = acctNbr.getEffDate();
-            oldEffDate = acctNbr.getEffDate();
+            acctNbrs.sort(Comparator.comparing(AcctNbr::getEffDate));
+            Collections.reverse(acctNbrs);
+            if (acctNbrs.size() >= 1) {
+                number = acctNbrs.get(0).getNumber();
+                oldNumber = acctNbrs.get(0).getNumber();
+                effDate = acctNbrs.get(0).getEffDate();
+                oldEffDate = acctNbrs.get(0).getEffDate();
+            }
         }
+
         if (dataFile != null) {
             dataFileId = dataFile.getId();
+            if (dataFile.getOfxType() != null) {
+                type = dataFile.getOfxType();
+            }
             ofxOrganization = dataFile.getOfxOrganization();
             ofxFid = dataFile.getOfxFid();
             ofxBankId = dataFile.getOfxBankId();
             number = dataFile.getOfxAcctId();
-            if (dataFile.getOfxType() != null) {
-                type = dataFile.getOfxType();
-            }
         }
     }
 
@@ -122,9 +120,6 @@ public class AcctForm {
         acct.setName(StringUtils.trimToNull(name));
         acct.setType(type);
         acct.setAddressName(StringUtils.trimToNull(addressName));
-        if (addressName == null) {
-            addressName = name;
-        }
         acct.setAddress1(StringUtils.trimToNull(address1));
         acct.setAddress2(StringUtils.trimToNull(address2));
         acct.setCity(StringUtils.trimToNull(city));

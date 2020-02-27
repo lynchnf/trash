@@ -15,21 +15,28 @@ import static norman.trash.MessagesConstants.BEGINNING_BALANCE;
 public class FakeDataUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(FakeDataUtil.class);
     private static final Random RANDOM = new Random();
-    private static final int NBR_OF_ACCTS = 12;
-    private static final int NBR_OF_TRANS = 1728;
-    private static final int NBR_OF_DATA_FILES = 0;
-    private static final int NBR_OF_DATA_LINES = 12;
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String[] WORDS =
             {"Abominable", "Bulimic", "Cosmic", "Desperate", "Evil", "Funky", "Ginormous", "Hungry", "Inconceivable",
                     "Jurassic", "Kick-ass", "Ludicrous", "Malevolent", "Nuclear", "Obsequious", "Pedantic", "Quiescent",
                     "Recalcitrant", "Sleazy", "Taciturn", "Unbelievable", "Violent", "Withering", "Xenophobic", "Yucky",
                     "Zealous"};
-    private static final String[] CAT_NAMES = {"Mortgage", "Groceries", "Utilities", "Miscellaneous"};
+    private static final String[] CAT_NAMES =
+            {"Mortgage", "Groceries", "Utilities", "Automobile", "Cable", "Miscellaneous"};
+    private static final int NBR_OF_PATTERNS_MAX = 3;
+    private static final int NBR_OF_PATTERNS_MIN = 1;
+    //
     private static final String[] CHECKING_NAMES = {"Bank", "Credit Union", "Saving & Loan"};
     private static final String[] CC_NAMES = {"Credit Card", "Plastic Credit", "Gold Card", "Platinum Card"};
     private static final String[] BILL_NAMES =
             {"Cable TV", "Gas", "Gym", "Insurance", "Lawn Service", "Power", "Water and Sewer"};
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final int NBR_OF_ACCTS = 12;
+    private static final int NBR_OF_ACCT_NBRS_MAX = 4;
+    private static final int NBR_OF_ACCT_NBRS_MIN = 1;
+    private static final int CENTS_MAX = 500000;
+    private static final int CENTS_MIN = -500000;
+    private static final int NBR_OF_TRANS_MAX = 150;
+    private static final int NBR_OF_TRANS_MIN = 10;
     private static Date today;
     private static Date endOfTime;
     private static Date beginningOfTime;
@@ -62,18 +69,14 @@ public class FakeDataUtil {
         long acctNbrId = 1;
         long stmtId = 1;
         long tranId = 1;
-        long dataFileId = 1;
-        long dataLineId = 1;
         Map<String, Cat> catMap = new LinkedHashMap<>();
         Map<String, Acct> acctMap = new LinkedHashMap<>();
-        List<Tran> tranList = new ArrayList<>();
-        List<DataFile> dataFileList = new ArrayList<>();
 
         for (String name : CAT_NAMES) {
             Cat cat = buildCat(catId++, name);
             catMap.put(cat.getName(), cat);
 
-            int nbrOfPatterns = RANDOM.nextInt(4) + 1;
+            int nbrOfPatterns = RANDOM.nextInt(NBR_OF_PATTERNS_MAX - NBR_OF_PATTERNS_MIN + 1) + NBR_OF_PATTERNS_MIN;
             for (int j = 0; j < nbrOfPatterns; j++) {
                 Pattern pattern = buildPattern(patternId++, cat);
             }
@@ -83,7 +86,7 @@ public class FakeDataUtil {
             Acct acct = buildAcct(acctId++, acctMap);
             acctMap.put(acct.getName(), acct);
 
-            int nbrOfAcctNbrs = RANDOM.nextInt(4) + 1;
+            int nbrOfAcctNbrs = RANDOM.nextInt(NBR_OF_ACCT_NBRS_MAX - NBR_OF_ACCT_NBRS_MIN + 1) + NBR_OF_ACCT_NBRS_MIN;
             for (int j = 0; j < nbrOfAcctNbrs; j++) {
                 int effDaysAgo = 400 - j * 100;
                 AcctNbr acctNbr = buildAcctNbr(acctNbrId++, effDaysAgo, acct);
@@ -91,21 +94,12 @@ public class FakeDataUtil {
 
             Stmt stmt;
             do {
-                stmt = buildStmt(stmtId++, acct, tranId++, tranList);
+                stmt = buildStmt(stmtId++, acct, tranId++);
             } while (!stmt.getCloseDate().equals(endOfTime));
-        }
 
-        for (int i = 0; i < NBR_OF_TRANS; i++) {
-            Tran tran = buildTran(tranId++, acctMap, catMap);
-            tranList.add(tran);
-        }
-
-        for (int i = 0; i < NBR_OF_DATA_FILES; i++) {
-            DataFile dataFile = buildDataFile(dataFileId++);
-            dataFileList.add(dataFile);
-
-            for (int j = 0; j < NBR_OF_DATA_LINES; j++) {
-                DataLine dataLine = buildDataLine(dataLineId++, j, dataFile);
+            int nbrOfTrans = RANDOM.nextInt(NBR_OF_TRANS_MAX - NBR_OF_TRANS_MIN + 1) + NBR_OF_TRANS_MIN;
+            for (int j = 0; j < nbrOfTrans; j++) {
+                Tran tran = buildTran(tranId++, acct, catMap);
             }
         }
 
@@ -140,15 +134,9 @@ public class FakeDataUtil {
                 } else {
                     printInsertStmt(stmt);
                 }
-            }
-        }
-        for (Tran tran : tranList) {
-            printInsertTran(tran);
-        }
-        for (DataFile dataFile : dataFileList) {
-            printInsertDataFile(dataFile);
-            for (DataLine dataLine : dataFile.getDataLines()) {
-                printInsertDataLine(dataLine);
+                for (Tran tran : stmt.getTrans()) {
+                    printInsertTran(tran);
+                }
             }
         }
     }
@@ -245,7 +233,7 @@ public class FakeDataUtil {
         return acctNbr;
     }
 
-    private static Stmt buildStmt(long id, Acct acct, long tranId, List<Tran> tranList) {
+    private static Stmt buildStmt(long id, Acct acct, long tranId) {
         Stmt stmt = new Stmt();
         stmt.setId(id);
 
@@ -284,26 +272,18 @@ public class FakeDataUtil {
             Tran tran = new Tran();
             tran.setId(tranId);
             tran.setPostDate(closeDate);
-            BigDecimal amount = BigDecimal.valueOf(RANDOM.nextInt(200000) - 100000, 2);
+            int cents = RANDOM.nextInt(CENTS_MAX - CENTS_MIN + 1) + CENTS_MIN;
+            BigDecimal amount = BigDecimal.valueOf(cents, 2);
 
             tran.setName(BEGINNING_BALANCE);
-            // If amount is zero or positive, it is attached as a credit transaction.
-            if (amount.compareTo(BigDecimal.ZERO) >= 0) {
-                tran.setAmount(amount);
-                tran.setCreditStmt(stmt);
-                stmt.getCreditTrans().add(tran);
-            } else {
-                // Otherwise, it is attached as a debit transaction.
-                tran.setAmount(amount.negate());
-                tran.setDebitStmt(stmt);
-                stmt.getDebitTrans().add(tran);
-            }
-            tranList.add(tran);
+            tran.setAmount(amount);
+            tran.setStmt(stmt);
+            stmt.getTrans().add(tran);
         }
         return stmt;
     }
 
-    private static Tran buildTran(long id, Map<String, Acct> acctMap, Map<String, Cat> catMap) {
+    private static Tran buildTran(long id, Acct acct, Map<String, Cat> catMap) {
         Tran tran = new Tran();
         tran.setId(id);
         Calendar cal = Calendar.getInstance();
@@ -311,49 +291,25 @@ public class FakeDataUtil {
         cal.add(Calendar.DATE, -1 * RANDOM.nextInt(365));
         Date postDate = cal.getTime();
         tran.setPostDate(postDate);
-        tran.setAmount(BigDecimal.valueOf(RANDOM.nextInt(100000), 2));
+        int cents = RANDOM.nextInt(CENTS_MAX - CENTS_MIN + 1) + CENTS_MIN;
+        BigDecimal amount = BigDecimal.valueOf(cents, 2);
+        tran.setAmount(amount);
         tran.setName(WORDS[RANDOM.nextInt(WORDS.length)] + " " + WORDS[RANDOM.nextInt(WORDS.length)]);
         tran.setMemo(RandomStringUtils.randomAlphanumeric(10, 20));
 
-        // Attach to statements from random accounts.
-        int acctCase = RANDOM.nextInt(3);
-        List<String> uniqueNames = new ArrayList<>(acctMap.keySet());
-        String acctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
-        Acct acct = acctMap.get(acctName);
+        // Attach to statements;
         Stmt stmt = findStmt(acct, postDate);
-        if (acctCase == 0) {
-            tran.setDebitStmt(stmt);
-            stmt.getDebitTrans().add(tran);
-        } else if (acctCase == 1) {
-            tran.setCreditStmt(stmt);
-            stmt.getCreditTrans().add(tran);
-        } else {
-            tran.setDebitStmt(stmt);
-            stmt.getDebitTrans().add(tran);
-            String creditAcctName;
-            do {
-                creditAcctName = uniqueNames.get(RANDOM.nextInt(uniqueNames.size()));
-            } while (acctName.equals(creditAcctName));
-            Acct creditAcct = acctMap.get(creditAcctName);
-            Stmt creditStmt = findStmt(creditAcct, postDate);
-            tran.setCreditStmt(creditStmt);
-            creditStmt.getCreditTrans().add(tran);
+        tran.setStmt(stmt);
+        stmt.getTrans().add(tran);
+
+        // For checking accounts, we want a check number half the time.
+        if (acct.getType() == AcctType.CHECKING) {
+            if (RANDOM.nextInt(2) == 0) {
+                tran.setCheckNumber(RandomStringUtils.randomNumeric(4));
+            }
         }
 
-        // If this transaction comes from a checking account, we need a check number.
-        Stmt debitStmt = tran.getDebitStmt();
-        Stmt creditStmt = tran.getCreditStmt();
-        if (debitStmt != null && debitStmt.getAcct().getType() == AcctType.CHECKING) {
-            tran.setCheckNumber(RandomStringUtils.randomNumeric(4));
-        }
-
-        // If we have both a credit and debit account, change name and memo to reflect the credit account.
-        if (debitStmt != null && creditStmt != null) {
-            tran.setName(creditStmt.getAcct().getAddressName());
-            tran.setMemo(creditStmt.getAcct().getAcctNbrs().iterator().next().getNumber());
-        }
-
-        // Attach to random category.
+        // Attach to random category 9 out of 10 times.
         if (RANDOM.nextInt(10) != 0) {
             Cat cat = catMap.get(CAT_NAMES[RANDOM.nextInt(CAT_NAMES.length)]);
             tran.setCat(cat);
@@ -382,25 +338,22 @@ public class FakeDataUtil {
             openBalance = previousStmt.getCloseBalance();
         } else {
             openBalance = BigDecimal.ZERO;
-            for (Tran tran : previousStmt.getDebitTrans()) {
-                openBalance = openBalance.subtract(tran.getAmount());
-            }
-            for (Tran tran : previousStmt.getCreditTrans()) {
+            for (Tran tran : previousStmt.getTrans()) {
                 openBalance = openBalance.add(tran.getAmount());
             }
         }
         stmt.setOpenBalance(openBalance);
 
+        BigDecimal credits = BigDecimal.ZERO;
         BigDecimal debits = BigDecimal.ZERO;
-        for (Tran tran : stmt.getDebitTrans()) {
-            debits = debits.subtract(tran.getAmount());
+        for (Tran tran : stmt.getTrans()) {
+            if (tran.getAmount().compareTo(BigDecimal.ZERO) >= 0) {
+                credits = credits.add(tran.getAmount());
+            } else {
+                debits = debits.subtract(tran.getAmount());
+            }
         }
         stmt.setDebits(debits);
-
-        BigDecimal credits = BigDecimal.ZERO;
-        for (Tran tran : stmt.getCreditTrans()) {
-            credits = credits.add(tran.getAmount());
-        }
         stmt.setCredits(credits);
 
         stmt.setFees(BigDecimal.ZERO);
@@ -412,30 +365,6 @@ public class FakeDataUtil {
         cal.setTime(stmt.getCloseDate());
         cal.add(Calendar.DATE, 27);
         stmt.setDueDate(cal.getTime());
-    }
-
-    private static DataFile buildDataFile(long id) {
-        DataFile dataFile = new DataFile();
-        dataFile.setOriginalFilename(
-                WORDS[RANDOM.nextInt(WORDS.length)].toLowerCase() + "-" + RANDOM.nextInt(10000) + ".ofx");
-        dataFile.setContentType("application/octet-stream");
-        dataFile.setSize(RANDOM.nextInt(30000) + 800L);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(today);
-        cal.set(Calendar.SECOND, -1 * RANDOM.nextInt(30000000));
-        dataFile.setUploadTimestamp(cal.getTime());
-        dataFile.setStatus(DataFileStatus.UPLOADED);
-        return dataFile;
-    }
-
-    private static DataLine buildDataLine(long id, int idx, DataFile dataFile) {
-        DataLine dataLine = new DataLine();
-        dataLine.setId(id);
-        dataLine.setDataFile(dataFile);
-        dataFile.getDataLines().add(dataLine);
-        dataLine.setSeq(idx + 1);
-        dataLine.setText(RandomStringUtils.randomAlphanumeric(100));
-        return dataLine;
     }
 
     private static void printInsertCat(Cat cat) {
@@ -507,40 +436,15 @@ public class FakeDataUtil {
 
         String selectStmtWithDateAndName =
                 "(SELECT x.`id` FROM `stmt` x INNER JOIN `acct` y ON y.`id`=x.`acct_id` WHERE x.`close_date`='%tF' AND y.`name`='%s')";
-        String creditStmt = "NULL";
-        if (tran.getCreditStmt() != null) {
-            String acctName = tran.getCreditStmt().getAcct().getName();
-            Date stmtDate = tran.getCreditStmt().getCloseDate();
-            creditStmt = String.format(selectStmtWithDateAndName, stmtDate, acctName);
-        }
-
-        String debitStmt = "NULL";
-        if (tran.getDebitStmt() != null) {
-            String acctName = tran.getDebitStmt().getAcct().getName();
-            Date stmtDate = tran.getDebitStmt().getCloseDate();
-            debitStmt = String.format(selectStmtWithDateAndName, stmtDate, acctName);
-        }
+        String stmt = "NULL";
+        String acctName = tran.getStmt().getAcct().getName();
+        Date stmtDate = tran.getStmt().getCloseDate();
+        stmt = String.format(selectStmtWithDateAndName, stmtDate, acctName);
 
         String insertIntoTran =
-                "INSERT INTO `tran` (`amount`,`check_number`,`memo`,`name`,`post_date`,`version`,`cat_id`,`credit_stmt_id`,`debit_stmt_id`)" +
-                        " VALUES (%.2f,%s,%s,'%s','%tF',0,%s,%s,%s);%n";
-        System.out.printf(insertIntoTran, tran.getAmount(), checkNumber, memo, tran.getName(), tran.getPostDate(), cat,
-                creditStmt, debitStmt);
-    }
-
-    private static void printInsertDataFile(DataFile dataFile) {
-        String uploadTimestamp = DATE_FORMAT.format(dataFile.getUploadTimestamp());
-        String insertIntoDataFile =
-                "INSERT INTO `data_file` (`content_type`,`original_filename`,`size`,`status`,`upload_timestamp`,`version`)" +
-                        " VALUES ('%s','%s',%d,'%s','%s',0);%n";
-        System.out.printf(insertIntoDataFile, dataFile.getContentType(), dataFile.getOriginalFilename(),
-                dataFile.getSize(), dataFile.getStatus(), uploadTimestamp);
-    }
-
-    private static void printInsertDataLine(DataLine dataLine) {
-        String insertIntoDataLine = "INSERT INTO `data_line` (`data_file_id`,`seq`,`text`,`version`)" +
-                " VALUES ((SELECT `id` FROM `data_file` WHERE `original_filename`='%s'),%d,'%s',0);%n";
-        System.out.printf(insertIntoDataLine, dataLine.getDataFile().getOriginalFilename(), dataLine.getSeq(),
-                dataLine.getText());
+                "INSERT INTO `tran` (`amount`,`check_number`,`memo`,`name`,`post_date`,`version`,`stmt_id`,`cat_id`)" +
+                        " VALUES (%.2f,%s,%s,'%s','%tF',0,%s,%s);%n";
+        System.out.printf(insertIntoTran, tran.getAmount(), checkNumber, memo, tran.getName(), tran.getPostDate(), stmt,
+                cat);
     }
 }

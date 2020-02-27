@@ -13,8 +13,8 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Credit Limit</th>
-                    <th>Balance</th>
                     <th>Last Tran</th>
+                    <th>Balance</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -22,8 +22,8 @@
                     <td><a th:href="@{/acct(id=${acctRow.id})}" th:text="${acctRow.name}"></a></td>
                     <td th:text="${acctRow.type}"></td>
                     <td th:text="${#numbers.formatCurrency(acctRow.creditLimit)}"></td>
-                    <td th:text="${#numbers.formatCurrency(acctRow.balance)}"></td>
                     <td th:text="${#dates.format(acctRow.lastTranDate,'M/d/yyyy')}"></td>
+                    <td th:text="${#numbers.formatCurrency(acctRow.balance)}"></td>
                 </tr>
                 </tbody>
             </table>

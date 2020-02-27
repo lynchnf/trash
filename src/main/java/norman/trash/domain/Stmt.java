@@ -13,15 +13,12 @@ public class Stmt {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_id", nullable = false)
-    private Acct acct;
     @Column(precision = 9, scale = 2)
     private BigDecimal openBalance;
     @Column(precision = 9, scale = 2)
-    private BigDecimal debits;
-    @Column(precision = 9, scale = 2)
     private BigDecimal credits;
+    @Column(precision = 9, scale = 2)
+    private BigDecimal debits;
     @Column(precision = 9, scale = 2)
     private BigDecimal fees;
     @Column(precision = 9, scale = 2)
@@ -35,10 +32,11 @@ public class Stmt {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date closeDate;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "debitStmt")
-    private List<Tran> debitTrans = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "creditStmt")
-    private List<Tran> creditTrans = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acct_id", nullable = false)
+    private Acct acct;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "stmt")
+    private List<Tran> trans = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -54,14 +52,6 @@ public class Stmt {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Acct getAcct() {
-        return acct;
-    }
-
-    public void setAcct(Acct acct) {
-        this.acct = acct;
     }
 
     public BigDecimal getOpenBalance() {
@@ -136,19 +126,19 @@ public class Stmt {
         this.closeDate = closeDate;
     }
 
-    public List<Tran> getDebitTrans() {
-        return debitTrans;
+    public Acct getAcct() {
+        return acct;
     }
 
-    public void setDebitTrans(List<Tran> debitTrans) {
-        this.debitTrans = debitTrans;
+    public void setAcct(Acct acct) {
+        this.acct = acct;
     }
 
-    public List<Tran> getCreditTrans() {
-        return creditTrans;
+    public List<Tran> getTrans() {
+        return trans;
     }
 
-    public void setCreditTrans(List<Tran> creditTrans) {
-        this.creditTrans = creditTrans;
+    public void setTrans(List<Tran> trans) {
+        this.trans = trans;
     }
 }

@@ -12,37 +12,20 @@
         </ul>
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{version}"/>
+        <input type="hidden" th:field="*{ofxFitId}"/>
 
-        <div th:if="${tranForm.id}!=null" class="form-group row">
+        <div class="form-group row">
             <label class="col-sm-3 col-form-label">Id</label>
             <div class="col-sm-9">
                 <p class="form-control-plaintext" th:text="${tranForm.id}"></p>
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Debit Account</label>
+            <label class="col-sm-3 col-form-label">Account</label>
             <div class="col-sm-9">
-                <select class="form-control" th:field="*{debitAcctId}" th:errorclass="is-invalid">
+                <select class="form-control" th:field="*{acctId}" th:errorclass="is-invalid">
                     <option class="placeholder" value="">select</option>
                     <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Credit Account</label>
-            <div class="col-sm-9">
-                <select class="form-control" th:field="*{creditAcctId}" th:errorclass="is-invalid">
-                    <option class="placeholder" value="">select</option>
-                    <option th:each="acct:${allAccts}" th:value="${acct.id}" th:text="${acct.name}"></option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Category</label>
-            <div class="col-sm-9">
-                <select class="form-control" th:field="*{catId}" th:errorclass="is-invalid">
-                    <option class="placeholder" value="">select</option>
-                    <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
                 </select>
             </div>
         </div>
@@ -74,6 +57,23 @@
             <label class="col-sm-3 col-form-label">Memo</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" th:field="*{memo}" th:errorclass="is-invalid"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">FIT Id</label>
+            <div th:if="${tranForm.id}!=null" class="col-sm-9">
+                <p class="form-control-plaintext" th:text="${tranForm.ofxFitId}"></p>
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Category</label>
+            <div class="col-sm-9">
+                <select class="form-control" th:field="*{catId}" th:errorclass="is-invalid">
+                    <option class="placeholder" value="">select</option>
+                    <option th:each="cat:${allCats}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                </select>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>

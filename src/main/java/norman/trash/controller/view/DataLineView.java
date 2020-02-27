@@ -6,11 +6,15 @@ public class DataLineView {
     private Long id;
     private Integer seq;
     private String text;
+    private Long dataFileId;
+    private String dataFileOriginalFilename;
 
     public DataLineView(DataLine dataLine) {
         id = dataLine.getId();
         seq = dataLine.getSeq();
         text = dataLine.getText();
+        dataFileId = dataLine.getDataFile().getId();
+        dataFileOriginalFilename = dataLine.getDataFile().getOriginalFilename();
     }
 
     public Long getId() {
@@ -23,5 +27,13 @@ public class DataLineView {
 
     public String getText() {
         return text;
+    }
+
+    public Long getDataFileId() {
+        return dataFileId;
+    }
+
+    public String getDataFileOriginalFilename() {
+        return dataFileOriginalFilename;
     }
 }

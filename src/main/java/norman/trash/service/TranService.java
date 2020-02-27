@@ -21,7 +21,7 @@ public class TranService {
     private TranRepository repository;
 
     public Page<Tran> findByStmtId(Long stmtId, Pageable pageable) {
-        return repository.findByDebitStmt_IdOrCreditStmt_Id(stmtId, stmtId, pageable);
+        return repository.findByStmt_Id(stmtId, pageable);
     }
 
     public Tran findById(Long id) throws NotFoundException {

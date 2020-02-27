@@ -11,15 +11,6 @@ public class Tran {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "debit_stmt_id")
-    private Stmt debitStmt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "credit_stmt_id")
-    private Stmt creditStmt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
-    private Cat cat;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date postDate;
@@ -31,6 +22,14 @@ public class Tran {
     private String name;
     @Column(length = 100)
     private String memo;
+    @Column(length = 50)
+    private String ofxFitId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stmt_id", nullable = false)
+    private Stmt stmt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cat_id")
+    private Cat cat;
 
     public Long getId() {
         return id;
@@ -46,30 +45,6 @@ public class Tran {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Stmt getDebitStmt() {
-        return debitStmt;
-    }
-
-    public void setDebitStmt(Stmt debitStmt) {
-        this.debitStmt = debitStmt;
-    }
-
-    public Stmt getCreditStmt() {
-        return creditStmt;
-    }
-
-    public void setCreditStmt(Stmt creditStmt) {
-        this.creditStmt = creditStmt;
-    }
-
-    public Cat getCat() {
-        return cat;
-    }
-
-    public void setCat(Cat cat) {
-        this.cat = cat;
     }
 
     public Date getPostDate() {
@@ -110,5 +85,29 @@ public class Tran {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getOfxFitId() {
+        return ofxFitId;
+    }
+
+    public void setOfxFitId(String ofxFitId) {
+        this.ofxFitId = ofxFitId;
+    }
+
+    public Stmt getStmt() {
+        return stmt;
+    }
+
+    public void setStmt(Stmt stmt) {
+        this.stmt = stmt;
+    }
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
     }
 }

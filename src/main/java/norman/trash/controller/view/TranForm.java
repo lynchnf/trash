@@ -1,6 +1,5 @@
 package norman.trash.controller.view;
 
-import norman.trash.controller.view.validation.NotBothNull;
 import norman.trash.domain.Acct;
 import norman.trash.domain.Cat;
 import norman.trash.domain.Stmt;
@@ -8,28 +7,22 @@ import norman.trash.domain.Tran;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Version;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@NotBothNull(fieldName1 = "debitAcctId", fieldName2 = "creditAcctId",
-        message = "Must select a Debit or Credit Account (or both).")
 public class TranForm {
-    // Tran
     private Long id;
-    @Version
     private Integer version = 0;
-    private Long debitAcctId;
-    private Long creditAcctId;
-    private Long catId;
     @NotNull(message = "Post Date may not be blank.")
     @DateTimeFormat(pattern = "M/d/yyyy")
     private Date postDate;
     @NotNull(message = "Amount may not be blank.")
     @Digits(integer = 7, fraction = 2,
             message = "Amount value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    @PositiveOrZero(message = "Amount may not be negative.")
     private BigDecimal amount;
     @Size(max = 10, message = "Check Number may not be over {max} characters long.")
     private String checkNumber;
@@ -38,6 +31,10 @@ public class TranForm {
     private String name;
     @Size(max = 100, message = "Memo may not be over {max} characters long.")
     private String memo;
+    private String ofxFitId;
+    @NotNull(message = "Account may not be blank.")
+    private Long acctId;
+    private Long catId;
 
     public TranForm() {
     }
@@ -45,47 +42,35 @@ public class TranForm {
     public TranForm(Tran tran) {
         id = tran.getId();
         version = tran.getVersion();
-        Stmt debitStmt = tran.getDebitStmt();
-        if (debitStmt != null) {
-            debitAcctId = debitStmt.getAcct().getId();
-        }
-        Stmt creditStmt = tran.getCreditStmt();
-        if (creditStmt != null) {
-            creditAcctId = creditStmt.getAcct().getId();
-        }
-        Cat cat = tran.getCat();
-        if (cat != null) {
-            catId = cat.getId();
-        }
         postDate = tran.getPostDate();
         amount = tran.getAmount();
         checkNumber = tran.getCheckNumber();
         name = tran.getName();
         memo = tran.getMemo();
+        ofxFitId = tran.getOfxFitId();
+        acctId = tran.getStmt().getAcct().getId();
+        Cat cat = tran.getCat();
+        if (cat != null) {
+            catId = cat.getId();
+        }
     }
 
     public Tran toTran() {
         Tran tran = new Tran();
         tran.setId(id);
         tran.setVersion(version);
-        if (debitAcctId != null) {
-            tran.setDebitStmt(new Stmt());
-            tran.getDebitStmt().setAcct(new Acct());
-            tran.getDebitStmt().getAcct().setId(debitAcctId);
-        }
-        if (creditAcctId != null) {
-            tran.setCreditStmt(new Stmt());
-            tran.getCreditStmt().setAcct(new Acct());
-            tran.getCreditStmt().getAcct().setId(creditAcctId);
-        }
-        if (catId != null) {
-            tran.setCat(new Cat());
-            tran.getCat().setId(catId);
-        }
         tran.setPostDate(postDate);
         tran.setAmount(amount);
         tran.setName(StringUtils.trimToNull(name));
         tran.setMemo(StringUtils.trimToNull(memo));
+        tran.setOfxFitId(StringUtils.trimToNull(ofxFitId));
+        tran.setStmt(new Stmt());
+        tran.getStmt().setAcct(new Acct());
+        tran.getStmt().getAcct().setId(acctId);
+        if (catId != null) {
+            tran.setCat(new Cat());
+            tran.getCat().setId(catId);
+        }
         return tran;
     }
 
@@ -103,30 +88,6 @@ public class TranForm {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Long getDebitAcctId() {
-        return debitAcctId;
-    }
-
-    public void setDebitAcctId(Long debitAcctId) {
-        this.debitAcctId = debitAcctId;
-    }
-
-    public Long getCreditAcctId() {
-        return creditAcctId;
-    }
-
-    public void setCreditAcctId(Long creditAcctId) {
-        this.creditAcctId = creditAcctId;
-    }
-
-    public Long getCatId() {
-        return catId;
-    }
-
-    public void setCatId(Long catId) {
-        this.catId = catId;
     }
 
     public Date getPostDate() {
@@ -167,5 +128,29 @@ public class TranForm {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getOfxFitId() {
+        return ofxFitId;
+    }
+
+    public void setOfxFitId(String ofxFitId) {
+        this.ofxFitId = ofxFitId;
+    }
+
+    public Long getAcctId() {
+        return acctId;
+    }
+
+    public void setAcctId(Long acctId) {
+        this.acctId = acctId;
+    }
+
+    public Long getCatId() {
+        return catId;
+    }
+
+    public void setCatId(Long catId) {
+        this.catId = catId;
     }
 }

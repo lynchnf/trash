@@ -6,6 +6,8 @@
 <main class="container">
     <h1>Transaction</h1>
     <div th:replace="fragments/alerts::alerts"></div>
+
+
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
@@ -13,27 +15,17 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Debit Account</label>
+        <label class="col-sm-3 col-form-label">Account</label>
         <div class="col-sm-9">
-            <p th:if="${view.debitAcctId}!=null" class="form-control-plaintext"><a
-                    th:href="@{/acct(id=${view.debitAcctId})}"
-                    th:text="${view.debitAcctName}"></a></p>
+            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.acctId})}" th:text="${view.acctName}"></a>
+            </p>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Credit Account</label>
+        <label class="col-sm-3 col-form-label">Statement Close Date</label>
         <div class="col-sm-9">
-            <p th:if="${view.creditAcctId}!=null" class="form-control-plaintext"><a
-                    th:href="@{/acct(id=${view.creditAcctId})}"
-                    th:text="${view.creditAcctName}"></a></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Category</label>
-        <div class="col-sm-9">
-            <p th:if="${view.catId}!=null" class="form-control-plaintext"><a
-                    th:href="@{/cat(id=${view.catId})}"
-                    th:text="${view.catName}"></a></p>
+            <p class="form-control-plaintext"><a th:href="@{/stmt(id=${view.stmtId})}"
+                                                 th:text="${#dates.format(view.stmtCloseDate,'M/d/yyyy')}"></a></p>
         </div>
     </div>
     <div class="form-group row">
@@ -64,6 +56,20 @@
         <label class="col-sm-3 col-form-label">Memo</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${view.memo}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">FIT Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxFitId}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Category</label>
+        <div class="col-sm-9">
+            <p th:if="${view.catId}!=null" class="form-control-plaintext"><a
+                    th:href="@{/cat(id=${view.catId})}"
+                    th:text="${view.catName}"></a></p>
         </div>
     </div>
     <a class="btn btn-primary" th:href="@{/tranEdit(id=${view.id})}">Edit</a>

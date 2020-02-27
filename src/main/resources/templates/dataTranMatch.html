@@ -9,6 +9,61 @@
     </h1>
     <div th:replace="fragments/alerts::alerts"></div>
 
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Original Filename</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.originalFilename}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Upload Timestamp</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext"
+               th:text="${#dates.format(view.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Status</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.status}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Account Id</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxAcctId}"></p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Account Type</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${view.ofxType}"></p>
+        </div>
+    </div>
+
+    <form>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th>Foo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>foo</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
 </body>

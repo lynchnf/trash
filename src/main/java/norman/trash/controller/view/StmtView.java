@@ -6,26 +6,25 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class StmtView {
-    // Stmt
     private Long id;
     private BigDecimal openBalance;
-    private BigDecimal debits;
     private BigDecimal credits;
+    private BigDecimal debits;
     private BigDecimal fees;
     private BigDecimal interest;
     private BigDecimal closeBalance;
     private BigDecimal minimumDue;
     private Date dueDate;
     private Date closeDate;
-    // Acct
+    //
     private Long acctId;
     private String acctName;
 
     public StmtView(Stmt stmt) {
         id = stmt.getId();
         openBalance = stmt.getOpenBalance();
-        debits = stmt.getDebits();
         credits = stmt.getCredits();
+        debits = stmt.getDebits();
         fees = stmt.getFees();
         interest = stmt.getInterest();
         closeBalance = stmt.getCloseBalance();
@@ -44,12 +43,12 @@ public class StmtView {
         return openBalance;
     }
 
-    public BigDecimal getDebits() {
-        return debits;
-    }
-
     public BigDecimal getCredits() {
         return credits;
+    }
+
+    public BigDecimal getDebits() {
+        return debits;
     }
 
     public BigDecimal getFees() {

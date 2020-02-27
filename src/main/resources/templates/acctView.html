@@ -91,21 +91,15 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Acct Number</label>
+        <label class="col-sm-3 col-form-label">Account Number</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${view.number}"></p>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Effective</label>
+        <label class="col-sm-3 col-form-label">Effective Date</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -114,8 +108,14 @@
             <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
         </div>
     </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Balance</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+        </div>
+    </div>
 
-    <div th:if="not ${view.oldAcctNbrs.empty}">
+    <div th:unless="${view.oldAcctNbrs.empty}">
         <h2>Old Account Numbers</h2>
         <table class="table table-sm table-striped">
             <thead>
@@ -178,6 +178,14 @@
             <thead>
             <tr>
                 <th>Id</th>
+                <th>Open Balance</th>
+                <th>Credits</th>
+                <th>Debits</th>
+                <th>Fees</th>
+                <th>Interest</th>
+                <th>Close Balance</th>
+                <th>Minimum Due</th>
+                <th>Due Date</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="closeDate" href="#">
                         Close Date
@@ -187,28 +195,20 @@
                         </span>
                     </a>
                 </th>
-                <th>Open Balance</th>
-                <th>Debits</th>
-                <th>Credits</th>
-                <th>Fees</th>
-                <th>Interest</th>
-                <th>Close Balance</th>
-                <th>Minimum Due</th>
-                <th>Due Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></td>
                 <td th:text="${#numbers.formatCurrency(row.openBalance)}"></td>
-                <td th:text="${#numbers.formatCurrency(row.debits)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.credits)}"></td>
+                <td th:text="${#numbers.formatCurrency(row.debits)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.fees)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.interest)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.closeBalance)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.minimumDue)}"></td>
                 <td th:text="${#dates.format(row.dueDate,'M/d/yyyy')}"></td>
+                <td th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></td>
             </tbody>
         </table>
     </form>

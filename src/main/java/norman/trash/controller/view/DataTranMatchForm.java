@@ -1,22 +1,25 @@
 package norman.trash.controller.view;
 
-import norman.trash.domain.Acct;
-import norman.trash.domain.DataFile;
-import norman.trash.domain.DataFileStatus;
-
-import java.util.Date;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataTranMatchForm {
-    private Long id;
-    private Integer version = 0;
-    private String originalFilename;
-    private Date uploadTimestamp;
-    private DataFileStatus status;
+    @Valid
+    private List<DataTranMatchRow> rows = new ArrayList<>();
 
     public DataTranMatchForm() {
     }
 
-    public DataTranMatchForm(DataFile dataFile, Acct acct) {
+    public DataTranMatchForm(List<DataTranMatchRow> rows) {
+        rows.addAll(rows);
+    }
 
+    public List<DataTranMatchRow> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<DataTranMatchRow> rows) {
+        this.rows = rows;
     }
 }

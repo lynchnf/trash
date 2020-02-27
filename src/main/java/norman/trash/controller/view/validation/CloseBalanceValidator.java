@@ -32,10 +32,7 @@ public class CloseBalanceValidator implements ConstraintValidator<CloseBalance, 
                     BigDecimal actualCloseBalance = BigDecimal.ZERO;
                     for (Stmt stmt : acct.getStmts()) {
                         if (!stmt.getCloseDate().equals(TrashUtils.getEndOfTime())) {
-                            for (Tran tran : stmt.getDebitTrans()) {
-                                actualCloseBalance = actualCloseBalance.subtract(tran.getAmount());
-                            }
-                            for (Tran tran : stmt.getCreditTrans()) {
+                            for (Tran tran : stmt.getTrans()) {
                                 actualCloseBalance = actualCloseBalance.add(tran.getAmount());
                             }
                         }

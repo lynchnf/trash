@@ -12,6 +12,10 @@
 * Require cat for stmt reconcile.
 * Handle unparsable data file, i.e. empty, no tokens, etc.
 * Put a little padding in the footer.
+* Allow multiple success and error messages.
+* Automatically assign categories to transactions.
+* Unit test.
+* Transfers.
 
 ## Things Done
 
@@ -25,7 +29,6 @@
 * Back links from stmtView.html, tranView.html, acct balance.
 * Links to stmts and trans on acct balance. 
 * Edit transaction.
-* Automatically assign categories to transactions.
 * Rename header fragment to menu or navbar.
 * Version.
 * War.

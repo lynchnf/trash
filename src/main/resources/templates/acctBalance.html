@@ -31,21 +31,15 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Acct Number</label>
+        <label class="col-sm-3 col-form-label">Account Number</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${view.number}"></p>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Effective</label>
+        <label class="col-sm-3 col-form-label">Effective Date</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
         </div>
     </div>
     <div class="form-group row">
@@ -54,36 +48,40 @@
             <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
         </div>
     </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Balance</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+        </div>
+    </div>
 
     <h2>Transactions</h2>
     <table class="table table-sm table-striped">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Type</th>
-            <th>Post Date</th>
             <th>Stmt Close</th>
-            <th>Check Number</th>
+            <th>Post Date</th>
+            <th>Amount</th>
+            <th>Check</th>
             <th>Name</th>
             <th>Memo</th>
-            <th>Category</th>
-            <th>Amount</th>
             <th>Balance</th>
+            <th>Category</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="row:${rows}">
             <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
-            <td th:text="${row.type}"></td>
-            <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
             <td><a th:href="@{/stmt(id=${row.stmtId})}" th:text="${#dates.format(row.stmtCloseDate,'M/d/yyyy')}"></a>
             </td>
+            <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
+            <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
             <td th:text="${row.checkNumber}"></td>
             <td th:text="${row.name}"></td>
             <td th:text="${row.memo}"></td>
-            <td><a th:if="${row.catId}!=null" th:href="@{/cat(id=${row.catId})}" th:text="${row.catName}"></a></td>
-            <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
             <td th:text="${#numbers.formatCurrency(row.balance)}"></td>
+            <td><a th:if="${row.catId}!=null" th:href="@{/cat(id=${row.catId})}" th:text="${row.catName}"></a></td>
         </tr>
         </tbody>
     </table>

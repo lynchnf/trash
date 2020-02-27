@@ -9,86 +9,57 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class StmtReconcileRow {
-    private BalanceType type;
     private boolean selected;
-    // Tran
+    //
     private Long id;
     private Integer version = 0;
-    private Long debitStmtId;
-    private Long creditStmtId;
-    private Long catId;
     @DateTimeFormat(pattern = "M/d/yyyy")
     private Date postDate;
     private BigDecimal amount;
     private String checkNumber;
     private String name;
     private String memo;
+    private String ofxFitId;
+    private Long stmtId;
+    private Long catId;
 
     public StmtReconcileRow() {
     }
 
-    public StmtReconcileRow(Tran tran, BalanceType type) {
-        this.type = type;
+    public StmtReconcileRow(Tran tran) {
         selected = false;
         id = tran.getId();
         version = tran.getVersion();
-        Stmt debitStmt = tran.getDebitStmt();
-        if (debitStmt != null) {
-            debitStmtId = debitStmt.getId();
-        }
-        Stmt creditStmt = tran.getCreditStmt();
-        if (creditStmt != null) {
-            creditStmtId = creditStmt.getId();
-        }
+        postDate = tran.getPostDate();
+        amount = tran.getAmount();
+        checkNumber = tran.getCheckNumber();
+        name = tran.getName();
+        memo = tran.getMemo();
+        ofxFitId = tran.getOfxFitId();
+        stmtId = tran.getStmt().getId();
         Cat cat = tran.getCat();
         if (cat != null) {
             catId = cat.getId();
         }
-        postDate = tran.getPostDate();
-        if (type == BalanceType.DEBIT_TRAN) {
-            amount = tran.getAmount().negate();
-        } else {
-            amount = tran.getAmount();
-        }
-        checkNumber = tran.getCheckNumber();
-        name = tran.getName();
-        memo = tran.getMemo();
     }
 
     public Tran toTran() {
         Tran tran = new Tran();
         tran.setId(id);
         tran.setVersion(version);
-        if (debitStmtId != null) {
-            tran.setDebitStmt(new Stmt());
-            tran.getDebitStmt().setId(debitStmtId);
-        }
-        if (creditStmtId != null) {
-            tran.setCreditStmt(new Stmt());
-            tran.getCreditStmt().setId(creditStmtId);
-        }
+        tran.setPostDate(postDate);
+        tran.setAmount(amount);
+        tran.setCheckNumber(checkNumber);
+        tran.setName(name);
+        tran.setMemo(memo);
+        tran.setOfxFitId(ofxFitId);
+        tran.setStmt(new Stmt());
+        tran.getStmt().setId(stmtId);
         if (catId != null) {
             tran.setCat(new Cat());
             tran.getCat().setId(catId);
         }
-        tran.setPostDate(postDate);
-        if (type == BalanceType.DEBIT_TRAN) {
-            tran.setAmount(amount.negate());
-        } else {
-            tran.setAmount(amount);
-        }
-        tran.setCheckNumber(checkNumber);
-        tran.setName(name);
-        tran.setMemo(memo);
         return tran;
-    }
-
-    public BalanceType getType() {
-        return type;
-    }
-
-    public void setType(BalanceType type) {
-        this.type = type;
     }
 
     public boolean isSelected() {
@@ -113,30 +84,6 @@ public class StmtReconcileRow {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Long getDebitStmtId() {
-        return debitStmtId;
-    }
-
-    public void setDebitStmtId(Long debitStmtId) {
-        this.debitStmtId = debitStmtId;
-    }
-
-    public Long getCreditStmtId() {
-        return creditStmtId;
-    }
-
-    public void setCreditStmtId(Long creditStmtId) {
-        this.creditStmtId = creditStmtId;
-    }
-
-    public Long getCatId() {
-        return catId;
-    }
-
-    public void setCatId(Long catId) {
-        this.catId = catId;
     }
 
     public Date getPostDate() {
@@ -177,5 +124,29 @@ public class StmtReconcileRow {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getOfxFitId() {
+        return ofxFitId;
+    }
+
+    public void setOfxFitId(String ofxFitId) {
+        this.ofxFitId = ofxFitId;
+    }
+
+    public Long getStmtId() {
+        return stmtId;
+    }
+
+    public void setStmtId(Long stmtId) {
+        this.stmtId = stmtId;
+    }
+
+    public Long getCatId() {
+        return catId;
+    }
+
+    public void setCatId(Long catId) {
+        this.catId = catId;
     }
 }

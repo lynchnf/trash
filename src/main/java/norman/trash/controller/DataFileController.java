@@ -1,5 +1,6 @@
 package norman.trash.controller;
 
+import norman.trash.TrashUtils;
 import norman.trash.controller.view.*;
 import norman.trash.domain.*;
 import norman.trash.exception.NotFoundException;
@@ -39,19 +40,18 @@ public class DataFileController {
     private static final String[] dataFileSortableColumns =
             {"originalFilename", "contentType", "uploadTimestamp", "status"};
     private static final String[] dataLineSortableColumns = {"seq"};
-    private static final String[] dataTranSortableColumns = {"type", "postDate", "amount", "checkNumber", "name"};
     @Autowired
     private DataFileService dataFileService;
     @Autowired
     private DataLineService dataLineService;
-    @Autowired
-    private DataTranService dataTranService;
     @Autowired
     private OfxService ofxService;
     @Autowired
     private AcctService acctService;
     @Autowired
     private AcctNbrService acctNbrService;
+    @Autowired
+    private StmtService stmtService;
 
     @GetMapping("/dataFileList")
     // @formatter:off
@@ -210,7 +210,6 @@ public class DataFileController {
                 dataTran.setDataFile(dataFile);
                 dataFile.getDataTrans().add(dataTran);
             }
-
             dataFile.setStatus(DataFileStatus.PARSED);
 
             DataFile save = dataFileService.save(dataFile);
@@ -256,6 +255,8 @@ public class DataFileController {
 
             // Otherwise, we found no accounts (or possibly many accounts). Now we  need to go to an account
             // disambiguation page to get input from the user.
+            DataFileView view = new DataFileView(dataFile);
+            model.addAttribute("view", view);
 
             // Get accounts that have the same financial institution id.
             List<Acct> sameFidAccts = acctService.findByOfxFid(ofxFid);
@@ -263,7 +264,7 @@ public class DataFileController {
             // Get accounts that have no financial institution id.
             List<Acct> noFidAccts = acctService.findByOfxFidNull();
 
-            DataAcctMatchView dataAcctMatchView = new DataAcctMatchView(dataFile, sameFidAccts, noFidAccts);
+            DataAcctMatchView dataAcctMatchView = new DataAcctMatchView(sameFidAccts, noFidAccts);
             model.addAttribute("dataAcctMatchView", dataAcctMatchView);
 
             return "dataAcctMatch";
@@ -282,8 +283,32 @@ public class DataFileController {
         // @formatter:on
         try {
             DataFile dataFile = dataFileService.findById(id);
-            Acct acct = acctService.findById(acctId);
-            DataTranMatchForm dataTranMatchForm = new DataTranMatchForm(dataFile, acct);
+            DataFileView view = new DataFileView(dataFile);
+            model.addAttribute("view", view);
+
+            Date endOfTime = TrashUtils.getEndOfTime();
+            Stmt stmt = stmtService.findByAcctIdAndCloseDate(acctId, endOfTime);
+            List<String> alreadyMatchedFitIds = new ArrayList<>();
+            List<Tran> unmatchedTrans = new ArrayList<>();
+            for (Tran tran : stmt.getTrans()) {
+                String ofxFitId = tran.getOfxFitId();
+                if (ofxFitId != null) {
+                    alreadyMatchedFitIds.add(ofxFitId);
+                } else {
+                    unmatchedTrans.add(tran);
+                }
+            }
+
+            List<DataTranMatchRow> rows = new ArrayList<>();
+            for (DataTran dataTran : dataFile.getDataTrans()) {
+                if (!alreadyMatchedFitIds.contains(dataTran.getOfxFitId())) {
+                    DataTranMatchRow row = new DataTranMatchRow(dataTran, unmatchedTrans);
+                    rows.add(row);
+                }
+            }
+            DataTranMatchForm dataTranMatchForm = new DataTranMatchForm(rows);
+            model.addAttribute("dataTranMatchForm", dataTranMatchForm);
+
             return "dataTranMatch";
         } catch (NotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

@@ -43,12 +43,10 @@ public class TranController {
     private CatService catService;
 
     @GetMapping("/tran")
-    public String loadTranView(@RequestParam("id") Long id,
-            @RequestParam(value = "viewingAcctId", required = false) Long viewingAcctId, Model model,
-            RedirectAttributes redirectAttributes) {
+    public String loadTranView(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Tran tran = tranService.findById(id);
-            TranView view = new TranView(tran, viewingAcctId);
+            TranView view = new TranView(tran);
             model.addAttribute("view", view);
             return "tranView";
         } catch (NotFoundException e) {
@@ -90,27 +88,9 @@ public class TranController {
         Long tranId = tranForm.getId();
         Tran tran = tranForm.toTran();
 
-        Stmt debitStmt = tran.getDebitStmt();
-        if (debitStmt != null) {
-            Long acctId = debitStmt.getAcct().getId();
-            Stmt stmt = stmtService.findByAcctIdAndCloseDate(acctId, TrashUtils.getEndOfTime());
-            tran.setDebitStmt(stmt);
-        }
-
-        Stmt creditStmt = tran.getCreditStmt();
-        if (creditStmt != null) {
-            Long acctId = creditStmt.getAcct().getId();
-            Stmt stmt = stmtService.findByAcctIdAndCloseDate(acctId, TrashUtils.getEndOfTime());
-            tran.setCreditStmt(stmt);
-        }
-
-        Cat cat = tran.getCat();
-        if (cat == null) {
-            Cat foundCat = catService.findByPattern(tran.getName());
-            if (foundCat != null) {
-                tran.setCat(foundCat);
-            }
-        }
+        Long acctId = tran.getStmt().getAcct().getId();
+        Stmt stmt = stmtService.findByAcctIdAndCloseDate(acctId, TrashUtils.getEndOfTime());
+        tran.setStmt(stmt);
 
         // Save entity.
         try {

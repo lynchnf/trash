@@ -28,8 +28,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static norman.trash.MessagesConstants.*;
-import static norman.trash.controller.view.BalanceType.CREDIT_TRAN;
-import static norman.trash.controller.view.BalanceType.DEBIT_TRAN;
 
 @Controller
 public class AcctController {
@@ -174,15 +172,9 @@ public class AcctController {
             Tran tran = new Tran();
             tran.setPostDate(acctForm.getEffDate());
             BigDecimal amount = acctForm.getBeginningBalance();
-            if (amount.compareTo(BigDecimal.ZERO) < 0) {
-                tran.setAmount(amount.negate());
-                tran.setDebitStmt(beginningStmt);
-                beginningStmt.getDebitTrans().add(tran);
-            } else {
-                tran.setAmount(amount);
-                tran.setCreditStmt(beginningStmt);
-                beginningStmt.getCreditTrans().add(tran);
-            }
+            tran.setAmount(amount);
+            tran.setStmt(beginningStmt);
+            beginningStmt.getTrans().add(tran);
             tran.setName(BEGINNING_BALANCE);
 
             // Otherwise, this is an existing account. If either the acctNumber or effective date changed, we need to
@@ -210,8 +202,15 @@ public class AcctController {
                 successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
             }
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
-            redirectAttributes.addAttribute("id", save.getId());
-            return "redirect:/acct?id={id}";
+
+            if (dataFileId == null) {
+                redirectAttributes.addAttribute("id", save.getId());
+                return "redirect:/acct?id={id}";
+            } else {
+                redirectAttributes.addAttribute("id", dataFileId);
+                redirectAttributes.addAttribute("acctId", save.getId());
+                return "redirect:/dataTranMatch?id={id}&acctId={acctId}";
+            }
         } catch (NotFoundException | OptimisticLockingException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/acctList";
@@ -227,33 +226,20 @@ public class AcctController {
             model.addAttribute("view", view);
 
             // Load rows.
-            List<BalanceView> rows = new ArrayList<>();
+            List<TranView> rows = new ArrayList<>();
             for (Stmt stmt : acct.getStmts()) {
-                for (Tran tran : stmt.getDebitTrans()) {
-                    BalanceView debitRow = new BalanceView(tran, DEBIT_TRAN);
-                    rows.add(debitRow);
-                }
-                for (Tran tran : stmt.getCreditTrans()) {
-                    BalanceView creditTran = new BalanceView(tran, CREDIT_TRAN);
-                    rows.add(creditTran);
+                for (Tran tran : stmt.getTrans()) {
+                    TranView row = new TranView(tran);
+                    rows.add(row);
                 }
             }
 
             // Sort rows.
-            Comparator<BalanceView> comparator = new Comparator<BalanceView>() {
-                public int compare(BalanceView bal1, BalanceView bal2) {
-                    int dateCompare = bal1.getPostDate().compareTo(bal2.getPostDate());
-                    if (dateCompare != 0) {
-                        return dateCompare;
-                    }
-                    return bal1.getId().compareTo(bal2.getId());
-                }
-            };
-            rows.sort(comparator);
+            rows.sort(Comparator.comparing(TranView::getPostDate));
 
             // Update balance of rows.
             BigDecimal balance = BigDecimal.ZERO;
-            for (BalanceView row : rows) {
+            for (TranView row : rows) {
                 balance = balance.add(row.getAmount());
                 row.setBalance(balance);
             }

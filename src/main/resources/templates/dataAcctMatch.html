@@ -12,56 +12,56 @@
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.id}"></p>
+            <p class="form-control-plaintext" th:text="${view.id}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Original Filename</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.originalFilename}"></p>
+            <p class="form-control-plaintext" th:text="${view.originalFilename}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Upload Timestamp</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext"
-               th:text="${#dates.format(dataAcctMatchView.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
+               th:text="${#dates.format(view.uploadTimestamp,'M/d/yyyy H:m:s')}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Status</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.status}"></p>
+            <p class="form-control-plaintext" th:text="${view.status}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Organization</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.ofxOrganization}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxOrganization}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">FID</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.ofxFid}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxFid}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Bank Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.ofxBankId}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxBankId}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account Id</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.ofxAcctId}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxAcctId}"></p>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Account Type</label>
         <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${dataAcctMatchView.ofxType}"></p>
+            <p class="form-control-plaintext" th:text="${view.ofxType}"></p>
         </div>
     </div>
 
@@ -81,7 +81,7 @@
             </thead>
             <tbody>
             <tr th:each="sameFidAcct:${dataAcctMatchView.sameFidAccts}">
-                <td><a th:href="@{/acctEdit(id=${sameFidAcct.id},dataFileId=${dataAcctMatchView.id})}"
+                <td><a th:href="@{/acctEdit(id=${sameFidAcct.id},dataFileId=${view.id})}"
                        th:text="${sameFidAcct.id}"></a></td>
                 <td th:text="${sameFidAcct.name}"></td>
                 <td th:text="${sameFidAcct.type}"></td>
@@ -106,8 +106,8 @@
             </thead>
             <tbody>
             <tr th:each="noFidAcct:${dataAcctMatchView.noFidAccts}">
-                <td><a th:href="@{/acctEdit(id=${noFidAcct.id},dataFileId=${dataAcctMatchView.id})}"
-                       th:text="${noFidAcct.id}"></a></td>
+                <td><a th:href="@{/acctEdit(id=${noFidAcct.id},dataFileId=${view.id})}" th:text="${noFidAcct.id}"></a>
+                </td>
                 <td th:text="${noFidAcct.name}"></td>
                 <td th:text="${noFidAcct.type}"></td>
                 <td th:text="${noFidAcct.number}"></td>
@@ -118,7 +118,7 @@
     </div>
 
     <p>Maybe it's a completely new account. If so, please click <a
-            th:href="@{/acctEdit(dataFileId=${dataAcctMatchView.id})}">here</a>.</p>
+            th:href="@{/acctEdit(dataFileId=${view.id})}">here</a>.</p>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>

@@ -4,13 +4,9 @@ import norman.trash.TrashUtils;
 import norman.trash.domain.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class AcctView {
-    // Acct
     private Long id;
     private String name;
     private AcctType type;
@@ -25,15 +21,15 @@ public class AcctView {
     private String ofxOrganization;
     private String ofxFid;
     private String ofxBankId;
-    // AcctNbr
+    //
     private String number;
     private Date effDate;
-    private List<AcctNbr> oldAcctNbrs = new ArrayList<>();
-    // Stmt
+    private List<AcctNbrView> oldAcctNbrs = new ArrayList<>();
+    //
     private Long currentStmtId;
-    // Tran
+    //
     private Date lastTranDate;
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     public AcctView(Acct acct) {
         id = acct.getId();
@@ -51,15 +47,10 @@ public class AcctView {
         ofxFid = acct.getOfxFid();
         ofxBankId = acct.getOfxBankId();
 
-        // Get the account number and effective date from the latest acctNbr.
+        // Get current account number and effective date.
         List<AcctNbr> acctNbrs = acct.getAcctNbrs();
-        Comparator<AcctNbr> comparator = new Comparator<AcctNbr>() {
-            @Override
-            public int compare(AcctNbr acctNbr1, AcctNbr acctNbr2) {
-                return acctNbr2.getEffDate().compareTo(acctNbr1.getEffDate());
-            }
-        };
-        acctNbrs.sort(comparator);
+        acctNbrs.sort(Comparator.comparing(AcctNbr::getEffDate));
+        Collections.reverse(acctNbrs);
         if (acctNbrs.size() >= 1) {
             number = acctNbrs.get(0).getNumber();
             effDate = acctNbrs.get(0).getEffDate();
@@ -67,34 +58,26 @@ public class AcctView {
 
         // Get older account numbers, if there are any.
         if (acctNbrs.size() > 1) {
-            oldAcctNbrs.addAll(acctNbrs.subList(1, acctNbrs.size()));
-        }
-
-        balance = BigDecimal.ZERO;
-        lastTranDate = null;
-        for (Stmt stmt : acct.getStmts()) {
-            for (Tran tran : stmt.getDebitTrans()) {
-                balance = balance.subtract(tran.getAmount());
-                if (lastTranDate == null || lastTranDate.before(tran.getPostDate())) {
-                    lastTranDate = tran.getPostDate();
-                }
-            }
-            for (Tran tran : stmt.getCreditTrans()) {
-                balance = balance.add(tran.getAmount());
-                if (lastTranDate == null || lastTranDate.before(tran.getPostDate())) {
-                    lastTranDate = tran.getPostDate();
-                }
+            for (int i = 1; i < acctNbrs.size(); i++) {
+                AcctNbr acctNbr = acctNbrs.get(i);
+                AcctNbrView acctNbrView = new AcctNbrView(acctNbr);
+                oldAcctNbrs.add(acctNbrView);
             }
         }
 
-        // Get id for the current statement.
+        // Get id for the current statement and last transaction date and balance.
         Date endOfTime = TrashUtils.getEndOfTime();
-        List<Stmt> stmts = acct.getStmts();
-        Stmt stmt = null;
-        for (int i = 0; i < stmts.size() && (stmt == null || !stmt.getCloseDate().equals(endOfTime)); i++) {
-            stmt = stmts.get(i);
+        for (Stmt stmt : acct.getStmts()) {
+            if (stmt.getCloseDate().equals(endOfTime)) {
+                currentStmtId = stmt.getId();
+            }
+            for (Tran tran : stmt.getTrans()) {
+                if (lastTranDate == null || lastTranDate.before(tran.getPostDate())) {
+                    lastTranDate = tran.getPostDate();
+                }
+                balance = balance.add(tran.getAmount());
+            }
         }
-        currentStmtId = stmt.getId();
     }
 
     public Long getId() {
@@ -161,7 +144,7 @@ public class AcctView {
         return effDate;
     }
 
-    public List<AcctNbr> getOldAcctNbrs() {
+    public List<AcctNbrView> getOldAcctNbrs() {
         return oldAcctNbrs;
     }
 

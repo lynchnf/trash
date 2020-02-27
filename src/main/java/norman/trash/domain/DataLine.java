@@ -9,12 +9,12 @@ public class DataLine {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "data_file_id", nullable = false)
-    private DataFile dataFile;
     private Integer seq;
     @Column(length = 255)
     private String text;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "data_file_id", nullable = false)
+    private DataFile dataFile;
 
     public Long getId() {
         return id;
@@ -32,14 +32,6 @@ public class DataLine {
         this.version = version;
     }
 
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
-    }
-
     public Integer getSeq() {
         return seq;
     }
@@ -54,5 +46,13 @@ public class DataLine {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public DataFile getDataFile() {
+        return dataFile;
+    }
+
+    public void setDataFile(DataFile dataFile) {
+        this.dataFile = dataFile;
     }
 }

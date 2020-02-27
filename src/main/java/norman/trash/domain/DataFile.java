@@ -12,9 +12,6 @@ public class DataFile {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_id")
-    private Acct acct;
     @Column(length = 100)
     private String originalFilename;
     @Column(length = 100)
@@ -36,6 +33,9 @@ public class DataFile {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private AcctType ofxType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acct_id")
+    private Acct acct;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
     private List<DataLine> dataLines = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataFile")
@@ -55,14 +55,6 @@ public class DataFile {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Acct getAcct() {
-        return acct;
-    }
-
-    public void setAcct(Acct acct) {
-        this.acct = acct;
     }
 
     public String getOriginalFilename() {
@@ -143,6 +135,14 @@ public class DataFile {
 
     public void setOfxType(AcctType ofxType) {
         this.ofxType = ofxType;
+    }
+
+    public Acct getAcct() {
+        return acct;
+    }
+
+    public void setAcct(Acct acct) {
+        this.acct = acct;
     }
 
     public List<DataLine> getDataLines() {

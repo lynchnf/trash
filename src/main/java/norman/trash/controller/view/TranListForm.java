@@ -14,7 +14,7 @@ public class TranListForm extends ListForm<Tran> {
         super(innerPage);
         this.viewingAcctId = viewingAcctId;
         for (Tran tran : innerPage.getContent()) {
-            TranView row = new TranView(tran, viewingAcctId);
+            TranView row = new TranView(tran);
             rows.add(row);
         }
     }

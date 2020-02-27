@@ -8,7 +8,6 @@ import norman.trash.domain.Stmt;
 import norman.trash.domain.Tran;
 import norman.trash.exception.MultipleOptimisticLockingException;
 import norman.trash.exception.NotFoundException;
-import norman.trash.service.AcctService;
 import norman.trash.service.CatService;
 import norman.trash.service.StmtService;
 import norman.trash.service.TranService;
@@ -38,8 +37,6 @@ public class StmtController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StmtController.class);
     private static final String defaultSortColumn = "id";
     private static final String[] tranSortableColumns = {"postDate"};
-    @Autowired
-    private AcctService acctService;
     @Autowired
     private StmtService stmtService;
     @Autowired

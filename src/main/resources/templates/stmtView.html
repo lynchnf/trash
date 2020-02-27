@@ -20,12 +20,6 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Close Date</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.closeDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
         <label class="col-sm-3 col-form-label">Opening Balance</label>
         <div class="col-sm-9">
             <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.openBalance)}"></p>
@@ -73,6 +67,12 @@
             <p class="form-control-plaintext" th:text="${#dates.format(view.dueDate,'M/d/yyyy')}"></p>
         </div>
     </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Close Date</label>
+        <div class="col-sm-9">
+            <p class="form-control-plaintext" th:text="${#dates.format(view.closeDate,'M/d/yyyy')}"></p>
+        </div>
+    </div>
 
     <h2>Transactions</h2>
     <form id="listForm" action="#" method="get" th:action="@{/stmt}">
@@ -113,8 +113,6 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Transfer Account</th>
-                <th>Category</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">
                         Post Date
@@ -127,17 +125,21 @@
                 <th>Amount</th>
                 <th>Check Number</th>
                 <th>Name</th>
+                <th>Memo</th>
+                <th>FIT Id</th>
+                <th>Category</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
                 <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${row.otherAcctName}"></td>
-                <td th:text="${row.catName}"></td>
                 <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
                 <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
                 <td th:text="${row.checkNumber}"></td>
                 <td th:text="${row.name}"></td>
+                <td th:text="${row.memo}"></td>
+                <td th:text="${row.ofxFitId}"></td>
+                <td th:text="${row.catName}"></td>
             </tbody>
         </table>
     </form>

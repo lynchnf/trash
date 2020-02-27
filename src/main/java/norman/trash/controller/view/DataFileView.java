@@ -1,5 +1,6 @@
 package norman.trash.controller.view;
 
+import norman.trash.domain.Acct;
 import norman.trash.domain.AcctType;
 import norman.trash.domain.DataFile;
 import norman.trash.domain.DataFileStatus;
@@ -18,6 +19,8 @@ public class DataFileView {
     private String ofxBankId;
     private String ofxAcctId;
     private AcctType ofxType;
+    private Long acctId;
+    private String acctName;
 
     public DataFileView(DataFile dataFile) {
         id = dataFile.getId();
@@ -31,6 +34,11 @@ public class DataFileView {
         ofxBankId = dataFile.getOfxBankId();
         ofxAcctId = dataFile.getOfxAcctId();
         ofxType = dataFile.getOfxType();
+        Acct acct = dataFile.getAcct();
+        if (acct != null) {
+            acctId = acct.getId();
+            acctName = acct.getName();
+        }
     }
 
     public Long getId() {
@@ -75,5 +83,13 @@ public class DataFileView {
 
     public AcctType getOfxType() {
         return ofxType;
+    }
+
+    public Long getAcctId() {
+        return acctId;
+    }
+
+    public String getAcctName() {
+        return acctName;
     }
 }

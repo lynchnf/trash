@@ -2,13 +2,15 @@ package norman.trash.controller.view;
 
 import norman.trash.domain.CorrectAction;
 import norman.trash.domain.DataTran;
+import norman.trash.domain.Tran;
 import norman.trash.domain.TranType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DataTranMatchRow {
-    // DataTran
     private Long id;
     private Integer version = 0;
     private TranType ofxType;
@@ -23,12 +25,15 @@ public class DataTranMatchRow {
     private String ofxName;
     private String ofxCategory;
     private String ofxMemo;
+    private Long dataFileId;
+    private List<TranView> options = new ArrayList<>();
 
     public DataTranMatchRow() {
     }
 
-    public DataTranMatchRow(DataTran dataTran) {
+    public DataTranMatchRow(DataTran dataTran, List<Tran> trans) {
         id = dataTran.getId();
+        version = dataTran.getVersion();
         ofxType = dataTran.getOfxType();
         ofxPostDate = dataTran.getOfxPostDate();
         ofxUserDate = dataTran.getOfxUserDate();
@@ -41,6 +46,11 @@ public class DataTranMatchRow {
         ofxName = dataTran.getOfxName();
         ofxCategory = dataTran.getOfxCategory();
         ofxMemo = dataTran.getOfxMemo();
+        dataFileId = dataTran.getDataFile().getId();
+        for (Tran tran : trans) {
+            TranView option = new TranView(tran);
+            options.add(option);
+        }
     }
 
     public Long getId() {
@@ -153,5 +163,21 @@ public class DataTranMatchRow {
 
     public void setOfxMemo(String ofxMemo) {
         this.ofxMemo = ofxMemo;
+    }
+
+    public Long getDataFileId() {
+        return dataFileId;
+    }
+
+    public void setDataFileId(Long dataFileId) {
+        this.dataFileId = dataFileId;
+    }
+
+    public List<TranView> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<TranView> options) {
+        this.options = options;
     }
 }

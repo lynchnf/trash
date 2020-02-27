@@ -31,10 +31,7 @@ public class OpenBalanceValidator implements ConstraintValidator<OpenBalance, Ob
                     BigDecimal actualOpenBalance = BigDecimal.ZERO;
                     for (Stmt stmt : acct.getStmts()) {
                         if (!stmt.getCloseDate().equals(TrashUtils.getEndOfTime())) {
-                            for (Tran tran : stmt.getDebitTrans()) {
-                                actualOpenBalance = actualOpenBalance.subtract(tran.getAmount());
-                            }
-                            for (Tran tran : stmt.getCreditTrans()) {
+                            for (Tran tran : stmt.getTrans()) {
                                 actualOpenBalance = actualOpenBalance.add(tran.getAmount());
                             }
                         }

@@ -10,14 +10,14 @@ public class AcctNbr {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_id", nullable = false)
-    private Acct acct;
     @Column(length = 50, nullable = false)
     private String number;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date effDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acct_id", nullable = false)
+    private Acct acct;
 
     public Long getId() {
         return id;
@@ -35,14 +35,6 @@ public class AcctNbr {
         this.version = version;
     }
 
-    public Acct getAcct() {
-        return acct;
-    }
-
-    public void setAcct(Acct acct) {
-        this.acct = acct;
-    }
-
     public String getNumber() {
         return number;
     }
@@ -57,5 +49,13 @@ public class AcctNbr {
 
     public void setEffDate(Date effDate) {
         this.effDate = effDate;
+    }
+
+    public Acct getAcct() {
+        return acct;
+    }
+
+    public void setAcct(Acct acct) {
+        this.acct = acct;
     }
 }

@@ -26,8 +26,8 @@ import static norman.trash.domain.AcctType.CC;
 // @formatter:off
 @NotNullIfCondition.List({
         @NotNullIfCondition(fieldName = "openBalance", conditionField = "cc", message = "If Credit Card, Opening Balance may not be blank."),
-        @NotNullIfCondition(fieldName = "debits", conditionField = "cc", message = "If Credit Card, Purchases And Adjustments may not be blank."),
         @NotNullIfCondition(fieldName = "credits", conditionField = "cc", message = "If Credit Card, Payments And Other Credits may not be blank."),
+        @NotNullIfCondition(fieldName = "debits", conditionField = "cc", message = "If Credit Card, Purchases And Adjustments may not be blank."),
         @NotNullIfCondition(fieldName = "fees", conditionField = "cc", message = "If Credit Card, Fees Charged may not be blank."),
         @NotNullIfCondition(fieldName = "interest", conditionField = "cc", message = "If Credit Card, Interest Charged may not be blank."),
         @NotNullIfCondition(fieldName = "minimumDue", conditionField = "cc", message = "If Credit Card, Minimum Payment may not be blank."),
@@ -44,11 +44,11 @@ public class StmtReconcileForm {
             message = "Opening Balance value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal openBalance;
     @Digits(integer = 7, fraction = 2,
-            message = "Purchases And Adjustments value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
-    private BigDecimal debits;
-    @Digits(integer = 7, fraction = 2,
             message = "Payments And Other Credits value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal credits;
+    @Digits(integer = 7, fraction = 2,
+            message = "Purchases And Adjustments value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
+    private BigDecimal debits;
     @Digits(integer = 7, fraction = 2,
             message = "Fees Charged value out of bounds. (<{integer} digits>.<{fraction} digits> expected)")
     private BigDecimal fees;
@@ -69,8 +69,8 @@ public class StmtReconcileForm {
     private Date closeDate;
     // Acct
     private Long acctId;
-    private String name;
-    private AcctType type;
+    private String acctName;
+    private AcctType acctType;
     private boolean cc;
     private boolean billOrCc;
     @Valid
@@ -83,25 +83,17 @@ public class StmtReconcileForm {
         id = stmt.getId();
         version = stmt.getVersion();
         acctId = stmt.getAcct().getId();
-        name = stmt.getAcct().getName();
-        type = stmt.getAcct().getType();
-        cc = type == CC;
-        billOrCc = type == BILL || type == CC;
+        acctName = stmt.getAcct().getName();
+        acctType = stmt.getAcct().getType();
+        cc = acctType == CC;
+        billOrCc = acctType == BILL || acctType == CC;
 
-        for (Tran tran : stmt.getDebitTrans()) {
-            stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.DEBIT_TRAN));
-        }
-        for (Tran tran : stmt.getCreditTrans()) {
-            stmtReconcileRows.add(new StmtReconcileRow(tran, BalanceType.CREDIT_TRAN));
+        for (Tran tran : stmt.getTrans()) {
+            StmtReconcileRow row = new StmtReconcileRow(tran);
+            stmtReconcileRows.add(row);
         }
 
-        Comparator<StmtReconcileRow> comparator = new Comparator<StmtReconcileRow>() {
-            @Override
-            public int compare(StmtReconcileRow row1, StmtReconcileRow row2) {
-                return row1.getPostDate().compareTo(row2.getPostDate());
-            }
-        };
-        stmtReconcileRows.sort(comparator);
+        stmtReconcileRows.sort(Comparator.comparing(StmtReconcileRow::getPostDate));
     }
 
     public List<Stmt> toStmts() {
@@ -109,17 +101,17 @@ public class StmtReconcileForm {
         Stmt reconciledStmt = new Stmt();
         reconciledStmt.setId(id);
         reconciledStmt.setVersion(version);
-        reconciledStmt.setAcct(new Acct());
-        reconciledStmt.getAcct().setId(acctId);
         reconciledStmt.setOpenBalance(openBalance);
-        reconciledStmt.setDebits(debits);
         reconciledStmt.setCredits(credits);
+        reconciledStmt.setDebits(debits);
         reconciledStmt.setFees(fees);
         reconciledStmt.setInterest(interest);
         reconciledStmt.setCloseBalance(closeBalance);
         reconciledStmt.setMinimumDue(minimumDue);
         reconciledStmt.setDueDate(dueDate);
         reconciledStmt.setCloseDate(closeDate);
+        reconciledStmt.setAcct(new Acct());
+        reconciledStmt.getAcct().setId(acctId);
         stmts.add(reconciledStmt);
 
         // Current period statement.
@@ -132,21 +124,11 @@ public class StmtReconcileForm {
         for (StmtReconcileRow stmtReconcileRow : stmtReconcileRows) {
             Tran tran = stmtReconcileRow.toTran();
             if (stmtReconcileRow.isSelected()) {
-                if (stmtReconcileRow.getType() == BalanceType.DEBIT_TRAN) {
-                    tran.setDebitStmt(reconciledStmt);
-                    reconciledStmt.getDebitTrans().add(tran);
-                } else {
-                    tran.setCreditStmt(reconciledStmt);
-                    reconciledStmt.getCreditTrans().add(tran);
-                }
+                tran.setStmt(reconciledStmt);
+                reconciledStmt.getTrans().add(tran);
             } else {
-                if (stmtReconcileRow.getType() == BalanceType.DEBIT_TRAN) {
-                    tran.setDebitStmt(currentStmt);
-                    currentStmt.getDebitTrans().add(tran);
-                } else {
-                    tran.setCreditStmt(currentStmt);
-                    currentStmt.getCreditTrans().add(tran);
-                }
+                tran.setStmt(currentStmt);
+                currentStmt.getTrans().add(tran);
             }
         }
         return stmts;
@@ -176,20 +158,20 @@ public class StmtReconcileForm {
         this.openBalance = openBalance;
     }
 
-    public BigDecimal getDebits() {
-        return debits;
-    }
-
-    public void setDebits(BigDecimal debits) {
-        this.debits = debits;
-    }
-
     public BigDecimal getCredits() {
         return credits;
     }
 
     public void setCredits(BigDecimal credits) {
         this.credits = credits;
+    }
+
+    public BigDecimal getDebits() {
+        return debits;
+    }
+
+    public void setDebits(BigDecimal debits) {
+        this.debits = debits;
     }
 
     public BigDecimal getFees() {
@@ -248,20 +230,20 @@ public class StmtReconcileForm {
         this.acctId = acctId;
     }
 
-    public String getName() {
-        return name;
+    public String getAcctName() {
+        return acctName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAcctName(String acctName) {
+        this.acctName = acctName;
     }
 
-    public AcctType getType() {
-        return type;
+    public AcctType getAcctType() {
+        return acctType;
     }
 
-    public void setType(AcctType type) {
-        this.type = type;
+    public void setAcctType(AcctType acctType) {
+        this.acctType = acctType;
     }
 
     public boolean isCc() {

@@ -11,9 +11,6 @@ public class DataTran {
     private Long id;
     @Version
     private Integer version = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "data_file_id")
-    private DataFile dataFile;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private TranType ofxType;
@@ -40,6 +37,9 @@ public class DataTran {
     private String ofxCategory;
     @Column(length = 100)
     private String ofxMemo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "data_file_id")
+    private DataFile dataFile;
 
     public Long getId() {
         return id;
@@ -55,14 +55,6 @@ public class DataTran {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
     }
 
     public TranType getOfxType() {
@@ -159,5 +151,13 @@ public class DataTran {
 
     public void setOfxMemo(String ofxMemo) {
         this.ofxMemo = ofxMemo;
+    }
+
+    public DataFile getDataFile() {
+        return dataFile;
+    }
+
+    public void setDataFile(DataFile dataFile) {
+        this.dataFile = dataFile;
     }
 }
