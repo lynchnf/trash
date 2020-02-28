@@ -55,6 +55,7 @@ public class DataTranMatchTarget {
         tran.setCheckNumber(StringUtils.trimToNull(checkNumber));
         tran.setName(StringUtils.trimToNull(name));
         tran.setMemo(StringUtils.trimToNull(memo));
+        tran.setOfxFitId(StringUtils.trimToNull(ofxFitId));
         tran.setStmt(new Stmt());
         tran.getStmt().setId(stmtId);
         if (catId != null) {

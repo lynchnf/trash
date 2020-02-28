@@ -3,6 +3,7 @@ package norman.trash.controller;
 import norman.trash.TrashUtils;
 import norman.trash.controller.view.*;
 import norman.trash.domain.*;
+import norman.trash.exception.MultipleOptimisticLockingException;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OfxParseException;
 import norman.trash.exception.OptimisticLockingException;
@@ -20,12 +21,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -52,6 +55,8 @@ public class DataFileController {
     private AcctNbrService acctNbrService;
     @Autowired
     private StmtService stmtService;
+    @Autowired
+    private TranService tranService;
 
     @GetMapping("/dataFileList")
     // @formatter:off
@@ -291,6 +296,27 @@ public class DataFileController {
 
             return "dataTranMatch";
         } catch (NotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/dataFileList";
+        }
+    }
+
+    @PostMapping("/dataTranMatch")
+    public String processAcctEdit(@Valid DataTranMatchForm dataTranMatchForm, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "dataTranMatch";
+        }
+
+        // Convert form to entities.
+        List<Tran> trans = dataTranMatchForm.toTrans();
+
+        try {
+            tranService.saveAll(trans);
+            String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Transactions");
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            return "redirect:/";
+        } catch (MultipleOptimisticLockingException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }

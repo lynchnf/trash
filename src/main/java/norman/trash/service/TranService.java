@@ -2,6 +2,7 @@ package norman.trash.service;
 
 import norman.trash.domain.Tran;
 import norman.trash.domain.repository.TranRepository;
+import norman.trash.exception.MultipleOptimisticLockingException;
 import norman.trash.exception.NotFoundException;
 import norman.trash.exception.OptimisticLockingException;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +39,14 @@ public class TranService {
             return repository.save(tran);
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new OptimisticLockingException(LOGGER, "Transaction", tran.getId(), e);
+        }
+    }
+
+    public void saveAll(List<Tran> trans) throws MultipleOptimisticLockingException {
+        try {
+            repository.saveAll(trans);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new MultipleOptimisticLockingException(LOGGER, "Transactions", e);
         }
     }
 }
