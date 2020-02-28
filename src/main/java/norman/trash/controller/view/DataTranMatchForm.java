@@ -31,9 +31,9 @@ public class DataTranMatchForm {
         originalFilename = dataFile.getOriginalFilename();
         uploadTimestamp = dataFile.getUploadTimestamp();
         status = dataFile.getStatus();
-        acctId = dataFile.getAcct().getId();
-        acctName = dataFile.getAcct().getName();
-        acctType = dataFile.getAcct().getType();
+        acctId = stmt.getAcct().getId();
+        acctName = stmt.getAcct().getName();
+        acctType = stmt.getAcct().getType();
         stmtId = stmt.getId();
 
         List<String> alreadyMatchedFitIds = new ArrayList<>();

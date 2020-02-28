@@ -7,6 +7,7 @@
 
 ## Soon Things
 
+* Reverse signs on amounts for CC and Bills
 * Transfers.
 * Require cat for stmt reconcile.
 * Automatically assign categories to transactions.
