@@ -2,14 +2,14 @@
 
 ## Now Things
 
-* Match trans to OFX file. 
-* First prod release.
+* Javascript for Match trans to OFX file. 
+* Validation for Match trans to OFX file. 
 
 ## Soon Things
 
+* Transfers.
 * Require cat for stmt reconcile.
 * Automatically assign categories to transactions.
-* Transfers.
 * Serve Google font.
 * Drag and drop pattern edit.
 * Allow multiple success and error messages.
