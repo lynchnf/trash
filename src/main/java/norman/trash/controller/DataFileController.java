@@ -309,14 +309,16 @@ public class DataFileController {
         }
 
         // Convert form to entities.
+        DataFile dataFile = dataTranMatchForm.toDataFile();
         List<Tran> trans = dataTranMatchForm.toTrans();
 
         try {
             tranService.saveAll(trans);
+            dataFileService.save(dataFile);
             String successMessage = String.format(MULTIPLE_SUCCESSFULLY_UPDATED, "Transactions");
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/";
-        } catch (MultipleOptimisticLockingException e) {
+        } catch (MultipleOptimisticLockingException | OptimisticLockingException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/dataFileList";
         }

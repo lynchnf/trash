@@ -51,10 +51,19 @@
         <ul class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
             <li th:each="err:${#fields.allErrors()}" th:text="${err}"></li>
         </ul>
+
         <input type="hidden" th:field="*{dataFileId}"/>
+        <input type="hidden" th:field="*{dataFileVersion}"/>
         <input type="hidden" th:field="*{originalFilename}"/>
+        <input type="hidden" th:field="*{contentType}"/>
+        <input type="hidden" th:field="*{size}"/>
         <input type="hidden" th:field="*{uploadTimestamp}"/>
         <input type="hidden" th:field="*{status}"/>
+        <input type="hidden" th:field="*{ofxOrganization}"/>
+        <input type="hidden" th:field="*{ofxFid}"/>
+        <input type="hidden" th:field="*{ofxBankId}"/>
+        <input type="hidden" th:field="*{ofxAcctId}"/>
+        <input type="hidden" th:field="*{ofxType}"/>
         <input type="hidden" th:field="*{acctId}"/>
         <input type="hidden" th:field="*{acctName}"/>
         <input type="hidden" th:field="*{acctType}"/>
