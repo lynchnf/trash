@@ -10,10 +10,18 @@ import java.util.List;
 
 public class DataTranMatchForm {
     private Long dataFileId;
+    private Integer dataFileVersion;
     private String originalFilename;
+    private String contentType;
+    private Long size;
     @DateTimeFormat(pattern = "M/d/yyyy H:m:s")
     private Date uploadTimestamp;
     private DataFileStatus status;
+    private String ofxOrganization;
+    private String ofxFid;
+    private String ofxBankId;
+    private String ofxAcctId;
+    private AcctType ofxType;
     private Long acctId;
     private String acctName;
     private AcctType acctType;
@@ -28,12 +36,20 @@ public class DataTranMatchForm {
 
     public DataTranMatchForm(DataFile dataFile, Stmt stmt) {
         dataFileId = dataFile.getId();
+        dataFileVersion = dataFile.getVersion();
         originalFilename = dataFile.getOriginalFilename();
+        contentType = dataFile.getContentType();
+        size = dataFile.getSize();
         uploadTimestamp = dataFile.getUploadTimestamp();
         status = dataFile.getStatus();
-        acctId = dataFile.getAcct().getId();
-        acctName = dataFile.getAcct().getName();
-        acctType = dataFile.getAcct().getType();
+        ofxOrganization = dataFile.getOfxOrganization();
+        ofxFid = dataFile.getOfxFid();
+        ofxBankId = dataFile.getOfxBankId();
+        ofxAcctId = dataFile.getOfxAcctId();
+        ofxType = dataFile.getOfxType();
+        acctId = stmt.getAcct().getId();
+        acctName = stmt.getAcct().getName();
+        acctType = stmt.getAcct().getType();
         stmtId = stmt.getId();
 
         List<String> alreadyMatchedFitIds = new ArrayList<>();
@@ -55,6 +71,25 @@ public class DataTranMatchForm {
         }
     }
 
+    public DataFile toDataFile() {
+        DataFile dataFile = new DataFile();
+        dataFile.setId(dataFileId);
+        dataFile.setVersion(dataFileVersion);
+        dataFile.setOriginalFilename(originalFilename);
+        dataFile.setContentType(contentType);
+        dataFile.setSize(size);
+        dataFile.setUploadTimestamp(uploadTimestamp);
+        dataFile.setStatus(DataFileStatus.TR_MATCHED);
+        dataFile.setOfxOrganization(ofxOrganization);
+        dataFile.setOfxFid(ofxFid);
+        dataFile.setOfxBankId(ofxBankId);
+        dataFile.setOfxAcctId(ofxAcctId);
+        dataFile.setOfxType(ofxType);
+        dataFile.setAcct(new Acct());
+        dataFile.getAcct().setId(acctId);
+        return dataFile;
+    }
+
     public List<Tran> toTrans() {
         List<Tran> trans = new ArrayList<>();
         for (DataTranMatchTarget target : dataTranMatchTargets) {
@@ -74,12 +109,36 @@ public class DataTranMatchForm {
         this.dataFileId = dataFileId;
     }
 
+    public Integer getDataFileVersion() {
+        return dataFileVersion;
+    }
+
+    public void setDataFileVersion(Integer dataFileVersion) {
+        this.dataFileVersion = dataFileVersion;
+    }
+
     public String getOriginalFilename() {
         return originalFilename;
     }
 
     public void setOriginalFilename(String originalFilename) {
         this.originalFilename = originalFilename;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
     }
 
     public Date getUploadTimestamp() {
@@ -96,6 +155,46 @@ public class DataTranMatchForm {
 
     public void setStatus(DataFileStatus status) {
         this.status = status;
+    }
+
+    public String getOfxOrganization() {
+        return ofxOrganization;
+    }
+
+    public void setOfxOrganization(String ofxOrganization) {
+        this.ofxOrganization = ofxOrganization;
+    }
+
+    public String getOfxFid() {
+        return ofxFid;
+    }
+
+    public void setOfxFid(String ofxFid) {
+        this.ofxFid = ofxFid;
+    }
+
+    public String getOfxBankId() {
+        return ofxBankId;
+    }
+
+    public void setOfxBankId(String ofxBankId) {
+        this.ofxBankId = ofxBankId;
+    }
+
+    public String getOfxAcctId() {
+        return ofxAcctId;
+    }
+
+    public void setOfxAcctId(String ofxAcctId) {
+        this.ofxAcctId = ofxAcctId;
+    }
+
+    public AcctType getOfxType() {
+        return ofxType;
+    }
+
+    public void setOfxType(AcctType ofxType) {
+        this.ofxType = ofxType;
     }
 
     public Long getAcctId() {
