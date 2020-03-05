@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class StmtService {
         return stmts.iterator().next();
     }
 
+    @Transactional
     public void saveAll(List<Stmt> stmts) throws MultipleOptimisticLockingException {
         try {
             repository.saveAll(stmts);

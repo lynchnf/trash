@@ -15,7 +15,7 @@ import static norman.trash.MessagesConstants.BEGINNING_BALANCE;
 public class FakeDataUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(FakeDataUtil.class);
     private static final Random RANDOM = new Random();
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormat YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
     private static final String[] WORDS =
             {"Abominable", "Bulimic", "Cosmic", "Desperate", "Evil", "Funky", "Ginormous", "Hungry", "Inconceivable",
                     "Jurassic", "Kick-ass", "Ludicrous", "Malevolent", "Nuclear", "Obsequious", "Pedantic", "Quiescent",
@@ -37,9 +37,6 @@ public class FakeDataUtil {
     private static final int CENTS_MIN = -500000;
     private static final int NBR_OF_TRANS_MAX = 150;
     private static final int NBR_OF_TRANS_MIN = 10;
-    private static Date today;
-    private static Date endOfTime;
-    private static Date beginningOfTime;
 
     private FakeDataUtil() {
     }
@@ -53,15 +50,10 @@ public class FakeDataUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
-        today = cal.getTime();
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.MONTH, Calendar.JANUARY);
-        cal.set(Calendar.YEAR, 1970);
-        beginningOfTime = cal.getTime();
         cal.set(Calendar.DAY_OF_MONTH, 31);
         cal.set(Calendar.MONTH, Calendar.DECEMBER);
         cal.set(Calendar.YEAR, 9999);
-        endOfTime = cal.getTime();
+        Date endOfTime = cal.getTime();
 
         long catId = 1;
         long patternId = 1;
@@ -141,15 +133,16 @@ public class FakeDataUtil {
         }
     }
 
-    private static Cat buildCat(long id, String name) {
+    public static Cat buildCat(long id, String name) {
         Cat cat = new Cat();
         cat.setId(id);
         cat.setName(name);
         return cat;
     }
 
-    private static Pattern buildPattern(long id, Cat cat) {
+    public static Pattern buildPattern(long id, Cat cat) {
         Pattern pattern = new Pattern();
+        pattern.setId(id);
         pattern.setSeq((int) id);
         pattern.setRegex(".*" + WORDS[RANDOM.nextInt(WORDS.length)].toUpperCase() + ".*");
         pattern.setCat(cat);
@@ -157,16 +150,17 @@ public class FakeDataUtil {
         return pattern;
     }
 
-    private static Acct buildAcct(long id, Map<String, Acct> acctMap) {
+    public static Acct buildAcct(long id, Map<String, Acct> acctMap) {
         Acct acct = new Acct();
         acct.setId(id);
         acct.setType(AcctType.values()[RANDOM.nextInt(AcctType.values().length)]);
 
         // Build acct name based on the account type.
         AcctType acctType = acct.getType();
+        String firstPartName;
         String name;
         do {
-            String firstPartName = WORDS[RANDOM.nextInt(WORDS.length)];
+            firstPartName = WORDS[RANDOM.nextInt(WORDS.length)];
             String lastPartName = null;
             if (acctType == AcctType.CHECKING) {
                 int len = CHECKING_NAMES.length;
@@ -200,10 +194,13 @@ public class FakeDataUtil {
         if (acctType == AcctType.CC) {
             acct.setCreditLimit(BigDecimal.valueOf((RANDOM.nextInt(99) + 1) * 100000, 2));
         }
+        acct.setOfxOrganization(firstPartName);
+        acct.setOfxFid(RandomStringUtils.randomNumeric(5));
+        acct.setOfxBankId(RandomStringUtils.randomNumeric(10));
         return acct;
     }
 
-    private static AcctNbr buildAcctNbr(long id, int effDaysAgo, Acct acct) {
+    public static AcctNbr buildAcctNbr(long id, int effDaysAgo, Acct acct) {
         AcctNbr acctNbr = new AcctNbr();
         acctNbr.setId(id);
 
@@ -222,7 +219,10 @@ public class FakeDataUtil {
 
         // Build effective date.
         Calendar cal = Calendar.getInstance();
-        cal.setTime(today);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.add(Calendar.DATE, -1 * effDaysAgo);
         Date effDate = cal.getTime();
         acctNbr.setEffDate(effDate);
@@ -233,6 +233,47 @@ public class FakeDataUtil {
         return acctNbr;
     }
 
+    public static Stmt buildCurrentStmt(long id, Acct acct) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.YEAR, 9999);
+        Date endOfTime = cal.getTime();
+        return buildStmtImpl(id, acct, endOfTime);
+    }
+
+    public static Stmt buildBeginStmt(long id, Acct acct) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.add(Calendar.DATE, -1 * (RANDOM.nextInt(28) + 365));
+        Date beginDate = cal.getTime();
+        return buildStmtImpl(id, acct, beginDate);
+    }
+
+    private static Stmt buildStmtImpl(long id, Acct acct, Date closeDate) {
+        Stmt stmt = new Stmt();
+        stmt.setId(id);
+        //stmt.setOpenBalance();
+        //stmt.setCredits();
+        //stmt.setDebits();
+        //stmt.setFees();
+        //stmt.setInterest();
+        //stmt.setCloseBalance();
+        //stmt.setMinimumDue();
+        //stmt.setDueDate();
+        stmt.setCloseDate(closeDate);
+        stmt.setAcct(acct);
+        acct.getStmts().add(stmt);
+        return stmt;
+    }
+
     private static Stmt buildStmt(long id, Acct acct, long tranId) {
         Stmt stmt = new Stmt();
         stmt.setId(id);
@@ -240,6 +281,16 @@ public class FakeDataUtil {
         // Generate a random close date.
         Date closeDate = null;
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        Date today = cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.YEAR, 9999);
+        Date endOfTime = cal.getTime();
+
         // If this is the first statement, generate a random close date a bit more than a year ago.
         boolean firstStmt = acct.getStmts().isEmpty();
         if (firstStmt) {
@@ -283,11 +334,62 @@ public class FakeDataUtil {
         return stmt;
     }
 
+    private static Tran buildTran(long id, Date beginDate, Date endDate, Acct acct, List<Cat> cats) {
+        Tran tran = new Tran();
+        tran.setId(id);
+
+        // Post date is some random date between the begin date (exclusive) and end date (inclusive).
+        long diffDays = (endDate.getTime() - beginDate.getTime()) / 86400000L;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(beginDate);
+        cal.add(Calendar.DATE, RANDOM.nextInt((int) diffDays) + 1);
+        tran.setPostDate(cal.getTime());
+
+        int cents = RANDOM.nextInt(CENTS_MAX - CENTS_MIN + 1) + CENTS_MIN;
+        BigDecimal amount = BigDecimal.valueOf(cents, 2);
+        tran.setAmount(amount);
+
+        // If checking account and amount is a debit, there is half a chance this transaction has a check number.
+        if (acct.getType() == AcctType.CHECKING && amount.compareTo(BigDecimal.ZERO) > 0 && RANDOM.nextInt(2) == 0) {
+            tran.setCheckNumber(RandomStringUtils.randomNumeric(4));
+        }
+
+        tran.setName(WORDS[RANDOM.nextInt(WORDS.length)] + " " + WORDS[RANDOM.nextInt(WORDS.length)]);
+        tran.setMemo(RandomStringUtils.randomAlphanumeric(10, 20));
+        //tran.setOfxFitId();
+
+        // Find the correct statement for this transaction.
+        List<Stmt> stmts = acct.getStmts();
+        stmts.sort(Comparator.comparing(Stmt::getCloseDate));
+        Stmt stmt = null;
+        for (int i = 0; i < stmts.size(); i++) {
+            stmt = stmts.get(i);
+            if (tran.getPostDate().after(stmt.getCloseDate())) {
+                break;
+            }
+        }
+        if (stmt != null) {
+            tran.setStmt(stmt);
+            stmt.getTrans().add(tran);
+        }
+
+        // There is half a chance this transaction has a category assigned to it.
+        if (RANDOM.nextInt(2) == 0) {
+            Cat cat = cats.get(RANDOM.nextInt(cats.size()));
+            tran.setCat(cat);
+            cat.getTrans().add(tran);
+        }
+        return tran;
+    }
+
     private static Tran buildTran(long id, Acct acct, Map<String, Cat> catMap) {
         Tran tran = new Tran();
         tran.setId(id);
         Calendar cal = Calendar.getInstance();
-        cal.setTime(today);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.add(Calendar.DATE, -1 * RANDOM.nextInt(365));
         Date postDate = cal.getTime();
         tran.setPostDate(postDate);
@@ -318,8 +420,85 @@ public class FakeDataUtil {
         return tran;
     }
 
+    public static DataFile buildDataFile(long id) {
+        DataFile dataFile = new DataFile();
+        dataFile.setId(id);
+        dataFile.setOriginalFilename(
+                WORDS[RANDOM.nextInt(WORDS.length)].toLowerCase() + "-" + RANDOM.nextInt(10000) + ".ofx");
+        dataFile.setContentType("application/octet-stream");
+        dataFile.setSize(RANDOM.nextInt(30000) + 800L);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, -1 * RANDOM.nextInt(30000000));
+        dataFile.setUploadTimestamp(cal.getTime());
+        dataFile.setStatus(DataFileStatus.UPLOADED);
+        //dataFile.setOfxOrganization(WORDS[RANDOM.nextInt(WORDS.length)]);
+        //dataFile.setOfxFid(RandomStringUtils.randomNumeric(5));
+        //dataFile.setOfxBankId(RandomStringUtils.randomNumeric(10));
+        //dataFile.setOfxAcctId(RandomStringUtils.randomNumeric(20));
+        //dataFile.setOfxType(AcctType.CHECKING);
+        //dataFile.setAcct(acct);
+        return dataFile;
+    }
+
+    public static DataLine buildDataLine(long id, int idx, DataFile dataFile) {
+        DataLine dataLine = new DataLine();
+        dataLine.setId(id);
+        dataLine.setSeq(idx + 1);
+        dataLine.setText(RandomStringUtils.randomAlphanumeric(100));
+        dataLine.setDataFile(dataFile);
+        dataFile.getDataLines().add(dataLine);
+        return dataLine;
+    }
+
+    public static DataTran buildDataTran(long id, DataFile dataFile) {
+        DataTran dataTran = new DataTran();
+        dataTran.setId(id);
+        dataTran.setOfxType(TranType.values()[RANDOM.nextInt(TranType.values().length)]);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.add(Calendar.DATE, -1 * RANDOM.nextInt(365));
+        Date postDate = cal.getTime();
+        dataTran.setOfxPostDate(postDate);
+        //dataTran.setOfxUserDate();
+        int cents = RANDOM.nextInt(CENTS_MAX - CENTS_MIN + 1) + CENTS_MIN;
+        BigDecimal amount = BigDecimal.valueOf(cents, 2);
+        dataTran.setOfxAmount(amount);
+        dataTran.setOfxFitId(YYYYMMDD.format(postDate) + RandomStringUtils.randomNumeric(23));
+        //dataTran.setOfxSic();
+
+        // If checking account and amount is a debit, there is half a chance this transaction has a check number.
+        if (dataFile.getOfxType() == AcctType.CHECKING && amount.compareTo(BigDecimal.ZERO) > 0 &&
+                RANDOM.nextInt(2) == 0) {
+            dataTran.setOfxCheckNumber(RandomStringUtils.randomNumeric(4));
+        }
+
+        //dataTran.setOfxCorrectFitId();
+        //dataTran.setOfxCorrectAction();
+        dataTran.setOfxName(WORDS[RANDOM.nextInt(WORDS.length)] + " " + WORDS[RANDOM.nextInt(WORDS.length)]);
+        //dataTran.setOfxCategory();
+        dataTran.setOfxMemo(RandomStringUtils.randomAlphanumeric(10, 20));
+        dataTran.setDataFile(dataFile);
+        dataFile.getDataTrans().add(dataTran);
+        return dataTran;
+    }
+
     private static Stmt findStmt(Acct acct, Date postDate) {
-        Date closeDate = beginningOfTime;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.YEAR, 1970);
+        Date closeDate = cal.getTime();
         List<Stmt> stmts = acct.getStmts();
         Stmt stmt = null;
         for (int i = 0; i < stmts.size(); i++) {

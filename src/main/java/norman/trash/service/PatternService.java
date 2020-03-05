@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -32,6 +33,7 @@ public class PatternService {
         return repository.findAll(Sort.by("seq"));
     }
 
+    @Transactional
     public void saveAll(Iterable<Pattern> patterns, List<Long> idList) throws MultipleOptimisticLockingException {
         try {
             for (Pattern pattern : patterns) {

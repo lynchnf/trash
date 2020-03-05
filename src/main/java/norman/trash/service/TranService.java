@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +43,7 @@ public class TranService {
         }
     }
 
+    @Transactional
     public void saveAll(List<Tran> trans) throws MultipleOptimisticLockingException {
         try {
             repository.saveAll(trans);
