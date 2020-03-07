@@ -106,7 +106,7 @@
                     </div>
                 </td>
                 <td th:text="${#dates.format(stmtReconcileRow.postDate,'M/d/yyyy')}"></td>
-                <td th:text="${stmtReconcileRow.amount}"></td>
+                <td th:text="${#numbers.formatCurrency(stmtReconcileRow.amount)}"></td>
                 <td th:text="${stmtReconcileRow.checkNumber}"></td>
                 <td th:text="${stmtReconcileRow.name}"></td>
                 <td th:text="${stmtReconcileRow.memo}"></td>

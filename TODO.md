@@ -4,22 +4,30 @@
 
 * Javascript for Match trans to OFX file. 
 * Validation for Match trans to OFX file. 
+* Drag and drop pattern edit.
 
 ## Soon Things
 
-* Reverse signs on amounts for CC and Bills
-* Transfers.
-* Require cat for stmt reconcile.
-* Automatically assign categories to transactions.
-* Serve Google font.
-* Drag and drop pattern edit.
-* Allow multiple success and error messages.
-* Select all/none checkbox for stmt reconcile.
-* Date picker.
+* Add transfer
+* Combine two transactions into a transfer
+* Separate transfer into two transactions
+* Void transaction
+* Separate transaction into manual and uploaded
+* Combine uploaded and manual transactions
+* Create reminder from account
+* Create reminder from statement
+* Create ad hoc reminder
+* Unreconcile statement
 
 ## Later Things
 
-* Reminders.
+* Reverse signs on amounts for CC and Bills
+* Require cat for stmt reconcile.
+* Automatically assign categories to transactions.
+* Serve Google font.
+* Allow multiple success and error messages.
+* Select all/none checkbox for stmt reconcile.
+* Date picker.
 * Custom convert failed messages.
 * Custom converter for Date and BigDecimal.
 * Charts.
@@ -27,7 +35,6 @@
 * Remove id's, maybe.
 * Handle unparsable data file, i.e. empty, no tokens, etc.
 * Put a little padding in the footer.
-* Unit test.
 
 ## Things Done
 
