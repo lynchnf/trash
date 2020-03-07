@@ -27,14 +27,6 @@ public class CatRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void findByNameContainingIgnoreCase() {
         persistCat("aabcx");
         persistCat("cdefx");
         persistCat("eghix");
@@ -60,7 +52,14 @@ public class CatRepositoryTest {
         persistCat("dDEFx");
         persistCat("bGHIx");
         entityManager.flush();
+    }
 
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void findByNameContainingIgnoreCase() {
         PageRequest pageable = PageRequest.of(1, 5, Sort.Direction.DESC, "name", "id");
         Page<Cat> catPage = repository.findByNameContainingIgnoreCase("def", pageable);
         assertEquals(1, catPage.getNumber()); // page number (zero based)

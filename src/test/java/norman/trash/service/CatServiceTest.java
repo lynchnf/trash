@@ -57,12 +57,9 @@ public class CatServiceTest {
         cat1 = FakeDataUtil.buildCat(1L, "Utilities");
         cat2 = FakeDataUtil.buildCat(2L, "Groceries");
         cat3 = FakeDataUtil.buildCat(3L, "Mortgage");
-        pattern11 = FakeDataUtil.buildPattern(11L, cat2);
-        pattern11.setRegex(".*Food.*");
-        pattern12 = FakeDataUtil.buildPattern(12L, cat1);
-        pattern12.setRegex(".*Power.*");
-        pattern13 = FakeDataUtil.buildPattern(13L, cat3);
-        pattern13.setRegex(".*Pow.*");
+        pattern11 = FakeDataUtil.buildPattern(11L, 1, ".*Food.*", cat2);
+        pattern12 = FakeDataUtil.buildPattern(12L, 2, ".*Power.*", cat1);
+        pattern13 = FakeDataUtil.buildPattern(13L, 3, ".*Pow.*", cat3);
     }
 
     @After

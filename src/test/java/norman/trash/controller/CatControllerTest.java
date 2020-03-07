@@ -135,7 +135,10 @@ public class CatControllerTest {
         when(catService.save(any(Cat.class))).thenReturn(cat1);
 
         // @formatter:off
-        mockMvc.perform(post("/catEdit").param("id", "1").param("version", "0").param("name", "A new name."))
+        mockMvc.perform(post("/catEdit")
+                    .param("id", "1")
+                    .param("version", "0")
+                    .param("name", "A new name."))
                 .andDo(print())
                 .andExpect(status().isFound())
                 .andExpect(flash().attribute("successMessage","Category successfully updated, id=1."))

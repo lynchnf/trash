@@ -9,8 +9,9 @@ public class Pattern {
     private Long id;
     @Version
     private Integer version = 0;
+    @Column(nullable = false)
     private Integer seq;
-    @Column(length = 255)
+    @Column(length = 255, nullable = false)
     private String regex;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id", nullable = false)
