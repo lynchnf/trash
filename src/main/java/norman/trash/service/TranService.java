@@ -23,6 +23,10 @@ public class TranService {
     @Autowired
     private TranRepository repository;
 
+    public Page<Tran> findByStmtIdAndName(Long stmtId, String name, Pageable pageable) {
+        return repository.findByStmt_IdAndNameContainingIgnoreCase(stmtId, name, pageable);
+    }
+
     public Page<Tran> findByStmtId(Long stmtId, Pageable pageable) {
         return repository.findByStmt_Id(stmtId, pageable);
     }

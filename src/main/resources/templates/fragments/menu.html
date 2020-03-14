@@ -19,6 +19,7 @@
                         <a class="dropdown-item" th:href="@{/acctList}">Account List</a>
                         <a class="dropdown-item" th:href="@{/acctEdit}">Add Account</a>
                         <a class="dropdown-item" th:href="@{/tranEdit}">Add Transaction</a>
+                        <a class="dropdown-item" th:href="@{/transferEdit}">Add Transfer</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -33,6 +34,13 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown">Data Files</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" th:href="@{/dataFileList}">Data File List</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown">Reminders</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/reminderList}">Reminder List</a>
+                        <a class="dropdown-item" th:href="@{/reminderEdit}">Add Reminder</a>
                     </div>
                 </li>
                 <li class="d-md-none">

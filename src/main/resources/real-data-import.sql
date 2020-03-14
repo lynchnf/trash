@@ -1,0 +1,27 @@
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (1,'Paycheck',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (2,'Cell Phone',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (3,'Miscellaneous',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (4,'Transfer',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (5,'Auto Insurance',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (6,'Electric',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (7,'Gym',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (8,'Fee',2);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (9,'Interest',1);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (10,'Mortgage',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (11,'Cable',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (12,'Natural Gas',0);
+INSERT INTO `cat` (`id`, `name`, `version`) VALUES (13,'Water and Sewer',0);
+
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (1,'ELECTRONIC DEPOSIT JPMORGAN CHAS',1,0,1);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (2,'WEB AUTHORIZED PMT VERIZON WIREL',2,0,2);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (3,'WEB AUTHORIZED PMT COMMONWEALTH',3,0,6);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (4,'ELECTRONIC WITHDRAWAL PLANET FIT',4,0,7);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (5,'PAPER STATEMENT FEE REVERSAL',5,0,8);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (6,'PAPER STATEMENT FEE',6,0,8);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (7,'MONTHLY MAINTENANCE FEE WAIVED',7,0,8);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (8,'MONTHLY MAINTENANCE FEE',8,0,8);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (9,'INTEREST PAID THIS PERIOD',9,0,9);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (10,'ELECTRONIC WITHDRAWAL WF HOME MT',10,0,10);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (11,'WEB AUTHORIZED PMT COMCAST',11,0,11);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (12,'WEB AUTHORIZED PMT NICOR GAS',12,0,12);
+INSERT INTO `pattern` (`id`, `regex`, `seq`, `version`, `cat_id`) VALUES (13,'WEB AUTHORIZED PMT DUPAGECTYPUBW',13,0,13);

@@ -1,5 +1,6 @@
 package norman.trash;
 
+import norman.trash.controller.view.TranStatus;
 import norman.trash.domain.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -15,6 +16,9 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static norman.trash.MessagesConstants.BEGINNING_BALANCE;
+import static norman.trash.controller.view.TranStatus.*;
+import static norman.trash.domain.AcctType.BILL;
+import static norman.trash.domain.AcctType.CC;
 
 public class FakeDataUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(FakeDataUtil.class);
@@ -73,9 +77,9 @@ public class FakeDataUtil {
                 LocalDate effDate = beginDate.plusDays(interval * j);
                 buildRandomAcctNbr(acctNbrId++, effDate, acct);
             }
+
             Stmt beginStmt = buildBeginStmt(stmtId++, beginDate, acct);
             buildRandomBeginTran(tranId++, beginStmt);
-
             LocalDate stmtDate = beginDate.plusMonths(1L);
             while (stmtDate.isBefore(LocalDate.now())) {
                 buildStmt(acctNbrId++, stmtDate, acct);
@@ -86,6 +90,45 @@ public class FakeDataUtil {
             int nbrOfStmts = RANDOM.nextInt(NBR_OF_STMT_MAX - NBR_OF_STMT_MIN + 1) + NBR_OF_STMT_MIN;
             for (int j = 0; j < nbrOfStmts; j++) {
                 buildRandomTran(tranId++, (int) daysAgo, acct, catList);
+            }
+
+            List<Stmt> stmts = acct.getStmts();
+            Comparator<Stmt> comp = new Comparator<Stmt>() {
+                public int compare(Stmt stmt1, Stmt stmt2) {
+                    return stmt1.getCloseDate().compareTo(stmt2.getCloseDate());
+                }
+            };
+            stmts.sort(comp);
+            BigDecimal openBalance = stmts.get(0).getTrans().get(0).getAmount();
+            for (int j = 1; j < stmts.size() - 1; j++) {
+                Stmt stmt = stmts.get(j);
+
+                BigDecimal credits = BigDecimal.ZERO;
+                BigDecimal debits = BigDecimal.ZERO;
+                for (Tran tran : stmt.getTrans()) {
+                    BigDecimal amount = tran.getAmount();
+                    if (amount.compareTo(BigDecimal.ZERO) > 0) {
+                        credits = credits.add(amount);
+                    } else {
+                        debits = debits.add(amount);
+                    }
+                }
+                if (stmt.getAcct().getType() == CC) {
+                    stmt.setOpenBalance(openBalance);
+                    stmt.setCredits(credits);
+                    stmt.setDebits(debits);
+                    stmt.setFees(BigDecimal.ZERO);
+                    stmt.setInterest(BigDecimal.ZERO);
+                    stmt.setMinimumDue(BigDecimal.valueOf(2500, 2));
+                }
+                if (stmt.getAcct().getType() == CC || stmt.getAcct().getType() == BILL) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(stmt.getCloseDate());
+                    cal.add(Calendar.DATE, 25);
+                    stmt.setDueDate(cal.getTime());
+                }
+                stmt.setCloseBalance(openBalance.add(credits).add(debits));
+                openBalance = openBalance.add(credits).add(debits);
             }
         }
 
@@ -164,14 +207,15 @@ public class FakeDataUtil {
         return buildStmt(id, LocalDate.of(9999, 12, 31), acct);
     }
 
-    public static Tran buildTran(long id, LocalDate postDate, BigDecimal amount, Stmt stmt) {
+    public static Tran buildTran(long id, TranStatus status, LocalDate postDate, BigDecimal amount, String name,
+            String ofxFitId, Stmt stmt) {
         Date date = Date.from(postDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return buildTranImpl(id, date, amount, stmt);
+        return buildTranImpl(id, status, date, amount, name, ofxFitId, stmt);
     }
 
     public static Tran buildBeginTran(long id, BigDecimal beginBalance, Stmt beginStmt) {
-        Tran tran = buildTranImpl(id, beginStmt.getCloseDate(), beginBalance, beginStmt);
-        tran.setName(BEGINNING_BALANCE);
+        Tran tran =
+                buildTranImpl(id, MANUAL, beginStmt.getCloseDate(), beginBalance, BEGINNING_BALANCE, null, beginStmt);
         return tran;
     }
 
@@ -190,7 +234,7 @@ public class FakeDataUtil {
             String nameSecondPart = null;
             if (type == AcctType.BILL) {
                 nameSecondPart = BILL_NAMES[RANDOM.nextInt(BILL_NAMES.length)];
-            } else if (type == AcctType.CC) {
+            } else if (type == CC) {
                 nameSecondPart = CC_NAMES[RANDOM.nextInt(CC_NAMES.length)];
             } else if (type == AcctType.CHECKING) {
                 nameSecondPart = CHECKING_NAMES[RANDOM.nextInt(CHECKING_NAMES.length)];
@@ -213,7 +257,7 @@ public class FakeDataUtil {
         acct.setPhoneNumber(RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3) + "-" +
                 RandomStringUtils.randomNumeric(4));
 
-        if (type == AcctType.CC) {
+        if (type == CC) {
             acct.setCreditLimit(BigDecimal.valueOf((RANDOM.nextInt(99) + 1) * 100000, 2));
         }
         if (ofxFid != null) {
@@ -236,11 +280,20 @@ public class FakeDataUtil {
     }
 
     private static Tran buildRandomTran(long id, int maxDaysAgo, Acct acct, List<Cat> catList) {
-        int daysAgo = RANDOM.nextInt(maxDaysAgo);
-        LocalDate localDate = LocalDate.now().minusDays(daysAgo);
+        TranStatus status = TranStatus.values()[RANDOM.nextInt(TranStatus.values().length)];
+
+        LocalDate localDate = LocalDate.now().minusDays(RANDOM.nextInt(maxDaysAgo));
         Date postDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         int cents = RANDOM.nextInt(CENTS_MAX - CENTS_MIN + 1) + CENTS_MIN;
         BigDecimal amount = BigDecimal.valueOf(cents, 2);
+
+        String name = WORDS[RANDOM.nextInt(WORDS.length)] + " " + WORDS[RANDOM.nextInt(WORDS.length)];
+
+        String ofxFitId = null;
+        if (status == UPLOADED || status == BOTH) {
+            ofxFitId = RandomStringUtils.randomAlphanumeric(30);
+        }
 
         List<Stmt> stmts = acct.getStmts();
         stmts.sort(Comparator.comparing(Stmt::getCloseDate));
@@ -252,20 +305,32 @@ public class FakeDataUtil {
             }
         }
 
-        Tran tran = buildTranImpl(id, postDate, amount, foundStmt);
+        Tran tran = buildTranImpl(id, status, postDate, amount, name, ofxFitId, foundStmt);
 
-        if (acct.getType() == AcctType.CC && amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (acct.getType() == CC && amount.compareTo(BigDecimal.ZERO) <= 0) {
             if (RANDOM.nextInt(2) == 0) {
-                tran.setCheckNumber(RandomStringUtils.randomNumeric(4));
+                String checkNumber = RandomStringUtils.randomNumeric(4);
+                tran.setCheckNumber(checkNumber);
+                if (status == MANUAL || status == BOTH) {
+                    tran.setManualCheckNumber(checkNumber);
+                }
+                if (status == UPLOADED || status == BOTH) {
+                    tran.setUploadedCheckNumber(checkNumber);
+                }
             }
         }
-        tran.setName(WORDS[RANDOM.nextInt(WORDS.length)] + " " + WORDS[RANDOM.nextInt(WORDS.length)]);
+
         if (RANDOM.nextInt(2) == 0) {
-            tran.setMemo(RandomStringUtils.randomAlphanumeric(10));
+            String memo = RandomStringUtils.randomAlphanumeric(10);
+            tran.setMemo(memo);
+            if (status == MANUAL || status == BOTH) {
+                tran.setManualMemo(memo);
+            }
+            if (status == UPLOADED || status == BOTH) {
+                tran.setUploadedMemo(memo);
+            }
         }
-        if (RANDOM.nextInt(2) == 0) {
-            tran.setOfxFitId(RandomStringUtils.randomAlphanumeric(30));
-        }
+
         if (RANDOM.nextInt(2) == 0) {
             Cat cat = catList.get(RANDOM.nextInt(catList.size()));
             tran.setCat(cat);
@@ -273,11 +338,26 @@ public class FakeDataUtil {
         return tran;
     }
 
-    private static Tran buildTranImpl(long id, Date postDate, BigDecimal amount, Stmt stmt) {
+    private static Tran buildTranImpl(long id, TranStatus status, Date postDate, BigDecimal amount, String name,
+            String ofxFitId, Stmt stmt) {
         Tran tran = new Tran();
         tran.setId(id);
         tran.setPostDate(postDate);
         tran.setAmount(amount);
+        tran.setName(name);
+
+        if (status == MANUAL || status == BOTH) {
+            tran.setManualPostDate(postDate);
+            tran.setManualAmount(amount);
+            tran.setManualName(name);
+        }
+        if (status == UPLOADED || status == BOTH) {
+            tran.setUploadedPostDate(postDate);
+            tran.setUploadedAmount(amount);
+            tran.setUploadedName(name);
+            tran.setOfxFitId(ofxFitId);
+        }
+
         tran.setStmt(stmt);
         stmt.getTrans().add(tran);
         return tran;

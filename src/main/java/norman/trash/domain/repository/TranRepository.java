@@ -6,5 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface TranRepository extends PagingAndSortingRepository<Tran, Long> {
+    Page<Tran> findByStmt_IdAndNameContainingIgnoreCase(Long stmtId, String name, Pageable pageable);
+
     Page<Tran> findByStmt_Id(Long stmtId, Pageable pageable);
 }

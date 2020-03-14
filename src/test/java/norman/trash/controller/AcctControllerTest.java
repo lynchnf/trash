@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static norman.trash.controller.view.TranStatus.MANUAL;
 import static norman.trash.domain.AcctType.*;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,12 +76,18 @@ public class AcctControllerTest {
         stmt14 = FakeDataUtil.buildCurrentStmt(14L, acct1);
 
         tran111 = FakeDataUtil.buildBeginTran(111L, BigDecimal.ZERO, stmt11);
-        tran121 = FakeDataUtil.buildTran(121L, LocalDate.of(2020, 1, 10), BigDecimal.valueOf(-12345, 2), stmt12);
-        tran122 = FakeDataUtil.buildTran(122L, LocalDate.of(2020, 1, 20), BigDecimal.valueOf(8230, 2), stmt12);
-        tran123 = FakeDataUtil.buildTran(123L, LocalDate.of(2020, 1, 30), BigDecimal.valueOf(4115, 2), stmt12);
-        tran131 = FakeDataUtil.buildTran(131L, LocalDate.of(2020, 2, 10), BigDecimal.valueOf(-5432, 2), stmt13);
-        tran132 = FakeDataUtil.buildTran(132L, LocalDate.of(2020, 2, 20), BigDecimal.valueOf(5432, 2), stmt13);
-        tran141 = FakeDataUtil.buildTran(141L, LocalDate.of(2020, 3, 10), BigDecimal.valueOf(-5678, 2), stmt14);
+        tran121 = FakeDataUtil
+                .buildTran(121L, MANUAL, LocalDate.of(2020, 1, 10), BigDecimal.valueOf(-12345, 2), "abc", null, stmt12);
+        tran122 = FakeDataUtil
+                .buildTran(122L, MANUAL, LocalDate.of(2020, 1, 20), BigDecimal.valueOf(8230, 2), "abd", null, stmt12);
+        tran123 = FakeDataUtil
+                .buildTran(123L, MANUAL, LocalDate.of(2020, 1, 30), BigDecimal.valueOf(4115, 2), "abe", null, stmt12);
+        tran131 = FakeDataUtil
+                .buildTran(131L, MANUAL, LocalDate.of(2020, 2, 10), BigDecimal.valueOf(-5432, 2), "abf", null, stmt13);
+        tran132 = FakeDataUtil
+                .buildTran(132L, MANUAL, LocalDate.of(2020, 2, 20), BigDecimal.valueOf(5432, 2), "abg", null, stmt13);
+        tran141 = FakeDataUtil
+                .buildTran(141L, MANUAL, LocalDate.of(2020, 3, 10), BigDecimal.valueOf(-5678, 2), "abh", null, stmt14);
     }
 
     @After

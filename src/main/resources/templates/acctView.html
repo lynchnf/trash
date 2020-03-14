@@ -6,112 +6,118 @@
 <main class="container">
     <h1>Account</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Id</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.id}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.name}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Type</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.type}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Credit Limit</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Organization</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.ofxOrganization}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">FID</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.ofxFid}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Name</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.addressName}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 1</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.address1}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 2</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.address2}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">City, State, Zip</label>
+                <div class="col-sm-4">
+                    <p class="form-control-plaintext" th:text="${view.city}"></p>
+                </div>
+                <div class="col-sm-1">
+                    <p class="form-control-plaintext" th:text="${view.state}"></p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="form-control-plaintext" th:text="${view.zipCode}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Phone Number</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.phoneNumber}"></p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Name</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.name}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Type</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.type}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Address Name</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.addressName}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Address Line 1</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.address1}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Address Line 2</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.address2}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">City</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.city}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">State</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.state}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Zip Code</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.zipCode}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Phone Number</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.phoneNumber}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Credit Limit</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Organization</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.ofxOrganization}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">FID</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.ofxFid}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Bank Id</label>
-        <div class="col-sm-9">
+        <label class="col-sm-2 col-form-label">Bank Id</label>
+        <div class="col-sm-10">
             <p class="form-control-plaintext" th:text="${view.ofxBankId}"></p>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Account Number</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.number}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Account Number</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.number}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Effective Date</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Effective Date</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Balance</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Last Tran</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Last Tran</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -120,14 +126,12 @@
         <table class="table table-sm table-striped">
             <thead>
             <tr>
-                <th>Id</th>
                 <th>Account Number</th>
                 <th>Effective Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="oldAcctNbr:${view.oldAcctNbrs}">
-                <td th:text="${oldAcctNbr.id}"></td>
                 <td th:text="${oldAcctNbr.number}"></td>
                 <td th:text="${#dates.format(oldAcctNbr.effDate,'M/d/yyyy')}"></td>
             </tr>
@@ -177,15 +181,6 @@
         <table class="table table-sm table-striped">
             <thead>
             <tr>
-                <th>Id</th>
-                <th>Open Balance</th>
-                <th>Credits</th>
-                <th>Debits</th>
-                <th>Fees</th>
-                <th>Interest</th>
-                <th>Close Balance</th>
-                <th>Minimum Due</th>
-                <th>Due Date</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="closeDate" href="#">
                         Close Date
@@ -195,11 +190,19 @@
                         </span>
                     </a>
                 </th>
+                <th>Open Balance</th>
+                <th>Credits</th>
+                <th>Debits</th>
+                <th>Fees</th>
+                <th>Interest</th>
+                <th>Close Balance</th>
+                <th>Minimum Due</th>
+                <th>Due Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
-                <td><a th:href="@{/stmt(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td><a th:href="@{/stmt(id=${row.id})}" th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></a></td>
                 <td th:text="${#numbers.formatCurrency(row.openBalance)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.credits)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.debits)}"></td>
@@ -208,7 +211,6 @@
                 <td th:text="${#numbers.formatCurrency(row.closeBalance)}"></td>
                 <td th:text="${#numbers.formatCurrency(row.minimumDue)}"></td>
                 <td th:text="${#dates.format(row.dueDate,'M/d/yyyy')}"></td>
-                <td th:text="${#dates.format(row.closeDate,'M/d/yyyy')}"></td>
             </tbody>
         </table>
     </form>

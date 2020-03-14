@@ -7,6 +7,8 @@ public class MessagesConstants {
     public static final String BEGINNING_BALANCE = "beginning balance";
     public static final String SUCCESSFULLY_ADDED = "%s successfully added, id=%d.";
     public static final String SUCCESSFULLY_UPDATED = "%s successfully updated, id=%d.";
+    public static final String SUCCESSFULLY_ADDED_ACCT = "Account %s was successfully added.";
+    public static final String SUCCESSFULLY_UPDATED_ACCT = "Account %s was successfully updated.";
     public static final String MULTIPLE_SUCCESSFULLY_UPDATED = "Successfully updated multiple %s.";
     public static final String UPLOADED_FILE_NOT_FOUND_ERROR = "Upload file is empty or missing.";
     public static final String UPLOADED_FILE_NOT_READ_ERROR = "Error while opening or reading uploaded file.";

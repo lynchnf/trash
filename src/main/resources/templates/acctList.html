@@ -44,7 +44,7 @@
         <table class="table table-sm table-striped">
             <thead>
             <tr>
-                <th>Id</th>
+                <th></th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">
                         Name
@@ -90,8 +90,8 @@
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
-                <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.id}"></a></td>
-                <td th:text="${row.name}"></td>
+                <td></td>
+                <td><a th:href="@{/acct(id=${row.id})}" th:text="${row.name}"></a></td>
                 <td th:text="${row.type}"></td>
                 <td th:text="${#numbers.formatCurrency(row.creditLimit)}"></td>
                 <td th:text="${row.number}"></td>

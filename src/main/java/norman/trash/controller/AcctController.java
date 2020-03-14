@@ -197,9 +197,9 @@ public class AcctController {
 
             // Save entity.
             Acct save = acctService.save(acct);
-            String successMessage = String.format(SUCCESSFULLY_ADDED, "Account", save.getId());
+            String successMessage = String.format(SUCCESSFULLY_ADDED_ACCT, save.getName());
             if (acctId != null) {
-                successMessage = String.format(SUCCESSFULLY_UPDATED, "Account", save.getId());
+                successMessage = String.format(SUCCESSFULLY_UPDATED_ACCT, save.getName());
             }
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
 

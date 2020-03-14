@@ -6,52 +6,59 @@
 <main class="container">
     <h1>Account Balances</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Id</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.id}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.id})}" th:text="${view.name}"></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Type</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.type}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Name</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.id})}" th:text="${view.name}"></a></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Account Number</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${view.number}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Effective Date</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Type</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.type}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Balance</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Credit Limit</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.creditLimit)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Account Number</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.number}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Effective Date</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.effDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Last Tran</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.balance)}"></p>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Last Tran</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.lastTranDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -59,7 +66,7 @@
     <table class="table table-sm table-striped">
         <thead>
         <tr>
-            <th>Id</th>
+            <th>Status</th>
             <th>Stmt Close</th>
             <th>Post Date</th>
             <th>Amount</th>
@@ -72,7 +79,7 @@
         </thead>
         <tbody>
         <tr th:each="row:${rows}">
-            <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
+            <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.status}"></a></td>
             <td><a th:href="@{/stmt(id=${row.stmtId})}" th:text="${#dates.format(row.stmtCloseDate,'M/d/yyyy')}"></a>
             </td>
             <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>

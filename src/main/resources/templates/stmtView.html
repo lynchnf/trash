@@ -6,71 +6,97 @@
 <main class="container">
     <h1>Statement</h1>
     <div th:replace="fragments/alerts::alerts"></div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Id</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${view.id}"></p>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Account</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.acctId})}"
+                                                         th:text="${view.acctName}"></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Close Date</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.closeDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Account</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext"><a th:href="@{/acct(id=${view.acctId})}" th:text="${view.acctName}"></a>
-            </p>
+    <div class="row" th:if="${view.cc}">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Opening Balance</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.openBalance)}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Payments</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.credits)}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Opening Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.openBalance)}"></p>
+    <div class="row" th:if="${view.cc}">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Purchases</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.debits)}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Fees Charged</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.fees)}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Payments And Other Credits</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.credits)}"></p>
+    <div class="row" th:if="${view.cc}">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Interest Charged</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.interest)}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Minimum Payment</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.minimumDue)}"></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Purchases And Adjustments</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.debits)}"></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Closing Balance</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.closeBalance)}"></p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Fees Charged</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.fees)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Interest Charged</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.interest)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Closing Balance</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.closeBalance)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Minimum Payment Due</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#numbers.formatCurrency(view.minimumDue)}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Payment Due Date</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.dueDate,'M/d/yyyy')}"></p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Close Date</label>
-        <div class="col-sm-9">
-            <p class="form-control-plaintext" th:text="${#dates.format(view.closeDate,'M/d/yyyy')}"></p>
+        <div class="col-sm-6" th:if="${view.billOrCc}">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Payment Due Date</label>
+                <div class="col-sm-8">
+                    <p class="form-control-plaintext" th:text="${#dates.format(view.dueDate,'M/d/yyyy')}"></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -83,6 +109,7 @@
         <input type="hidden" class="sortDirection" name="sortDirection" th:value="${listForm.sortDirection}"/>
         <input type="hidden" class="currentPage" th:value="${listForm.number}"/>
         <input type="hidden" class="totalPages" th:value="${listForm.totalPages}"/>
+        <input type="hidden" th:field="${listForm.whereName}"/>
 
         <span th:if="${listForm.hasPrevious()}">
             <a class="goToFirstPage" data-list-form="listForm" href="#"><i class="fas fa-angle-double-left"></i></a>
@@ -112,7 +139,7 @@
         <table class="table table-sm table-striped">
             <thead>
             <tr>
-                <th>Id</th>
+                <th>Status</th>
                 <th>
                     <a class="changeSort" data-list-form="listForm" data-sort-column="postDate" href="#">
                         Post Date
@@ -122,28 +149,57 @@
                         </span>
                     </a>
                 </th>
-                <th>Amount</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="amount" href="#">
+                        Amount
+                        <span th:if="${listForm.sortColumn=='amount'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
                 <th>Check Number</th>
-                <th>Name</th>
+                <th>
+                    <a class="changeSort" data-list-form="listForm" data-sort-column="name" href="#">
+                        Name
+                        <span th:if="${listForm.sortColumn=='name'}">
+                            <span th:if="${listForm.ascending}"><i class="fas fa-caret-up"></i></span>
+                            <span th:if="${listForm.descending}"><i class="fas fa-caret-down"></i></span>
+                        </span>
+                    </a>
+                </th>
                 <th>Memo</th>
-                <th>FIT Id</th>
                 <th>Category</th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" id="filterTranList" class="btn btn-primary btn-sm"
+                            data-list-form="listForm">Filter
+                    </button>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <input type="text" id="newWhereName" placeholder="contains"
+                           th:value="${listForm.whereName}"/>
+                </td>
             </tr>
             </thead>
             <tbody>
             <tr th:each="row:${listForm.rows}">
-                <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.id}"></a></td>
+                <td><a th:href="@{/tran(id=${row.id})}" th:text="${row.status}"></a></td>
                 <td th:text="${#dates.format(row.postDate,'M/d/yyyy')}"></td>
                 <td th:text="${#numbers.formatCurrency(row.amount)}"></td>
                 <td th:text="${row.checkNumber}"></td>
                 <td th:text="${row.name}"></td>
                 <td th:text="${row.memo}"></td>
-                <td th:text="${row.ofxFitId}"></td>
-                <td th:text="${row.catName}"></td>
+                <td><a th:if="${row.catId}!=null" th:href="@{/cat(id=${row.catId})}" th:text="${row.catName}"></a></td>
             </tbody>
         </table>
     </form>
 </main>
 <footer th:replace="fragments/footer::footer"></footer>
+<script src="js/tranList.js"></script>
 </body>
 </html>

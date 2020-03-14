@@ -11,6 +11,7 @@ import norman.trash.exception.NotFoundException;
 import norman.trash.service.CatService;
 import norman.trash.service.StmtService;
 import norman.trash.service.TranService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ import static norman.trash.MessagesConstants.MULTIPLE_SUCCESSFULLY_UPDATED;
 public class StmtController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StmtController.class);
     private static final String defaultSortColumn = "id";
-    private static final String[] tranSortableColumns = {"postDate"};
+    private static final String[] tranSortableColumns = {"postDate", "amount", "name"};
     @Autowired
     private StmtService stmtService;
     @Autowired
@@ -52,8 +53,11 @@ public class StmtController {
             @RequestParam(value = "sortColumn", required = false, defaultValue = "postDate") String sortColumn,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") Sort.Direction sortDirection,
             Model model,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            @RequestParam(value = "whereName", required = false) String whereName) {
         // @formatter:on
+        String trimmedName = StringUtils.trimToNull(whereName);
+
         try {
             Stmt stmt = stmtService.findById(id);
             StmtView view = new StmtView(stmt);
@@ -66,8 +70,13 @@ public class StmtController {
             }
 
             PageRequest pageable = PageRequest.of(pageNumber, pageSize, sortDirection, sortColumns);
-            Page<Tran> page = tranService.findByStmtId(id, pageable);
-            TranListForm listForm = new TranListForm(page, stmt.getAcct().getId());
+            Page<Tran> page;
+            if (trimmedName != null) {
+                page = tranService.findByStmtIdAndName(id, trimmedName, pageable);
+            } else {
+                page = tranService.findByStmtId(id, pageable);
+            }
+            TranListForm listForm = new TranListForm(page, whereName);
             model.addAttribute("listForm", listForm);
             return "stmtView";
         } catch (NotFoundException e) {
